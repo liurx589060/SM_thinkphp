@@ -7,8 +7,8 @@
  */
 
 namespace Sample_Mjmz\Controller;
-use Think\Controller;
-class TestController extends Controller {
+use Sample_Mjmz\Controller\BaseController;
+class TestController extends BaseController {
     public function index(){
         echo 'you are my heart'.'-->>'.'Sy!';
     }
@@ -17,23 +17,14 @@ class TestController extends Controller {
         $this->assign('name',$name);
         $this->display();
     }
-    
-    /**
+
+        /**
      * 获取think_data表中所有数据
      */
-    public function getUserData() {
-//        $data = M('Data');
-//        $result = $data->find(3);
-//        echo $result['id'].'-->>'.$result['data'];
-//        $this->assign('result',$result);
-//        $this->display();
-        
+    public function getUserData() {           
         $data = M('Data');
-        $result = $data->select();
-        for ($index = 0; $index < count($result); $index++) {
-            $rs = $result[$index];
-            echo $rs['id'].'-->>'.$rs['data'].'</br>';
-        }
+        $result = $data->order('id')->select();
+        $this->returnData($this->convertReturnJsonSucessed($result));
     }
     
     /**
@@ -42,17 +33,17 @@ class TestController extends Controller {
      */
     public function addUser() {
         $data = D('Data');
-        $info = $_GET['info'];
+        $info = $_GET['info'];       
         if(empty($info)) {
-            echo 'info参数没有';
+            $this->returnData($this->convertReturnJsonError(-1, '需要传入信息info字段'));
             return;
         }
         $d['data'] = $info;
         $result=$data->add($d);
         if($result) {
-            echo '数据添加成功！';
+            $this->returnData($this->convertReturnJsonSucessed());
         }else{
-            echo '数据添加错误！';
+            $this->returnData($this->convertReturnJsonError(10, '数据添加错误'));
         }
     }
     
@@ -65,7 +56,7 @@ class TestController extends Controller {
         $id = $_GET['id'];
         $data = M('Data');
         if(!(empty($key) ^ empty($id))) {
-            echo '不能同时有data和id参数，且必须有其一';
+            $this->returnData($this->convertReturnJsonError(-1, '不能同时有data和id参数，且必须有其一'));
             return;
         }
         
@@ -78,9 +69,9 @@ class TestController extends Controller {
         }
         echo $data->getLastSql().'</br>';
         if($ret) {
-            echo '删除成功';
+            $this->returnData($this->convertReturnJsonSucessed());
         }else {
-            echo '删除出错'.'-->'.$data->getDbError();
+            $this->returnData($this->convertReturnJsonError(10, '删除出错'));
         }
     }
     
@@ -94,7 +85,7 @@ class TestController extends Controller {
         $oldData = $_GET['oldData'];
         $newData = $_GET['newData'];
         if(!(!empty($oldData) && !empty($newData))) {
-            echo 'oldData和newData为必填参数';
+            $this->returnData($this->convertReturnJsonError(-1, 'oldData和newData为必填参数'));
             return;
         }
         
@@ -104,9 +95,9 @@ class TestController extends Controller {
         
         echo $data->getLastSql().'</br>';
         if($ret) {
-            echo '更新成功';
+            $this->returnData($this->convertReturnJsonSucessed());
         }else {
-            echo '更新出错'.'-->'.$data->getDbError();
+            $this->returnData($this->convertReturnJsonError(10, '更新出错'));
         }
     }
 }
