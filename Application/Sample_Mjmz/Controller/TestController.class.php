@@ -8,6 +8,10 @@
 
 namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
+
+define("PARAMS_PREFIX", 'user');
+define('TABLE_USER', 'User');
+
 class TestController extends BaseController {
     public function index(){
         echo 'you are my heart'.'-->>'.'Sy!';
@@ -22,8 +26,8 @@ class TestController extends BaseController {
      * 获取think_data表中所有数据
      */
     public function getUserData() {           
-        $data = M('Data');
-        $result = $data->order('id')->select();
+        $data = M(TABLE_USER);
+        $result = $data->order('user_id')->select();
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
     
@@ -32,13 +36,14 @@ class TestController extends BaseController {
      * @return type
      */
     public function addUser() {
-        $data = D('Data');
-        $info = $_GET['info'];       
+        $data = D(TABLE_USER);
+        $info = $_GET['userData'];       
         if(empty($info)) {
-            $this->returnData($this->convertReturnJsonError(-1, '需要传入信息info字段'));
+            $this->returnData($this->convertReturnJsonError(-1, '需要传入信息userData字段'));
             return;
         }
-        $d['data'] = $info;
+        $d['user_data'] = $info;
+        $d['create_time'] = time();
         $result=$data->add($d);
         if($result) {
             $this->returnData($this->convertReturnJsonSucessed());
@@ -52,22 +57,22 @@ class TestController extends BaseController {
      * @return type
      */
     public function deleteUser() {
-        $key = $_GET['data'];
-        $id = $_GET['id'];
-        $data = M('Data');
+        $key = $_GET['userData'];
+        $id = $_GET['userId'];
+        $data = M(TABLE_USER);
         if(!(empty($key) ^ empty($id))) {
-            $this->returnData($this->convertReturnJsonError(-1, '不能同时有data和id参数，且必须有其一'));
+            $this->returnData($this->convertReturnJsonError(-1, '不能同时有userData和userId参数，且必须有其一'));
             return;
         }
         
 
         $ret = FALSE;
         if(!empty($key)) {
-           $ret = $data->where("data='%s'",$key)->delete();
+           $ret = $data->where("user_data='%s'",$key)->delete();
         } else {
-           $ret = $data->where('id=%d',$id)->delete();
+           $ret = $data->where('user_id=%d',$id)->delete();
         }
-        echo $data->getLastSql().'</br>';
+//        echo $data->getLastSql().'</br>';
         if($ret) {
             $this->returnData($this->convertReturnJsonSucessed());
         }else {
@@ -89,11 +94,12 @@ class TestController extends BaseController {
             return;
         }
         
-        $data = M('Data');
-        $d['data'] = $newData;
-        $ret = $data->where("data='%s'",$oldData)->save($d);
+        $data = M(TABLE_USER);
+        $d['user_data'] = $newData;
+        $d['modify_time'] = time();
+        $ret = $data->where("user_data='%s'",$oldData)->save($d);
         
-        echo $data->getLastSql().'</br>';
+//        echo $data->getLastSql().'</br>';
         if($ret) {
             $this->returnData($this->convertReturnJsonSucessed());
         }else {
