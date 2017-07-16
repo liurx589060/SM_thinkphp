@@ -27,8 +27,37 @@ class TestController extends BaseController {
      */
     public function getUserData() {           
         $data = M(TABLE_USER);
-        $result = $data->order('user_id')->select();
-        $this->returnData($this->convertReturnJsonSucessed($result));
+        $result = $data
+                ->join('LEFT JOIN __USER_INFO__ ON __USER_INFO__.user_id=__USER__.user_id')
+                ->field('think_user.user_id,think_user.user_data,think_user.head_image'
+                        . ',think_user_info.age,think_user_info.sex,think_user_info.house_address'
+                        . ',think_user_info.job_address,think_user.create_time,think_user.modify_time')
+                ->order('think_user.user_id')
+                ->select();
+//        echo $data->getLastSql();
+        
+        $userList = array();
+        $i = 0;
+        foreach ($result as $r) {
+            $image_prefix = empty($r['head_image']) ?'':'http://'.$_SERVER['SERVER_NAME'].'/thinkphp/';                           
+            $r['head_image'] = $image_prefix.$r['head_image'];
+            
+            $info['age'] = $r['age'];
+            $info['sex'] = $r['sex'];
+            $info['house_address'] = $r['house_address'];
+            $info['job_address'] = $r['job_address'];
+            
+            $single['user_id'] = $r['user_id'];
+            $single['user_data'] = $r['user_data'];
+            $single['head_image'] = $r['head_image'];
+            $single['info'] = $info;
+            $single['create_time'] = $r['create_time'];
+            $single['modify_time'] = $r['modify_time'];
+            
+            $userList[$i] = $single;
+            $i++;
+        }
+        $this->returnData($this->convertReturnJsonSucessed($userList));
     }
     
     /**

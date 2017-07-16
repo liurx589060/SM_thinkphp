@@ -22,6 +22,9 @@ class BaseController extends Controller {
         if(count($array) > 0) {
             $callback['status'] = 0;
             $callback['msg'] = '操作成功'; 
+        }elseif (!isset ($array)) {//没有传值
+            $callback['status'] = 0;
+            $callback['msg'] = '操作成功'; 
         } else {//没有数据
             $callback['status'] = 9000;
             $callback['msg'] = '没有数据';

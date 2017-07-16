@@ -30,5 +30,17 @@ and open the template in the editor.
                   <INPUT type="reset" value="清空">
             </FORM>
         </div>
+        
+        <div style="background-color: #666666;margin-top: 100px">
+            <FORM method="post" action="/thinkphp/index.php/Sample_Mjmz/Web/addUserInfoByForm">
+                  用户id：<INPUT type="text" name="user_id"><br/>
+                  年龄：<INPUT type="text" name="age"><br/>
+                  性别：<INPUT type="text" name="sex"><br/>
+                  住房地址：<INPUT type="text" name="house_address"><br/>
+                  工作地址：<INPUT type="text" name="job_address"><br/>
+                  <INPUT type="submit" value="添加">
+                  <INPUT type="reset" value="清空">
+            </FORM>
+        </div>
     </body>
 </html>
