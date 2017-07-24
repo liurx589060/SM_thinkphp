@@ -11,6 +11,7 @@ use Sample_Mjmz\Controller\BaseController;
 
 define("PARAMS_PREFIX", 'user');
 define('TABLE_USER', 'User');
+define('TABLE_HTML','Html');
 
 class TestController extends BaseController {
     public function index(){
@@ -134,5 +135,35 @@ class TestController extends BaseController {
         }else {
             $this->returnData($this->convertReturnJsonError(10, '更新出错'));
         }
+    }
+    
+    /**
+     * 获取html文档
+     */
+    public function getHtml() {
+        $id = $_GET['id'];
+        if(empty($id)) {
+            $this->returnData($this->convertReturnJsonError(-1, 'id为必填参数'));
+            return;
+        }
+        
+        $fh= file_get_contents('http://localhost/thinkphp/Sample_Mjmz/web/madridNews?id='.$id);
+        
+        $Html = M(TABLE_HTML);
+        $result = $Html->where("id='%d'",$id)->select();
+        $result = $result[0];
+        if($result) {
+            $array['id'] = $result['id'];
+            $data['key_word'] = $result['key_word'];
+            $data['css'] = $result['css'];
+            $data['javascript'] = $result['javascript'];
+            $data['html'] = $result['html'];
+            $data['full_code'] = $str = str_replace(array("\r\n", "\r", "\n"), "", $fh);  //去掉回车
+            $array['model'] = $data;       
+           
+            $this->returnData($this->convertReturnJsonSucessed($array));
+        } else {
+            $this->returnData($this->convertReturnJsonError(10, '出错,请检查参数是否正确'));
+        }    
     }
 }
