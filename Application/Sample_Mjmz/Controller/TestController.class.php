@@ -9,10 +9,6 @@
 namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
 
-define("PARAMS_PREFIX", 'user');
-define('TABLE_USER', 'User');
-define('TABLE_HTML','Html');
-
 class TestController extends BaseController {
     public function index(){
         echo 'you are my heart'.'-->>'.'Sy!';
@@ -27,6 +23,11 @@ class TestController extends BaseController {
      * 获取think_data表中所有数据
      */
     public function getUserData() {           
+        $userList = $this->selectUserData();
+        $this->returnData($this->convertReturnJsonSucessed($userList));
+    }
+    
+    private function selectUserData() {
         $data = M(TABLE_USER);
         $result = $data
                 ->join('LEFT JOIN __USER_INFO__ ON __USER_INFO__.user_id=__USER__.user_id')
@@ -58,9 +59,10 @@ class TestController extends BaseController {
             $userList[$i] = $single;
             $i++;
         }
-        $this->returnData($this->convertReturnJsonSucessed($userList));
+        return $userList;
     }
-    
+
+
     /**
      * 添加think_data表数据
      * @return type
@@ -140,12 +142,16 @@ class TestController extends BaseController {
     /**
      * 获取html文档
      */
-    public function getHtml() {
+    public function getHtml() {           
         $id = $_GET['id'];
         if(empty($id)) {
             $this->returnData($this->convertReturnJsonError(-1, 'id为必填参数'));
             return;
         }
+        
+//        if(!$this->checkPulicParams('getHtml')->checkResult) {
+//            return;
+//        }
         
         $fh= file_get_contents('http://localhost/thinkphp/Sample_Mjmz/web/madridNews?id='.$id);
         
@@ -166,4 +172,20 @@ class TestController extends BaseController {
             $this->returnData($this->convertReturnJsonError(10, '出错,请检查参数是否正确'));
         }    
     }
+    
+    /**
+     * 需要验证签名
+     * @param type $param
+     */
+    public function getUserDataSg() {
+        $result = $this->checkPulicParams('getUserDataSg');
+        if($result->checkResult) {
+            $userList = $this->selectUserData();
+            $exList = array();
+            if($result->token) {
+               $exList['token'] = $result->token; 
+            }
+            $this->returnData($this->convertReturnJsonSucessed($userList,$exList));
+        }       
+    }    
 }
