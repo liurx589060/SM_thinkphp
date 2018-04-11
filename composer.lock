@@ -1,0 +1,62 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "b66c6c405a031b37552769287f70c944",
+    "packages": [
+        {
+            "name": "jiguang/jmessage",
+            "version": "1.1.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jpush/jmessage-api-php-client.git",
+                "reference": "04f3666a18bd3e6ff591ef31b3e28a52cb30bfcf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jpush/jmessage-api-php-client/zipball/04f3666a18bd3e6ff591ef31b3e28a52cb30bfcf",
+                "reference": "04f3666a18bd3e6ff591ef31b3e28a52cb30bfcf",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JMessage\\": "src/JMessage/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "JiGuang",
+                    "email": "support@jpush.cn",
+                    "homepage": "https://www.jiguang.cn"
+                }
+            ],
+            "description": "JMessage's officially supported PHP client library for accessing JMessage APIs.",
+            "homepage": "https://github.com/jpush/jmessage-api-php-client",
+            "keywords": [
+                "api client",
+                "jiguang",
+                "jmessage"
+            ],
+            "time": "2018-01-24T07:01:12+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

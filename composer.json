@@ -14,5 +14,8 @@
     "require": {
         "php": ">=5.3.0"
     },
+    "require": {
+    "jiguang/jmessage": "~1.1"
+    },
     "minimum-stability": "dev"
 }

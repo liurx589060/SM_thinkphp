@@ -23,11 +23,11 @@ class TestController extends BaseController {
      * 获取think_data表中所有数据
      */
     public function getUserData() {           
-        $userList = $this->selectUserData();
+        $userList = $this->_selectUserData();
         $this->returnData($this->convertReturnJsonSucessed($userList));
     }
     
-    private function selectUserData() {
+    private function _selectUserData() {
         $data = M(TABLE_USER);
         $result = $data
                 ->join('LEFT JOIN __USER_INFO__ ON __USER_INFO__.user_id=__USER__.user_id')
