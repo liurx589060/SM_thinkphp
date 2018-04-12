@@ -9,30 +9,32 @@
 namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
 use JMessage\JMessage;
-use JMessage\IM\User;
+use Sample_Mjmz\Self\Jchart\JMChartRoomHandler;
 
 class JMessageController extends BaseController {
     private $JMClient;
     private $appKey = 'd4f1d053cfdba36011487fea';
     private $masterSecret = '78eddf9e1636ecc3397f0fa9';
     
-    private $JMUser;
+    private $_charmRoomArray = array();
 
     public function __construct() {
         parent::__construct();
         $this->JMClient = new JMessage($this->appKey, $this->masterSecret);
-        $this->JMUser = new User($this->JMClient);
     }
 
     public function index() {
-        $this->returnData($this->convertReturnJsonSucessed('welcome to JMessage'.'--'.$this->JMClient->getAuth()));
+        $this->returnData($this->convertReturnJsonSucessed('welcome to JMessage'));
     }
     
     public function listUsers() {
-        if(isset($this->JMUser)) {
-            $result = $this->JMUser->listAll(100);
-            echo count($result);
+        $roomId = $_GET['roomId'];
+        $chartRoomHandler = $this->_charmRoomArray[$roomId];
+        if($chartRoomHandler === NULL) {
+            $chartRoomHandler = new JMChartRoomHandler($this->JMClient);
+            $this->_charmRoomArray[$roomId] = $chartRoomHandler;
         }
+        echo $chartRoomHandler->listUsers();
     }
     
     public function showUser() {
