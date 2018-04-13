@@ -44,7 +44,7 @@ class JMChartRoomHandler {
     }
     
     public function createChartRoom() {
-        $this->_chartRoomId = 1005;
+        $this->_chartRoomId = rand(5600, 10000);
         return TRUE;
     }
 

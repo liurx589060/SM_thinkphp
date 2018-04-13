@@ -82,4 +82,11 @@ class JchartRoomDataManager {
         }
         return TRUE;
     }
+    
+    public function destroyChartRoom(JMChartRoomHandler $handler) {
+        $this->removeWaitChartRoom($handler);
+        $this->removeStartedChartRoom($handler);
+        echo 'destroyChartRoom-'.$handler.'--roomId='.$handler->getChartRoomId();
+        unset($handler);
+    }
 }
