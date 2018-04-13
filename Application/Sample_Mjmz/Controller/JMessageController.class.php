@@ -9,14 +9,13 @@
 namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
 use JMessage\JMessage;
-use Sample_Mjmz\Self\Jchart\JMChartRoomHandler;
+use Sample_Mjmz\Custom\Jchart\JMChartRoomHandler;
+use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
 
 class JMessageController extends BaseController {
     private $JMClient;
     private $appKey = 'd4f1d053cfdba36011487fea';
     private $masterSecret = '78eddf9e1636ecc3397f0fa9';
-    
-    private $_charmRoomArray = array();
 
     public function __construct() {
         parent::__construct();
@@ -27,7 +26,20 @@ class JMessageController extends BaseController {
         $this->returnData($this->convertReturnJsonSucessed('welcome to JMessage'));
     }
     
-    public function listUsers() {
+    /**
+     * 创建聊天室
+     */
+    public function createChartRoom() {
+        $option = new JchartRoomOptions();
+        $option->jmClient = $this->JMClient;
+        $chartHandler = new JMChartRoomHandler($option);
+        $chartHandler->createChartRoom();
+        $roomId = $chartHandler->getChartRoomId();
+        $this->_waitChartRoomArray[$roomId] = $chartHandler;
+        echo $chartHandler->getRestCount()."--roomId=".$chartHandler->getChartRoomId().'</br>';
+    }
+
+        public function listUsers() {
         $roomId = $_GET['roomId'];
         $chartRoomHandler = $this->_charmRoomArray[$roomId];
         if($chartRoomHandler === NULL) {
