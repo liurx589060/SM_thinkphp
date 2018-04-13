@@ -453,3 +453,368 @@ INFO: [ app_end ] --START--
 INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.000500s ]
 INFO: [ app_end ] --END-- [ RunTime:0.001000s ]
 
+[ 2018-04-13T16:07:32+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.023505s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.023505s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.040508s ]
+INFO: [ app_end ] --END-- [ RunTime:0.040508s ]
+
+[ 2018-04-13T16:07:41+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004001s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009002s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009502s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.012002s ]
+INFO: [ app_end ] --END-- [ RunTime:0.012002s ]
+
+[ 2018-04-13T16:07:45+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004001s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.003501s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.003501s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.006502s ]
+INFO: [ app_end ] --END-- [ RunTime:0.006502s ]
+
+[ 2018-04-13T16:08:35+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004001s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009501s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009501s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.035508s ]
+INFO: [ app_end ] --END-- [ RunTime:0.035508s ]
+
+[ 2018-04-13T16:10:51+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009002s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009002s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.022004s ]
+INFO: [ app_end ] --END-- [ RunTime:0.022004s ]
+
+[ 2018-04-13T16:11:41+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.020004s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.034007s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.034007s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.023004s ]
+INFO: [ app_end ] --END-- [ RunTime:0.023004s ]
+
+[ 2018-04-13T16:12:42+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004001s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009002s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009002s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.014503s ]
+INFO: [ app_end ] --END-- [ RunTime:0.015003s ]
+
+[ 2018-04-13T16:13:47+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.020504s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009502s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009502s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.039508s ]
+INFO: [ app_end ] --END-- [ RunTime:0.039508s ]
+
+[ 2018-04-13T16:14:26+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003501s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009002s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009002s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.038508s ]
+INFO: [ app_end ] --END-- [ RunTime:0.038508s ]
+
+[ 2018-04-13T16:17:56+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003501s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.034006s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.034006s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.013003s ]
+INFO: [ app_end ] --END-- [ RunTime:0.013003s ]
+
+[ 2018-04-13T16:18:03+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004001s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.004001s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.004001s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.006001s ]
+INFO: [ app_end ] --END-- [ RunTime:0.006001s ]
+
+[ 2018-04-13T16:18:07+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.037008s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.015503s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.015503s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.013003s ]
+INFO: [ app_end ] --END-- [ RunTime:0.013003s ]
+
+[ 2018-04-13T16:26:41+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000500s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+ERR: Class 'Sample_Mjmz\Custom\Jchart\JchartRoomDataManager' not found
+
+[ 2018-04-13T16:27:03+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.004000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.004500s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+NOTIC: [8] Undefined variable: chartHandler D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php 第 51 行.
+ERR: Argument 1 passed to Sample_Mjmz\Custom\JchartRoomDataManager::addWaitChartRoom() must be an instance of Sample_Mjmz\Custom\Jchart\JMChartRoomHandler, null given, called in D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php on line 51
+
+[ 2018-04-13T16:27:38+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+NOTIC: [8] Undefined variable: self D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php 第 51 行.
+ERR: Argument 1 passed to Sample_Mjmz\Custom\JchartRoomDataManager::addWaitChartRoom() must be an instance of Sample_Mjmz\Custom\Jchart\JMChartRoomHandler, null given, called in D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php on line 51
+
+[ 2018-04-13T16:28:06+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.029000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.029000s ]
+
+[ 2018-04-13T16:28:11+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.011000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.011000s ]
+
+[ 2018-04-13T16:30:22+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000500s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+NOTIC: [8] Undefined variable: config D:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\JchartRoomDataManager.class.php 第 33 行.
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.036500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.036500s ]
+
+[ 2018-04-13T16:30:44+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.029500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.029500s ]
+
+[ 2018-04-13T16:31:00+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.020000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.020000s ]
+
+[ 2018-04-13T16:31:15+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.037500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.014500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.014500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.022500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.022500s ]
+
+[ 2018-04-13T16:31:25+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.045000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.060000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.060500s ]
+
+[ 2018-04-13T16:31:45+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.038000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.038000s ]
+
+[ 2018-04-13T16:33:56+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.042500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.042500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.037000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.037000s ]
+
+[ 2018-04-13T16:33:59+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.020000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.020500s ]
+
+[ 2018-04-13T16:34:07+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.002500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.002500s ]
+
+[ 2018-04-13T16:38:54+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009000s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.012500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.012500s ]
+
+[ 2018-04-13T16:38:56+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.004500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.004500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.006000s ]
+INFO: [ app_end ] --END-- [ RunTime:0.006000s ]
+
+[ 2018-04-13T16:39:07+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.037000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.057000s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.057000s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.035500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.035500s ]
+
+[ 2018-04-13T16:39:09+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.052500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.052500s ]
+
+[ 2018-04-13T16:39:12+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.003500s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.054500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.054500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.027500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.027500s ]
+
+[ 2018-04-13T16:39:14+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000000s ]
+INFO: [ app_init ] --END-- [ RunTime:0.004000s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009500s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009500s ]
+INFO: [ app_end ] --START--
+INFO: Run Behavior\ShowPageTraceBehavior [ RunTime:0.019500s ]
+INFO: [ app_end ] --END-- [ RunTime:0.019500s ]
+

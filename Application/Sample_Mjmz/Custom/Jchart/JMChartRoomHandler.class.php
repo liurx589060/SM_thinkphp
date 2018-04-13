@@ -8,6 +8,7 @@
 namespace Sample_Mjmz\Custom\Jchart;
 use JMessage\IM\User;
 use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
+use Sample_Mjmz\Custom\JchartRoomDataManager;
 
 const MAN = 1000;  //男士
 const LADY = 1001; //女生
@@ -23,13 +24,15 @@ class JMChartRoomHandler {
     private $_limitCount = 0;//人数总数，默认12个
     private $_limitLevel = -1;//等级区域，默认-1，-1则表示不做等级的限制 
     private $_chartRoomId = -1;//聊天室的Id
-
+    
+    private $_JchartRoomDataMg;  //数据管理类
 
     public function __construct(JchartRoomOptions $options) {
         $this->_JMClient = $options->jmClient;
         $this->_JMUser = new User($this->_JMClient);
         $this->_limitCount = $options->limitCount;
         $this->_limitLevel = $options->limitLevel;
+        $this->_JchartRoomDataMg = JchartRoomDataManager::getInstance();
     }
     
     public function listUsers() {
@@ -45,6 +48,8 @@ class JMChartRoomHandler {
     
     public function createChartRoom() {
         $this->_chartRoomId = rand(5600, 10000);
+        $this->_JchartRoomDataMg->addWaitChartRoom($this);
+        echo $this->_JchartRoomDataMg->getCountWaitArray().'</br>';
         return TRUE;
     }
 

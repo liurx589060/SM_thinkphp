@@ -23,14 +23,14 @@ class JchartRoomDataManager {
 
     }
     
-    function __destruct() {
+    private function __destruct() {
         unset($this->_waitChartRoomArray);
         unset($this->_startedChartRoomArray);
-   }
+    }
     
     static public function getInstance(){
         if (!self::$instance instanceof self) {
-            self::$instance = new self($config);
+            self::$instance = new self();
         }
         return self::$instance;
     }
@@ -88,5 +88,9 @@ class JchartRoomDataManager {
         $this->removeStartedChartRoom($handler);
         echo 'destroyChartRoom-'.$handler.'--roomId='.$handler->getChartRoomId();
         unset($handler);
+    }
+    
+    public function getCountWaitArray() {
+        return count($this->_waitChartRoomArray);
     }
 }
