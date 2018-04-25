@@ -23,7 +23,7 @@ class BaseController extends Controller {
     private $_DefaultType = XML;
 
 
-    protected function convertReturnJsonSucessed($array=NULL,$extra=NULL) {
+    public function convertReturnJsonSucessed($array=NULL,$extra=NULL) {
         if(count($array) > 0) {
             $callback['status'] = 0;
             $callback['msg'] = '操作成功'; 
@@ -46,7 +46,7 @@ class BaseController extends Controller {
         return $callback;
     }
     
-    protected function convertReturnJsonError($status,$msg) {
+    public function convertReturnJsonError($status,$msg) {
         $callback['status'] = $status;
         $callback['msg'] = $msg;
         return $callback;
