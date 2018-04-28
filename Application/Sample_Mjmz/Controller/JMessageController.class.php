@@ -138,7 +138,7 @@ class JMessageController extends BaseController {
         $option = new JchartRoomOptions();
         $option->jmClient = $this->JMClient;
         $chartHandler = new JMChartRoomHandler($option);
-        $chartHandler->createChartRoom($this);
+        $chartHandler->createChartRoom($this,$userInfo);
         $array = array();
         $array['gender'] = $chartHandler->getRestGender();
         $array['limitLevel'] = $chartHandler->getLimitLevel();
@@ -159,6 +159,7 @@ class JMessageController extends BaseController {
     }
     
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/deleteChartRoom?roomId=1005
      * 删除聊天室
      */
     public function deleteChartRoom() {

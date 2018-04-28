@@ -43,8 +43,8 @@ class JMChartRoomHandler {
      * 创建聊天室
      * @return boolean
      */
-    public function createChartRoom(JMessageController $controller) {
-        $info = $this->_JMRoom->create('test_chartRoom', 'wys30201', array(), '测试room');
+    public function createChartRoom(JMessageController $controller,$userInfo) {
+        $info = $this->_JMRoom->create('test_chartRoom', $userInfo['userName'], array(), '测试room');
         if($info['body']['error'] !== NULL) {
             $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_CREATE_CHARTEOOM
                     , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));           
@@ -70,24 +70,39 @@ class JMChartRoomHandler {
     
     private function _conventIndex($userInfo) {
         $index = -1;
-        if(count($this->_exitIndexArray) > 0) {
-            $index = $this->_exitIndexArray[0];
-            array_splice($this->_exitIndexArray,0,1);
-            $gender = $userInfo['gender'];
-            if($gender == '男') {
-                $this->_countMan++;
-            } else {
-                $this->_countLady++;         
+        $count = count($this->_exitIndexArray);
+        if($count > 0) {
+            for($n=0;$n<$count;$n++) {
+                $instance = $this->_exitIndexArray[$n];
+                if($instance['userInfo']['gender'] == $userInfo['gender']) {
+                    $index = $instance['index'];
+                    array_splice($this->_exitIndexArray,$n,1);
+                    $gender = $userInfo['gender'];
+                    if($gender == '男') {
+                        $this->_countMan++;
+                    } else {
+                        $this->_countLady++;         
+                    }
+                    return $index;
+                }
             }
+            
+//            $index = $this->_exitIndexArray[0];
+//            array_splice($this->_exitIndexArray,0,1);
+//            $gender = $userInfo['gender'];
+//            if($gender == '男') {
+//                $this->_countMan++;
+//            } else {
+//                $this->_countLady++;         
+//            }
+        } 
+        $gender = $userInfo['gender'];
+        if($gender == '男') {
+            $index = 2*$this->_countMan;
+            $this->_countMan++;
         } else {
-            $gender = $userInfo['gender'];
-            if($gender == '男') {
-                $index = 2*$this->_countMan;
-                $this->_countMan++;
-            } else {
-                $index = 2*$this->_countLady + 1;
-                $this->_countLady++;         
-            }
+            $index = 2*$this->_countLady + 1;
+            $this->_countLady++;         
         }
         return $index;
     }
@@ -136,7 +151,8 @@ class JMChartRoomHandler {
                     $this->_countLady--;
                 }
                 array_splice($this->_userArray, $i,1); 
-                $this->_exitIndexArray[] = $index;
+//                $this->_exitIndexArray[] = $index;
+                $this->_exitIndexArray[] = $user;
                 break;
                 }
             }

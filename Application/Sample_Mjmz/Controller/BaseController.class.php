@@ -20,7 +20,7 @@ define('TABLE_DEVICE','Device');
 class BaseController extends Controller {
     private $formatType = array(JSON,XML);
     //默认的输出格式
-    private $_DefaultType = XML;
+    private $_DefaultType = JSON;
 
 
     public function convertReturnJsonSucessed($array=NULL,$extra=NULL) {
