@@ -14,27 +14,36 @@ use Sample_Mjmz\Controller\JMessageController;
 const PRE_USER_KEY = 'user_';//userArray 的key前缀
 
 class JMChartRoomHandler {
-    const MAN = 1000;  //男士
-    const LADY = 1001; //女生
-    const MIX = 1002;  //剩余
-    const FULL = 1003; //满员
+    const MAN = '男';  //男士
+    const LADY = '女'; //女生
+    const ANGEL = '天使'; //天使
+    const FULL = ''; //满员
+    
+    const ROLRTYPE_ANGEL = 'angel';
+    const ROLETYPE_GUEST = 'guest';
 
     private $_JMClient;
     private $_JMUser;
     private $_JMRoom;
-    private $_restGender = MIX; //剩余性别
+    private $_restGender = JMChartRoomHandler::MAN.JMChartRoomHandler::LADY.JMChartRoomHandler::ANGEL; //剩余性别
     private $_countMan = 0;//男生数量
+    private $_countAngel = 0;//大使数量
     private $_countLady = 0;//女生数量
-    private $_limitCount = 0;//人数总数，默认12个
+    private $_limitLadyCount = 0;//人数总数，默认12个
+    private $_limitMan = 0;//男生总量
+    private $_limitAngel = 0;//天使总量
     private $_limitLevel = -1;//等级区域，默认-1，-1则表示不做等级的限制 
     private $_chartRoomId = -1;//聊天室的Id
     private $_userArray = array();//加入的用户数组
     private $_exitIndexArray = array();//退出的索引数组
+    private $_mAngelStart = False;   //是否点击开始
 
     public function __construct(JchartRoomOptions $options) {
         $this->_JMClient = $options->jmClient;
         $this->_JMUser = new User($this->_JMClient);
-        $this->_limitCount = $options->limitCount;
+        $this->_limitLadyCount = $options->limitLady;
+        $this->_limitAngel = $options->limitAngel;
+        $this->_limitMan = $options->limitMan;
         $this->_limitLevel = $options->limitLevel;
         $this->_JMRoom = new ChatRoom($this->_JMClient);
     }
@@ -50,7 +59,14 @@ class JMChartRoomHandler {
                     , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));           
         } else {
             $this->_chartRoomId = $info['body']['chatroom_id'];
-            return TRUE;
+            $userInfo['roomId'] = $this->_chartRoomId;
+            $userInfo['roleType'] = JMChartRoomHandler::ROLRTYPE_ANGEL;
+            $this->_userArray[] = array(
+                'index'=>$this->_countAngel,             
+                'userInfo'=>$userInfo
+                );
+            $this->_countAngel++;
+            return $this->_userArray;
         }
     }
     
@@ -70,39 +86,45 @@ class JMChartRoomHandler {
     
     private function _conventIndex($userInfo) {
         $index = -1;
+        $roleType = $_GET['roleType'];
         $count = count($this->_exitIndexArray);
-        if($count > 0) {
+        if($count > 0) {//有退出的情况
             for($n=0;$n<$count;$n++) {
                 $instance = $this->_exitIndexArray[$n];
-                if($instance['userInfo']['gender'] == $userInfo['gender']) {
-                    $index = $instance['index'];
-                    array_splice($this->_exitIndexArray,$n,1);
-                    $gender = $userInfo['gender'];
-                    if($gender == '男') {
-                        $this->_countMan++;
-                    } else {
-                        $this->_countLady++;         
+                if($roleType == JMChartRoomHandler::ROLRTYPE_ANGEL) {
+                    if($instance['userInfo']['roleType'] == JMChartRoomHandler::ROLRTYPE_ANGEL) {
+                        $index = $instance['index'];
+                        $this->_countAngel++;
+                        return $index;
                     }
-                    return $index;
+                } else {
+                    if($instance['userInfo']['gender'] == $userInfo['gender']) {
+                        $index = $instance['index'];
+                        array_splice($this->_exitIndexArray,$n,1);
+                        $gender = $userInfo['gender'];
+                        if($gender == '男') {
+                            $this->_countMan++;
+                        } else {
+                            $this->_countLady++;         
+                        }
+                        return $index;
+                    }
                 }
             }
-            
-//            $index = $this->_exitIndexArray[0];
-//            array_splice($this->_exitIndexArray,0,1);
-//            $gender = $userInfo['gender'];
-//            if($gender == '男') {
-//                $this->_countMan++;
-//            } else {
-//                $this->_countLady++;         
-//            }
-        } 
-        $gender = $userInfo['gender'];
-        if($gender == '男') {
-            $index = 2*$this->_countMan;
-            $this->_countMan++;
+        }
+        
+        if($roleType == JMChartRoomHandler::ROLRTYPE_ANGEL) {
+            $index = $this->_countAngel;
+            $this->_countAngel++;
         } else {
-            $index = 2*$this->_countLady + 1;
-            $this->_countLady++;         
+            $gender = $userInfo['gender'];
+            if($gender == '男') {
+                $index = $this->_countMan;
+                $this->_countMan++;
+            } else {
+                $index = $this->_countLady;
+                $this->_countLady++;         
+            }
         }
         return $index;
     }
@@ -117,38 +139,45 @@ class JMChartRoomHandler {
             if($result['body']['error'] !== NULL) {
                 $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
                      , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));          
-            } else {
-                $this->_userArray[] = array(
-                'index'=>$index,
-                'userInfo'=>$userInfo
-                );
-                return $this->_userArray;
-            }
-        } else {
-            $this->_userArray[] = array(
-                'index'=>$index,
-                'userInfo'=>$userInfo
-            );
-            return $this->_userArray;
+            } 
         }
+        $userInfo['roleType'] = $_GET['roleType'];
+        $this->_userArray[] = array(
+            'index'=>$index,
+            'userInfo'=>$userInfo
+        );
+        return $this->_userArray;
     }
     
     /**
      * 退出聊天室
      */
-    public function exitChartRoom(JMessageController $controller,$roomId,$userName,$index) {
+    public function exitChartRoom(JMessageController $controller,$roomId,$userName) {
         $result = $this->_JMRoom->removeMembers($roomId, array($userName));
         if($result['body']['error'] !== NULL) {
+            if($result['body']['error']['message'] == '') {
+                $controller->deleteRoom($roomId);
+                return;
+            }
             $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
                     , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));           
         } else {
             for ($i = 0;$i<count($this->_userArray);$i++) {
             $user = $this->_userArray[$i];
-            if($user['index'] == $index) {//匹配上
-                if($user['userInfo']['gender']== '男') {
-                    $this->_countMan--;
-                } else {
-                    $this->_countLady--;
+            if($user['userInfo']['userName'] == $userName) {//匹配上
+                switch ($user['userInfo']['roleType']) {
+                    case JMChartRoomHandler::ROLRTYPE_ANGEL:
+                        $this->_countAngel--;
+                        break;
+                    case JMChartRoomHandler::ROLETYPE_GUEST:
+                        if($user['userInfo']['gender']== '男') {
+                            $this->_countMan--;
+                        } else {
+                            $this->_countLady--;
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 array_splice($this->_userArray, $i,1); 
 //                $this->_exitIndexArray[] = $index;
@@ -171,20 +200,23 @@ class JMChartRoomHandler {
      * 获取剩余的性别
      */
     public function getRestGender() {
-        $limit = $this->_limitCount/2;
-        if($this->_countMan < $limit) {//男生少于平均
-            if($this->_countLady < $limit) {//女生也少于平均
-                $this->_restGender = JMChartRoomHandler::MIX;
-            } else {
-                $this->_restGender = JMChartRoomHandler::MAN;
-            }
-        } else {//男生人数大于等于平均
-            if($this->_countLady < $limit) {//女生少于平均
-                $this->_restGender = JMChartRoomHandler::LADY;
-            } else {
-                $this->_restGender = JMChartRoomHandler::FULL;
-            }
+        $gender = JMChartRoomHandler::FULL;
+        $angelFull = TRUE;
+        $ladyFull = TRUE;
+        if($this->_countAngel < $this->_limitAngel) {
+            $gender .= JMChartRoomHandler::ANGEL; 
+            $angelFull = FALSE;
         }
+        
+        if($this->_countLady < $this->_limitLadyCount) {//女生小于限制
+            $gender .= JMChartRoomHandler::LADY;
+            $ladyFull = FALSE;
+        }
+        
+        if($angelFull&&$ladyFull&&($this->_countMan < $this->_limitMan)) {//男生小于限制
+                $gender .= JMChartRoomHandler::MAN;
+        }
+        $this->_restGender = $gender;
         return $this->_restGender;
     }
     

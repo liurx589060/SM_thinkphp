@@ -133,49 +133,62 @@ class JMessageController extends BaseController {
         $userInfo['userName'] = $_GET['userName'];
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
-        $userInfo['roomId'] = $roomId;
+        $userInfo['roomId'] = '';
         $this->_checkUserInfoParams($userInfo);
         $option = new JchartRoomOptions();
         $option->jmClient = $this->JMClient;
+        if($_GET['limitLevel'] !== NULL) {
+            $option->limitLevel = $_GET['limitLevel'];
+        }
+        if($_GET['limitLady'] !== NULL) {
+            $option->limitLady = $_GET['limitLady'];
+        }
+        if($_GET['limitMan'] !== NULL) {
+            $option->limitMan = $_GET['limitMan'];
+        }
+        if($_GET['limitAngel'] !== NULL) {
+            $option->limitAngel = $_GET['limitAngel'];
+        }
         $chartHandler = new JMChartRoomHandler($option);
-        $chartHandler->createChartRoom($this,$userInfo);
+        $usersArray = $chartHandler->createChartRoom($this,$userInfo);
         $array = array();
         $array['gender'] = $chartHandler->getRestGender();
         $array['limitLevel'] = $chartHandler->getLimitLevel();
         $array['roomId'] = $chartHandler->getChartRoomId();
         $array['handler'] = $chartHandler;
         //加入创建的handler
-        $userInfo = array();
-        $userInfo['userName'] = $_GET['userName'];
-        $userInfo['gender'] = $_GET['gender'];
-        $userInfo['level'] = $_GET['level'];
-        $userInfo['roomId'] = $array['roomId'];
-        $result = $chartHandler->joinChartRoom($this,$userInfo,TRUE);
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
         S(CACHE_WAIT, $this->_waitChartRoomArray);
         $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$array['roomId'],'members'=>$result)));
+                array('roomId'=>$array['roomId'],'members'=>$usersArray)));
     }
     
-    /**
+    public function deleteChartRoom() {
+        if(!$_GET['roomId']) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId'));
+        }
+        $this->deleteRoom($_GET['roomId']);
+    }
+
+        /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/deleteChartRoom?roomId=1005
      * 删除聊天室
      */
-    public function deleteChartRoom() {
+    public function deleteRoom($roomId) {
         $mergeArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
-        $handlerWrapper = $mergeArray[PRE_KEY.$_GET['roomId']];
+        $handlerWrapper = $mergeArray[PRE_KEY.$roomId];
         if($handlerWrapper === NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'can not match chartRoom'
-                    . '--'.$_GET['roomId']));
+                    . '--'.$roomId));
             return;
         }
         $handler = $handlerWrapper['handler'];
-        $result = $handler->deleteChartRoom($this,$_GET['roomId']);
+        $result = $handler->deleteChartRoom($this,$roomId);
         if($result) {
-            $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']];
+            $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$roomId];
             if($handlerWrapper === NULL) {
-                $handlerWrapper = $this->_startedChartRoomArray[PRE_KEY.$_GET['roomId']];
+                $handlerWrapper = $this->_startedChartRoomArray[PRE_KEY.$roomId];
                 $this->_removeStartedChartRoom($handlerWrapper);
             } else {
                 $this->_removeWaitChartRoom($handlerWrapper);
@@ -190,10 +203,18 @@ class JMessageController extends BaseController {
      */
     private function _matchChartRoom() {
         $gender = $_GET['gender']=='男'?JMChartRoomHandler::MAN: JMChartRoomHandler::LADY;
-        $level = $_GET['limitLevel'];     
+        $level = $_GET['level'];
+        $roleType = $_GET['roleType'];
         foreach ($this->_waitChartRoomArray as $handler){
-            if($handler['gender'] == $gender || $handler['gender'] == JMChartRoomHandler::MIX) {//匹配到了
-                return $handler['roomId'];
+            if($roleType == JMChartRoomHandler::ROLRTYPE_ANGEL) {
+                if(strpos($handler['gender'], JMChartRoomHandler::ANGEL)) {
+                    return $handler['roomId'];
+                }
+            } else {
+                $result = strpos($handler['gender'], $gender);
+                if($result !== FALSE) {//匹配到了
+                    return $handler['roomId'];
+                }
             }
         } 
         $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'no match chartRoom'));
@@ -204,6 +225,11 @@ class JMessageController extends BaseController {
      * 加入聊天室
      */
     public function joinChartRoom() {
+        if(!$_GET['userName']||!$_GET['gender']||!$_GET['level']||!$_GET['roleType']) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
+                    'lack userName,gender,level,roleType'));
+            return;
+        }
         $roomId = $this->_matchChartRoom();
         $handler = $this->_waitChartRoomArray[PRE_KEY.$roomId];
         if($handler === NULL) {
@@ -214,6 +240,7 @@ class JMessageController extends BaseController {
         $userInfo['userName'] = $_GET['userName'];
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
+        $userInfo['roleType'] = $_GET['roleType'];
         $userInfo['roomId'] = $roomId;
         $result = $handler['handler']->joinChartRoom($this,$userInfo);
         $handler['gender'] = $handler['handler']->getRestGender();
@@ -235,9 +262,9 @@ class JMessageController extends BaseController {
      */
     public function exitChartRoom() {
         $type = 1;
-        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['index'] === NULL) {
+        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['roleType'] === NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
-                    , 'lack roomId or userName or index'));
+                    , 'lack roomId or userName or roleType'));
             return ;
         }
         $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']];
