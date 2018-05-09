@@ -8,6 +8,7 @@
 
 namespace Sample_Mjmz\Controller;
 use Think\Controller;
+use Sample_Mjmz\Utils\Common;
 
 define("JSON", 1);
 define("XML", 0);
@@ -24,11 +25,11 @@ class BaseController extends Controller {
 
 
     public function convertReturnJsonSucessed($array=NULL,$extra=NULL) {
-        if(count($array) > 0) {
-            $callback['status'] = 0;
+        if(count($array) > COM) {
+            $callback['status'] = Common::SUCCESS;
             $callback['msg'] = '操作成功'; 
         }elseif (!isset ($array)) {//没有传值
-            $callback['status'] = 0;
+            $callback['status'] = Common::SUCCESS;
             $callback['msg'] = '操作成功'; 
         } else {//没有数据
             $callback['status'] = 9000;
