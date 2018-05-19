@@ -23,8 +23,11 @@ class Common {
     const ERROR_CREATE_CHARTEOOM = 7004;//创建聊天室失败
     const ERROR_JOIN_CHARTEOOM = 7005;//创建聊天室失败
     
-    const ERROR_REGIST = 7100;//注册失败
-    const ERROR_REGIST_EXIST = 7101;//已经存在账户
+    const ERROR_USER_REGIST = 7100;//注册失败
+    const ERROR_USER_REGIST_EXIST = 7101;//已经存在账户
+    const ERROR_USER_REGIST_UNEXIST = 7102;//更新时不存在账户
+    const ERROR_USER_UPLOAD = 7103;//上传文件出错
+    const ERROR_USER_PASSWORD_WRONG = 7104;//密码错误
 
 
     const MAN = '男';  //男士

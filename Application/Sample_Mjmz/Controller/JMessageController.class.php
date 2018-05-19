@@ -262,7 +262,7 @@ class JMessageController extends BaseController {
      */
     public function exitChartRoom() {
         $type = 1;
-        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['roleType'] === NULL) {
+        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
                     , 'lack roomId or userName or roleType'));
             return ;
@@ -291,7 +291,7 @@ class JMessageController extends BaseController {
     
     private function _exitWaitChartRoom($handlerWrapper) {
         $handler = $handlerWrapper['handler'];
-        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'],$_GET['index'])) {//删除失败
+        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_EXIT_CHARTROOM, 'exit the chartRoom failed'));
             return;
         }
@@ -307,7 +307,7 @@ class JMessageController extends BaseController {
         ));
     }
     
-    private function _exitStartedChartRoom($handlerWrapper,$userInfo) {
+    private function _exitStartedChartRoom($handlerWrapper) {
         $handler = $handlerWrapper['handler'];
         if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'],$_GET['index'])) {//删除失败
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_EXIT_CHARTROOM, 'exit the chartRoom failed'));
