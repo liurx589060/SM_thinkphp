@@ -89,6 +89,15 @@ class UserController extends BaseController {
         $userInfo['userName'] = isset($userInfo['userName'])?$userInfo['userName']:$_GET['userName'];
         $userInfo['nickName'] = isset($userInfo['nickName'])?$userInfo['nickName']:$_GET['nickName'];
         $userInfo['gender'] = isset($userInfo['gender'])?$userInfo['gender']:$_GET['gender'];
+        $userInfo['age'] = isset($userInfo['age'])?$userInfo['age']:$_GET['age'];
+        $userInfo['tall'] = isset($userInfo['tall'])?$userInfo['tall']:$_GET['tall'];
+        $userInfo['scholling'] = isset($userInfo['scholling'])?$userInfo['scholling']:$_GET['scholling'];
+        $userInfo['professional'] = isset($userInfo['professional'])?$userInfo['professional']:$_GET['professional'];
+        $userInfo['native_place'] = isset($userInfo['native_place'])?$userInfo['native_place']:$_GET['native_place'];
+        $userInfo['marrige'] = isset($userInfo['marrige'])?$userInfo['marrige']:$_GET['marrige'];
+        $userInfo['job_address'] = isset($userInfo['job_address'])?$userInfo['job_address']:$_GET['job_address'];
+        $userInfo['phone'] = isset($userInfo['phone'])?$userInfo['phone']:$_GET['phone'];
+        $userInfo['role_type'] = isset($userInfo['role_type'])?$userInfo['role_type']:$_GET['role_type'];
 //        $userInfo['head_image'] = isset($userInfo['head_image'])?$userInfo['head_image']:$_GET['head_image'];
         if(is_null($userInfo['userName'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS

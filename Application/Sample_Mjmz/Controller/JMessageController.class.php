@@ -11,6 +11,7 @@ use Sample_Mjmz\Controller\BaseController;
 use JMessage\JMessage;
 use Sample_Mjmz\Custom\Jchart\JMChartRoomHandler;
 use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
+use Sample_Mjmz\Utils\SqlManager;
 
 const CACHE_WAIT = 'waitChartRoom';
 const CACHE_STARTED = 'startedChartRoom';
@@ -135,6 +136,9 @@ class JMessageController extends BaseController {
         $userInfo['level'] = $_GET['level'];
         $userInfo['roomId'] = '';
         $this->_checkUserInfoParams($userInfo);
+        
+        $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
+        
         $option = new JchartRoomOptions();
         $option->jmClient = $this->JMClient;
         if($_GET['limitLevel'] !== NULL) {
@@ -238,6 +242,9 @@ class JMessageController extends BaseController {
         }
         $userInfo = array();
         $userInfo['userName'] = $_GET['userName'];
+        
+        $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
+        
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
         $userInfo['roleType'] = $_GET['roleType'];

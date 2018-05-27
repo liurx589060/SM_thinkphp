@@ -1,0 +1,27 @@
+[ 2018-05-23T21:25:57+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/exitChartRoom?roomId=7930&index=1&XDEBUG_SESSION_START=netbeans-xdebug
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000087s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001305s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.002005s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.002438s ]
+NOTIC: [8] Undefined index: userName E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 272 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-05-23T21:26:47+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?userName=wys30201&gender=%E7%94%B7&level=12&type=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000067s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000910s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001150s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001474s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0036s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0004s ]
+NOTIC: [8] Undefined index: limitLevel E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 144 行.
+NOTIC: [8] Undefined index: limitLady E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 147 行.
+NOTIC: [8] Undefined index: limitMan E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 150 行.
+NOTIC: [8] Undefined index: limitAngel E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 153 行.
+NOTIC: [8] Undefined index: error E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php 第 57 行.
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+

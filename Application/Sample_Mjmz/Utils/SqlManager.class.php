@@ -67,9 +67,9 @@ class SqlManager {
             return SqlManager::_createResultError(Common::ERROR_USER_REGIST_UNEXIST
                     , 'the user is not exist');
         }
-        $result = $sql->where("user_name='%s'",$d['user_name'])->select();
-        if($d['password'] == $result[0]['password']) {
-            return SqlManager::_createResultSuccess(SqlManager::getUserInfoBySql($d)[0]);
+        $result = $sql->where("user_name='%s'",$d['user_name'])->find();
+        if($d['password'] == $result['password']) {
+            return SqlManager::_createResultSuccess(SqlManager::getUserInfoBySql($d));
         }
         return SqlManager::_createResultError(Common::ERROR_USER_PASSWORD_WRONG
                 , 'password is wrong');
@@ -85,36 +85,32 @@ class SqlManager {
         if(empty($result)) {
             return false;
         }
-        return $result;
+        return $result[0];
     }
     
-    public static function updateUserInfo($userInfo,$finalArray=NULL) {
-        if($finalArray == NULL) {
-            $d['user_name'] = $userInfo['userName'];
-            $d['nick_name'] = $userInfo['nickName'];
-            $d['gender'] = $userInfo['gender'];
-        } else {
-            $d = $finalArray;
-        }
+    public static function updateUserInfo($userInfo) {
+        $ex['user_name'] =$userInfo['userName'] ;
+        $ex['nick_name'] = $userInfo['nickName'];
+        $fianlArray = $userInfo + $ex;    
         $sql = M(SqlManager::TABLE_USERINFO);
         //检测是否存在该用户
-        $result = SqlManager::checkUserExist(SqlManager::TABLE_USER,$d);
+        $result = SqlManager::checkUserExist(SqlManager::TABLE_USER,$fianlArray);
         if(!$result) {
             return SqlManager::_createResultError(Common::ERROR_USER_REGIST_UNEXIST
                     , 'the user is not exist');
         }
-        $d['user_id'] = $result[0]['user_id'];
+        $fianlArray['user_id'] = $result['user_id'];
         //进行更新或者插入
-        if(empty($sql->where("user_name='%s'",$d['user_name'])->select())) {
-            $d['create_time'] = date("Y-m-d G:i:s");
-            $sql->add($d);
+        if(empty($sql->where("user_name='%s'",$fianlArray['user_name'])->select())) {
+            $fianlArray['create_time'] = date("Y-m-d G:i:s");
+            $sql->add($fianlArray);
         }else {
-            $d['modify_time'] = date("Y-m-d G:i:s");
-            $sql->where("user_name='%s'",$d['user_name'])->save($d);
+            $fianlArray['modify_time'] = date("Y-m-d G:i:s");
+            $sql->where("user_name='%s'",$fianlArray['user_name'])->save($fianlArray);
         }
         //获取用户信息
-        $sqlInfo = SqlManager::getUserInfoBySql($d);
-        return SqlManager::_createResultSuccess($sqlInfo[0]);
+        $sqlInfo = SqlManager::getUserInfoBySql($fianlArray);
+        return SqlManager::_createResultSuccess($sqlInfo);
     }
 
     public static function uploadFile($userInfo)
@@ -132,7 +128,7 @@ class SqlManager {
         $target_path = $base_path.basename($_FILES['uploadFile'] ['name'] );  
         if (move_uploaded_file($_FILES['uploadFile']['tmp_name'],'.'.$target_path )) {  
             $d['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].'/thinkphp'.$target_path;
-            return SqlManager::updateUserInfo(NULL, $d);
+            return SqlManager::updateUserInfo($d);
         } else {  
             return SqlManager::_createResultError(Common::ERROR_USER_UPLOAD
                     , "There was an error uploading the file, please try again!" . $_FILES ['attach'] ['error']); 
@@ -140,8 +136,9 @@ class SqlManager {
     }
     
     public static function getUserInfoBySql($userInfo) {
+        $user_name = isset($userInfo['user_name'])?$userInfo['user_name']:$userInfo['userName'];
         $sql = M(SqlManager::TABLE_USERINFO);
-        return $sqlInfo = $sql->where("user_name='%s'",$userInfo['user_name'])
-                ->field('id',true)->select();;
+        return $sqlInfo = $sql->where("user_name='%s'",$user_name)
+                ->field('id',true)->find();
     }
 }
