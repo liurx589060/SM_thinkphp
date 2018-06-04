@@ -165,7 +165,12 @@ class JMessageController extends BaseController {
         $this->_addWaitChartRoom($array); 
         S(CACHE_WAIT, $this->_waitChartRoomArray);
         $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$array['roomId'],'members'=>$usersArray)));
+                array('roomId'=>$array['roomId'],
+                    'limitLevel'=>$chartHandler->_limitLevel,
+                    'limitLady'=>$chartHandler->_limitLadyCount,
+                    'limitMan'=>$chartHandler->_limitMan,
+                    'limitAngel'=>$chartHandler->_limitAngel,
+                    'members'=>$usersArray)));
     }
     
     public function deleteChartRoom() {
@@ -229,7 +234,7 @@ class JMessageController extends BaseController {
      * 加入聊天室
      */
     public function joinChartRoom() {
-        if(!$_GET['userName']||!$_GET['gender']||!$_GET['level']||!$_GET['roleType']) {
+        if(!isset($_GET['userName'])||!isset($_GET['gender'])||!isset($_GET['level'])||!isset($_GET['roleType'])) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
                     'lack userName,gender,level,roleType'));
             return;
@@ -260,7 +265,12 @@ class JMessageController extends BaseController {
             S(CACHE_WAIT, $this->_waitChartRoomArray);
         }
         $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$handler['roomId'],'members'=>$result)));
+                array('roomId'=>$roomId,
+                    'limitLevel'=>$handler['handler']->_limitLevel,
+                    'limitLady'=>$handler['handler']->_limitLadyCount,
+                    'limitMan'=>$handler['handler']->_limitMan,
+                    'limitAngel'=>$handler['handler']->_limitAngel,
+                    'members'=>$result)));
     }
     
     /**
@@ -271,7 +281,7 @@ class JMessageController extends BaseController {
         $type = 1;
         if($_GET['roomId'] === NULL || $_GET['userName']=== NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
-                    , 'lack roomId or userName or roleType'));
+                    , 'lack roomId or userName'));
             return ;
         }
         $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']];
@@ -308,15 +318,18 @@ class JMessageController extends BaseController {
             $this->_removeWaitChartRoom($handlerWrapper);
         }
         S(CACHE_WAIT, $this->_waitChartRoomArray);
-        $this->returnData($this->convertReturnJsonSucessed(array(
-            'roomId'=>$handlerWrapper['roomId'],
-            'members'=>$handler->getUsersArray())
-        ));
+        $this->returnData($this->convertReturnJsonSucessed(
+                array('roomId'=>$handlerWrapper['roomId'],
+                    'limitLevel'=>$handler->_limitLevel,
+                    'limitLady'=>$handler->_limitLadyCount,
+                    'limitMan'=>$handler->_limitMan,
+                    'limitAngel'=>$handler->_limitAngel,
+                    'members'=>$handler->getUsersArray())));
     }
     
     private function _exitStartedChartRoom($handlerWrapper) {
         $handler = $handlerWrapper['handler'];
-        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'],$_GET['index'])) {//删除失败
+        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_EXIT_CHARTROOM, 'exit the chartRoom failed'));
             return;
         }
@@ -325,10 +338,13 @@ class JMessageController extends BaseController {
             $this->_removeStartedChartRoom($handlerWrapper);
         }
         S(CACHE_STARTED, $this->_startedChartRoomArray);
-        $this->returnData($this->convertReturnJsonSucessed(array(
-            'roomId'=>$handlerWrapper['roomId'],
-            'members'=>$handler->getUsersArray())
-        ));
+        $this->returnData($this->convertReturnJsonSucessed(
+                array('roomId'=>$handlerWrapper['roomId'],
+                    'limitLevel'=>$handler->_limitLevel,
+                    'limitLady'=>$handler->_limitLadyCount,
+                    'limitMan'=>$handler->_limitMan,
+                    'limitAngel'=>$handler->_limitAngel,
+                    'members'=>$handler->getUsersArray())));
     }
 
         /**
@@ -345,9 +361,47 @@ class JMessageController extends BaseController {
             return;
         }
         $handler = $handlerWrapper['handler'];
-        $this->returnData($this->convertReturnJsonSucessed(array(
-            'roomId'=>$handlerWrapper['roomId'],
-            'members'=>$handler->getUsersArray())
-        ));
+        $this->returnData($this->convertReturnJsonSucessed(
+            array('roomId'=>$handlerWrapper['roomId'],
+                    'limitLevel'=>$handler->_limitLevel,
+                    'limitLady'=>$handler->_limitLadyCount,
+                    'limitMan'=>$handler->_limitMan,
+                    'limitAngel'=>$handler->_limitAngel,
+                    'members'=>$handler->getUsersArray())));    
+    }
+    
+    
+       /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChartMembersByUserName?userName=wys30201
+     * 根据userName查询RoomId
+     * @return type
+     */
+    public function getChartMembersByUserName() {
+        $userName = $_GET['userName'];
+        if(!isset($userName)) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
+                    , 'userName'));
+            return ;
+        }
+        $mergeArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
+        foreach ($mergeArray as $handlerWrapper) {
+            $handler = $handlerWrapper['handler'];
+            $userArray = $handler->getUsersArray();
+            foreach ($userArray as $user) {
+                if($user['userInfo']['user_name'] === $userName) {
+                    $this->returnData($this->convertReturnJsonSucessed(
+                            array('roomId'=>$handlerWrapper['roomId'],
+                                'limitLevel'=>$handler->_limitLevel,
+                                'limitLady'=>$handler->_limitLadyCount,
+                                'limitMan'=>$handler->_limitMan,
+                                'limitAngel'=>$handler->_limitAngel,
+                                'members'=>$userArray)));
+                    return;
+                }                
+            }
+        }
+        $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH
+                    , 'can not match chartRoom'. '--'.$userName));
+        return ;
     }
 }

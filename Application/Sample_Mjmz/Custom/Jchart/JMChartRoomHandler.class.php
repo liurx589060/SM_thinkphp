@@ -29,10 +29,10 @@ class JMChartRoomHandler {
     private $_countMan = 0;//男生数量
     private $_countAngel = 0;//大使数量
     private $_countLady = 0;//女生数量
-    private $_limitLadyCount = 0;//人数总数，默认12个
-    private $_limitMan = 0;//男生总量
-    private $_limitAngel = 0;//天使总量
-    private $_limitLevel = -1;//等级区域，默认-1，-1则表示不做等级的限制 
+    public $_limitLadyCount = 0;//人数总数，默认12个
+    public $_limitMan = 0;//男生总量
+    public $_limitAngel = 0;//天使总量
+    public $_limitLevel = -1;//等级区域，默认-1，-1则表示不做等级的限制 
     private $_chartRoomId = -1;//聊天室的Id
     private $_userArray = array();//加入的用户数组
     private $_exitIndexArray = array();//退出的索引数组
