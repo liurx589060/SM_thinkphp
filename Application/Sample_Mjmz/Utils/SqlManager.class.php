@@ -127,7 +127,8 @@ class SqlManager {
         }  
         $target_path = $base_path.basename($_FILES['uploadFile'] ['name'] );  
         if (move_uploaded_file($_FILES['uploadFile']['tmp_name'],'.'.$target_path )) {  
-            $d['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].'/thinkphp'.$target_path;
+//            $d['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].'/thinkphp'.$target_path;
+            $d['head_image'] = '/thinkphp'.$target_path;
             return SqlManager::updateUserInfo($d);
         } else {  
             return SqlManager::_createResultError(Common::ERROR_USER_UPLOAD
@@ -137,8 +138,10 @@ class SqlManager {
     
     public static function getUserInfoBySql($userInfo) {
         $user_name = isset($userInfo['user_name'])?$userInfo['user_name']:$userInfo['userName'];
-        $sql = M(SqlManager::TABLE_USERINFO);
-        return $sqlInfo = $sql->where("user_name='%s'",$user_name)
+        $sql = M(SqlManager::TABLE_USERINFO);   
+        $sqlInfo = $sql->where("user_name='%s'",$user_name)
                 ->field('id',true)->find();
+        $sqlInfo['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlInfo['head_image'];
+        return $sqlInfo;
     }
 }
