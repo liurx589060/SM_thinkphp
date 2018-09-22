@@ -276,6 +276,8 @@ class JMessageController extends BaseController {
                     'limitLady'=>$handler['handler']->_limitLadyCount,
                     'limitMan'=>$handler['handler']->_limitMan,
                     'limitAngel'=>$handler['handler']->_limitAngel,
+                    'pushAddress'=>$handler['pushAddress'],
+                    'playAddress'=>$handler['playAddress'],
                     'members'=>$result)));
     }
     
