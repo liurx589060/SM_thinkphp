@@ -135,6 +135,8 @@ class JMessageController extends BaseController {
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
         $userInfo['roomId'] = '';
+        $userInfo['pushAddress'] = $_GET['pushAddress'];
+        $userInfo['playAddress'] = $_GET['playAddress'];
         $this->_checkUserInfoParams($userInfo);
         
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
@@ -160,6 +162,8 @@ class JMessageController extends BaseController {
         $array['limitLevel'] = $chartHandler->getLimitLevel();
         $array['roomId'] = $chartHandler->getChartRoomId();
         $array['handler'] = $chartHandler;
+        $array['pushAddress'] = $userInfo['pushAddress'];
+        $array['playAddress'] = $userInfo['playAddress'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
@@ -170,6 +174,8 @@ class JMessageController extends BaseController {
                     'limitLady'=>$chartHandler->_limitLadyCount,
                     'limitMan'=>$chartHandler->_limitMan,
                     'limitAngel'=>$chartHandler->_limitAngel,
+                    'pushAddress'=>$array['pushAddress'],
+                    'playAddress'=>$array['playAddress'],
                     'members'=>$usersArray)));
     }
     

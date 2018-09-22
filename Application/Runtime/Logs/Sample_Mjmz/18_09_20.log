@@ -1,0 +1,310 @@
+[ 2018-09-20T22:11:38+08:00 ] 192.168.1.105 /thinkphp/Sample_Mjmz/User/login?userName=wys30202&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000030s ]
+INFO: [ app_init ] --END-- [ RunTime:0.005292s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.009020s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.009154s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0149s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30202' )  [ RunTime:0.0005s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30202' ) LIMIT 1   [ RunTime:0.0005s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0468s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30202' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:13:19+08:00 ] 192.168.1.105 /thinkphp/Sample_Mjmz/User/login?userName=wys30202&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000021s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000608s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001062s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001206s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0054s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30202' )  [ RunTime:0.0003s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30202' ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0093s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30202' ) LIMIT 1   [ RunTime:0.0006s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:16:02+08:00 ] 192.168.1.106 /thinkphp/Sample_Mjmz/User/login?userName=wys30203&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000022s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000586s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001010s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001109s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0039s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0099s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0004s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:16:50+08:00 ] 192.168.1.106 /thinkphp/Sample_Mjmz/User/login?userName=wys30203&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000023s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000564s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000863s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000993s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0048s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0003s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0055s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:17:02+08:00 ] 192.168.1.104 /thinkphp/Sample_Mjmz/User/login?userName=wys30204&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000024s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000706s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000810s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000901s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0057s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30204' )  [ RunTime:0.0007s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30204' ) LIMIT 1   [ RunTime:0.0005s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0925s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30204' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:19:51+08:00 ] 192.168.1.104 /thinkphp/Sample_Mjmz/User/login?userName=wys30204&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000023s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000711s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001276s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001446s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0355s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30204' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30204' ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0069s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30204' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:19:54+08:00 ] 192.168.1.106 /thinkphp/Sample_Mjmz/User/login?userName=wys30203&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000026s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000657s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001066s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001163s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0061s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0003s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0094s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0009s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:20:02+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/User/login?userName=wys30201&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000033s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000693s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001302s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001460s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0066s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30201' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0082s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0007s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:21:40+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?limitAngel=1&limitMan=1&gender=%E7%94%B7&userName=wys30201&limitLevel=-1&limitLady=2&level=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000022s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000575s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000713s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000794s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0039s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Undefined index: error E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php 第 57 行.
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:21:45+08:00 ] 192.168.1.104 /thinkphp/Sample_Mjmz/JMessage/joinChartRoom?roleType=guest&gender=%E7%94%B7&userName=wys30204&level=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000026s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000662s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000846s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000947s ]
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:21:49+08:00 ] 192.168.1.105 /thinkphp/Sample_Mjmz/JMessage/joinChartRoom?roleType=guest&gender=%E5%A5%B3&userName=wys30202&level=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000026s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000656s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001033s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001146s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0036s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30202' ) LIMIT 1   [ RunTime:0.0004s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:21:49+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000025s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000788s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001142s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001283s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:04+08:00 ] 192.168.1.106 /thinkphp/Sample_Mjmz/JMessage/joinChartRoom?gender=%E5%A5%B3&roleType=guest&level=0&userName=wys30203
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000027s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000666s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000901s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001012s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0046s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30203' ) LIMIT 1   [ RunTime:0.0014s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:05+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000031s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000945s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001466s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001611s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:05+08:00 ] 192.168.1.105 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000035s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000741s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000902s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000992s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:11+08:00 ] 192.168.1.104 /thinkphp/Sample_Mjmz/JMessage/joinChartRoom?roleType=guest&gender=%E7%94%B7&userName=wys30204&level=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000030s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000821s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001195s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001324s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0034s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30204' ) LIMIT 1   [ RunTime:0.0004s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:12+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000025s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000633s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000865s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000966s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:12+08:00 ] 192.168.1.105 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000026s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000707s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000830s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000933s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:22:13+08:00 ] 192.168.1.106 /thinkphp/Sample_Mjmz/JMessage/getChartRoomMemeberList?roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000044s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001020s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000917s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001014s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T22:28:32+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/exitChartRoom?userName=wys30201&roomId=12629383
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000024s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000846s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.000818s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.000908s ]
+NOTIC: [8] Undefined index: chartRoom_12629383 E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 287 行.
+NOTIC: [8] Undefined index: chartRoom_12629383 E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\JMessageController.class.php 第 198 行.
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T23:07:49+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/User/login?userName=wys30201&password=123456
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000024s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000685s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001028s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001131s ]
+SQL: SHOW COLUMNS FROM `xq_user` [ RunTime:0.0034s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30201' )  [ RunTime:0.0004s ]
+SQL: SELECT * FROM `xq_user` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0002s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0093s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T23:07:57+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/createChartRoom?limitAngel=1&limitMan=1&gender=%E7%94%B7&userName=wys30201&limitLevel=-1&limitLady=2&level=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000022s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000516s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001039s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001191s ]
+SQL: SHOW COLUMNS FROM `xq_user_info` [ RunTime:0.0044s ]
+SQL: SELECT `user_id`,`user_name`,`nick_name`,`gender`,`role_type`,`level`,`balance`,`age`,`tall`,`scholling`,`professional`,`native_place`,`marrige`,`job_address`,`phone`,`head_image`,`create_time`,`modify_time` FROM `xq_user_info` WHERE ( user_name='wys30201' ) LIMIT 1   [ RunTime:0.0005s ]
+NOTIC: [8] Undefined index: error E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Custom\Jchart\JMChartRoomHandler.class.php 第 57 行.
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
+[ 2018-09-20T23:10:46+08:00 ] 192.168.1.103 /thinkphp/Sample_Mjmz/JMessage/exitChartRoom?userName=wys30201&roomId=12629403
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000042s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000986s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001200s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001350s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+NOTIC: [8] Undefined index: type E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 57 行.
+
