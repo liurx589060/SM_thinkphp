@@ -90,7 +90,9 @@ class SqlManager {
     
     public static function updateUserInfo($userInfo) {
         $ex['user_name'] =$userInfo['userName'] ;
-        $ex['nick_name'] = $userInfo['nickName'];
+        if(isset($userInfo['nickName'])) {
+            $ex['nick_name'] = $userInfo['nickName'];
+        }
         $fianlArray = $userInfo + $ex;    
         $sql = M(SqlManager::TABLE_USERINFO);
         //检测是否存在该用户

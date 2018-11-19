@@ -1,0 +1,6 @@
+[ 2018-10-09T21:24:50+08:00 ] ::1 /thinkphp/files
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000039s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000868s ]
+ERR: 无法加载模块:Files
+
