@@ -27,8 +27,8 @@ class JMessageController extends BaseController {
 
 
     private $JMClient;
-    private $appKey = 'd4f1d053cfdba36011487fea';
-    private $masterSecret = '78eddf9e1636ecc3397f0fa9'; 
+    private $appKey = '2f3cff28d0bcc572927bf624';
+    private $masterSecret = 'cd7be344156c9afc0d218bad'; 
     
     private $_waitChartRoomArray;  //未满员，等待的聊天室
     private $_startedChartRoomArray; //满员，开始了的聊天室
