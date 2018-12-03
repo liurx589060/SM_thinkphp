@@ -99,6 +99,7 @@ class UserController extends BaseController {
         $userInfo['phone'] = isset($userInfo['phone'])?$userInfo['phone']:$_GET['phone'];
         $userInfo['role_type'] = isset($userInfo['role_type'])?$userInfo['role_type']:$_GET['role_type'];
 //        $userInfo['head_image'] = isset($userInfo['head_image'])?$userInfo['head_image']:$_GET['head_image'];
+        $userInfo['special_info'] = isset($userInfo['special_info'])?$userInfo['special_info']:$_GET['special_info'];
         if(is_null($userInfo['userName'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
                     , 'lack userName'));

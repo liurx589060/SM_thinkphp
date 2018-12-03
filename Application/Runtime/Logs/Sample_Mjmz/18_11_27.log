@@ -1,0 +1,20 @@
+[ 2018-11-27T00:04:57+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/getArrays?type=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000061s ]
+INFO: [ app_init ] --END-- [ RunTime:0.028018s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.098886s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.099136s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+
+[ 2018-11-27T00:05:08+08:00 ] ::1 /thinkphp/Sample_Mjmz/JMessage/getArrays?type=0
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000045s ]
+INFO: [ app_init ] --END-- [ RunTime:0.001050s ]
+INFO: [ app_begin ] --START--
+INFO: Run Behavior\ReadHtmlCacheBehavior [ RunTime:0.001330s ]
+INFO: [ app_begin ] --END-- [ RunTime:0.001500s ]
+NOTIC: [8] Use of undefined constant COM - assumed 'COM' E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 28 行.
+NOTIC: [2] key() expects parameter 1 to be array, null given E:\xampp\htdocs\thinkphp\Application\Sample_Mjmz\Controller\BaseController.class.php 第 39 行.
+
