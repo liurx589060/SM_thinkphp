@@ -35,8 +35,10 @@ class JMChartRoomHandler {
     public $_limitLevel = -1;//等级区域，默认-1，-1则表示不做等级的限制 
     private $_chartRoomId = -1;//聊天室的Id
     private $_userArray = array();//加入的用户数组
+    private $_onLookerArray = array();//加入的用户数组
     private $_exitIndexArray = array();//退出的索引数组
     private $_mAngelStart = False;   //是否点击开始
+    private $_nOnLookerIndex = 0;   //围观者的序号
 
     public function __construct(JchartRoomOptions $options) {
         $this->_JMClient = $options->jmClient;
@@ -62,7 +64,8 @@ class JMChartRoomHandler {
             $userInfo['roomId'] = $this->_chartRoomId;
             $userInfo['roleType'] = JMChartRoomHandler::ROLRTYPE_ANGEL;
             $this->_userArray[] = array(
-                'index'=>$this->_countAngel,             
+                'index'=>$this->_countAngel, 
+                'roomRoleType'=> JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS,
                 'userInfo'=>$userInfo
                 );
             $this->_countAngel++;
@@ -135,6 +138,13 @@ class JMChartRoomHandler {
     public function joinChartRoom(JMessageController $controller,$userInfo,$noJmessage=False) {
         $index = $this->_conventIndex($userInfo);
         if(!$noJmessage) {
+            $result = $this->_JMUser->chatrooms($userInfo['userName']);
+            if($result['body']['error'] === NULL) {
+                //有加入过的聊天室
+                foreach ($result['body'] as $value) {
+                    $this->_JMRoom->removeMembers($value['id'], array($userInfo['userName']));
+                }
+            }
             $result = $this->_JMRoom->addMembers($userInfo['roomId'], array($userInfo['userName']));
             if($result['body']['error'] !== NULL) {
                 $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
@@ -142,17 +152,29 @@ class JMChartRoomHandler {
             } 
         }
         $userInfo['roleType'] = $_GET['roleType'];
-        $this->_userArray[] = array(
-            'index'=>$index,
-            'userInfo'=>$userInfo
-        );
-        return $this->_userArray;
+        if($userInfo['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
+            //参与者
+            $this->_userArray[] = array(
+                'index'=>$index,
+                'roomRoleType'=>$userInfo['roomRoleType'],
+                'userInfo'=>$userInfo
+            );
+        } else if($userInfo['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_ONLOOKER){
+            //围观者
+            $this->_onLookerArray[] = array(
+                'index'=>$_nOnLookerIndex++,
+                'roomRoleType'=>$userInfo['roomRoleType'],
+                'userInfo'=>$userInfo
+            );
+        }
+       
+        return True;
     }
     
     /**
      * 退出聊天室
      */
-    public function exitChartRoom(JMessageController $controller,$roomId,$userName) {
+    public function exitChartRoomWithParticipants(JMessageController $controller,$roomId,$userName) {
         $result = $this->_JMRoom->removeMembers($roomId, array($userName));
         if($result['body']['error'] !== NULL) {
             if($result['body']['error']['message'] == '') {
@@ -189,6 +211,26 @@ class JMChartRoomHandler {
         }
     }
     
+    public function exitChartRoomWithOnLookers(JMessageController $controller,$roomId,$userName) {
+        $result = $this->_JMRoom->removeMembers($roomId, array($userName));
+        if($result['body']['error'] !== NULL) {
+            if($result['body']['error']['message'] == '') {
+                $controller->deleteRoom($roomId);
+                return;
+            }
+            $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
+                    , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));           
+        } else {
+            for ($i = 0;$i<count($this->_onLookerArray);$i++) {
+                $user = $this->_onLookerArray[$i];
+                if($user['userInfo']['userName'] == $userName) {
+                    array_splice($this->_onLookerArray, $i,1); 
+                }        
+            }
+            return TRUE;
+        }
+    }
+     
     /**
      * 获取聊天室的成员列表
      */
@@ -246,5 +288,9 @@ class JMChartRoomHandler {
     
     public function getUsersArray() {
         return $this->_userArray;
+    }
+    
+    public function getOnLookerArray() {
+        return $this->_onLookerArray;
     }
 }

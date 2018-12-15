@@ -24,6 +24,9 @@ class JMessageController extends BaseController {
     const ERROR_DELETE_CHARTEOOM = 7003;//删除聊天室失败
     const ERROR_CREATE_CHARTEOOM = 7004;//创建聊天室失败
     const ERROR_JOIN_CHARTEOOM = 7005;//创建聊天室失败
+    
+    const CHAT_ROOM_ROLETYPE_PARTICIPANTS = 1; //参与者
+    const CHAT_ROOM_ROLETYPE_ONLOOKER = 2; //围观者
 
 
     private $JMClient;
@@ -101,12 +104,70 @@ class JMessageController extends BaseController {
         return $array;
     }
     
-    public function getArrays() {
-        $this->returnData($this->convertReturnJsonSucessed(array(
-            'wait'=>$this->_waitChartRoomArray,
-            'started'=> $this->_startedChartRoomArray)
-        ));
+    private function _returnChatRoomData(array $handler) {
+        $this->returnData($this->convertReturnJsonSucessed(
+                array('roomId'=>$handler['roomId'],
+                    'limitLevel'=>$handler['handler']->_limitLevel,
+                    'limitLady'=>$handler['handler']->_limitLadyCount,
+                    'limitMan'=>$handler['handler']->_limitMan,
+                    'limitAngel'=>$handler['handler']->_limitAngel,
+                    'pushAddress'=>$handler['pushAddress'],
+                    'playAddress'=>$handler['playAddress'],
+                    'public'=>$handler['public'],
+                    'members'=>$handler['handler']->getUsersArray(),
+                    'onLookers'=>$handler['handler']->getOnLookerArray())));
     }
+
+
+    /**********************************************************************************************************/
+    
+    /**
+     * 获取所有房间
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getArrays?pulic=0  //0:非公开  1：公开  不填则全部
+     */
+    public function getArrays() {
+//        $this->returnData($this->convertReturnJsonSucessed(array(
+//            'wait'=>$this->_waitChartRoomArray,
+//            'started'=> $this->_startedChartRoomArray)
+//        ));
+        $public = -1;
+        if(isset($_GET['public'])) {
+            $public = $_GET['public'];
+        }
+        $allRoomArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
+        $resultArray = array();
+        foreach ($allRoomArray as $value) {
+            $isAdd = false;
+            if($public == -1) {
+                $isAdd = TRUE;
+            }else if($value['public'] == $public){
+                $isAdd = TRUE;
+            }
+            
+            if(!$isAdd) {
+                continue;
+            }
+            
+            $info['roomId'] = $value['roomId'];
+            $info['limitLevel'] = $value['limitLevel'];
+            $info['describe'] = $value['describe'];
+            $info['limitLadyCount'] = $value['handler']->_limitLadyCount;
+            $info['limitMan'] = $value['handler']->_limitMan;
+            $info['limitAngel'] = $value['handler']->_limitAngel; 
+            $info['public'] = $value['public'];
+            foreach ($value['handler']->getUsersArray() as $user) {
+                if($user['userInfo']['roleType'] == JMChartRoomHandler::ROLRTYPE_ANGEL) {
+                    $info['creater'] = $user['userInfo']['userName'];
+                }
+            }
+            
+            if($isAdd) {
+                $resultArray[] = $info;
+            }       
+        }
+        
+        $this->returnData($this->convertReturnJsonSucessed($resultArray));
+;    }
     
     private function _checkUserInfoParams($userInfo) {
         if($userInfo['userName'] === NULL || $userInfo['gender'] === NULL || $userInfo['level'] === NULL) {
@@ -137,6 +198,7 @@ class JMessageController extends BaseController {
         $userInfo['roomId'] = '';
         $userInfo['pushAddress'] = $_GET['pushAddress'];
         $userInfo['playAddress'] = $_GET['playAddress'];
+        $userInfo['public'] = $_GET['public'];
         $this->_checkUserInfoParams($userInfo);
         
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
@@ -164,19 +226,12 @@ class JMessageController extends BaseController {
         $array['handler'] = $chartHandler;
         $array['pushAddress'] = $userInfo['pushAddress'];
         $array['playAddress'] = $userInfo['playAddress'];
+        $array['public'] = $userInfo['public'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
         S(CACHE_WAIT, $this->_waitChartRoomArray);
-        $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$array['roomId'],
-                    'limitLevel'=>$chartHandler->_limitLevel,
-                    'limitLady'=>$chartHandler->_limitLadyCount,
-                    'limitMan'=>$chartHandler->_limitMan,
-                    'limitAngel'=>$chartHandler->_limitAngel,
-                    'pushAddress'=>$array['pushAddress'],
-                    'playAddress'=>$array['playAddress'],
-                    'members'=>$usersArray)));
+        $this->_returnChatRoomData($array);
     }
     
     public function deleteChartRoom() {
@@ -240,11 +295,22 @@ class JMessageController extends BaseController {
      * 加入聊天室
      */
     public function joinChartRoom() {
-        if(!isset($_GET['userName'])||!isset($_GET['gender'])||!isset($_GET['level'])||!isset($_GET['roleType'])) {
+        if(!isset($_GET['userName'])||!isset($_GET['gender'])||!isset($_GET['level'])||!isset($_GET['roleType'])
+                || !isset($_GET['roomRoleType'])) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
-                    'lack userName,gender,level,roleType'));
+                    'lack userName,gender,level,roleType,roomRoleType'));
             return;
         }
+        
+        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
+            //参与者
+            $this->_joinChatRoomWithParticipants();
+        }else {
+            $this->_joinChartRoomWithOnLooker();
+        }
+    }
+    
+    private function _joinChatRoomWithParticipants() {
         $roomId = $this->_matchChartRoom();
         $handler = $this->_waitChartRoomArray[PRE_KEY.$roomId];
         if($handler === NULL) {
@@ -260,7 +326,8 @@ class JMessageController extends BaseController {
         $userInfo['level'] = $_GET['level'];
         $userInfo['roleType'] = $_GET['roleType'];
         $userInfo['roomId'] = $roomId;
-        $result = $handler['handler']->joinChartRoom($this,$userInfo);
+        $userInfo['roomRoleType'] = $_GET['roomRoleType'];
+        $handler['handler']->joinChartRoom($this,$userInfo);
         $handler['gender'] = $handler['handler']->getRestGender();
         if($handler['gender'] == JMChartRoomHandler::FULL) {//满员
             $this->_removeWaitChartRoom($handler);
@@ -270,28 +337,64 @@ class JMessageController extends BaseController {
             //修改了数组，缓存
             S(CACHE_WAIT, $this->_waitChartRoomArray);
         }
-        $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$roomId,
-                    'limitLevel'=>$handler['handler']->_limitLevel,
-                    'limitLady'=>$handler['handler']->_limitLadyCount,
-                    'limitMan'=>$handler['handler']->_limitMan,
-                    'limitAngel'=>$handler['handler']->_limitAngel,
-                    'pushAddress'=>$handler['pushAddress'],
-                    'playAddress'=>$handler['playAddress'],
-                    'members'=>$result)));
+        
+        $this->_returnChatRoomData($handler);
     }
     
     /**
-     * http://localhost/thinkphp/Sample_Mjmz/JMessage/exitChartRoom?roomId=1256&index=3
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/joinChartRoomWithOnLooker?roomId=1256
+     * 围观者加入聊天室
+     */
+    private function _joinChartRoomWithOnLooker() {    
+        $mergeArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
+        $handlerWrapper = $mergeArray[PRE_KEY.$_GET['roomId']];
+        if($handlerWrapper === NULL) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'can not match chartRoom'
+                    . '--'.$_GET['roomId']));
+            return;
+        }
+        $handler = $handlerWrapper['handler'];
+        $userInfo = array();
+        $userInfo['userName'] = $_GET['userName'];  
+        $userInfo['roomRoleType'] = $_GET['roomRoleType'];
+        $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
+        $handler['handler']->joinChartRoom($this,$userInfo);
+        $this->_returnChatRoomData($handler);  
+    }
+    
+     private function _exitChartRoomWithOnLooker() {
+        $mergeArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
+        $handlerWrapper = $mergeArray[PRE_KEY.$_GET['roomId']];
+        if($handlerWrapper === NULL) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'can not match chartRoom'
+                    . '--'.$_GET['roomId']));
+            return;
+        }
+        $handlerWrapper['handle']->exitChartRoomWithOnLookers($this,$_GET['roomId'],$_GET['userName']);
+        $this->_returnChatRoomData($handlerWrapper);   
+    }
+
+     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/exitChartRoom?roomId=1256&userName=wys30201
      * 退出聊天室
      */
     public function exitChartRoom() {
-        $type = 1;
-        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL) {
+        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['roomRoleType']=== NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
-                    , 'lack roomId or userName'));
+                    , 'lack roomId or userName,roomRoleType'));
             return ;
         }
+        
+        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
+            //参与者
+            $this->_exitChartRoomWithParticipants();
+        }else {
+            $this->_exitChartRoomWithOnLooker();
+        }
+    }
+    
+    private function _exitChartRoomWithParticipants() {
+        $type = 1;
         $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']];
         if($handlerWrapper === NULL) {
             $handlerWrapper = $this->_startedChartRoomArray[PRE_KEY.$_GET['roomId']];
@@ -316,7 +419,7 @@ class JMessageController extends BaseController {
     
     private function _exitWaitChartRoom($handlerWrapper) {
         $handler = $handlerWrapper['handler'];
-        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
+        if(!$handler->exitChartRoomWithParticipants($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_EXIT_CHARTROOM, 'exit the chartRoom failed'));
             return;
         }
@@ -326,18 +429,12 @@ class JMessageController extends BaseController {
             $this->_removeWaitChartRoom($handlerWrapper);
         }
         S(CACHE_WAIT, $this->_waitChartRoomArray);
-        $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$handlerWrapper['roomId'],
-                    'limitLevel'=>$handler->_limitLevel,
-                    'limitLady'=>$handler->_limitLadyCount,
-                    'limitMan'=>$handler->_limitMan,
-                    'limitAngel'=>$handler->_limitAngel,
-                    'members'=>$handler->getUsersArray())));
+        $this->_returnChatRoomData($handlerWrapper);   
     }
     
     private function _exitStartedChartRoom($handlerWrapper) {
         $handler = $handlerWrapper['handler'];
-        if(!$handler->exitChartRoom($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
+        if(!$handler->exitChartRoomWithParticipants($this,$_GET['roomId'],$_GET['userName'])) {//删除失败
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_EXIT_CHARTROOM, 'exit the chartRoom failed'));
             return;
         }
@@ -346,13 +443,7 @@ class JMessageController extends BaseController {
             $this->_removeStartedChartRoom($handlerWrapper);
         }
         S(CACHE_STARTED, $this->_startedChartRoomArray);
-        $this->returnData($this->convertReturnJsonSucessed(
-                array('roomId'=>$handlerWrapper['roomId'],
-                    'limitLevel'=>$handler->_limitLevel,
-                    'limitLady'=>$handler->_limitLadyCount,
-                    'limitMan'=>$handler->_limitMan,
-                    'limitAngel'=>$handler->_limitAngel,
-                    'members'=>$handler->getUsersArray())));
+        $this->_returnChatRoomData($handlerWrapper);   
     }
 
         /**
@@ -368,14 +459,7 @@ class JMessageController extends BaseController {
                     . '--'.$_GET['roomId']));
             return;
         }
-        $handler = $handlerWrapper['handler'];
-        $this->returnData($this->convertReturnJsonSucessed(
-            array('roomId'=>$handlerWrapper['roomId'],
-                    'limitLevel'=>$handler->_limitLevel,
-                    'limitLady'=>$handler->_limitLadyCount,
-                    'limitMan'=>$handler->_limitMan,
-                    'limitAngel'=>$handler->_limitAngel,
-                    'members'=>$handler->getUsersArray())));    
+        $this->_returnChatRoomData($handlerWrapper);    
     }
     
     
@@ -397,13 +481,7 @@ class JMessageController extends BaseController {
             $userArray = $handler->getUsersArray();
             foreach ($userArray as $user) {
                 if($user['userInfo']['user_name'] === $userName) {
-                    $this->returnData($this->convertReturnJsonSucessed(
-                            array('roomId'=>$handlerWrapper['roomId'],
-                                'limitLevel'=>$handler->_limitLevel,
-                                'limitLady'=>$handler->_limitLadyCount,
-                                'limitMan'=>$handler->_limitMan,
-                                'limitAngel'=>$handler->_limitAngel,
-                                'members'=>$userArray)));
+                    $this->_returnChatRoomData($handlerWrapper);
                     return;
                 }                
             }
