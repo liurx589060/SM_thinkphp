@@ -111,8 +111,10 @@ class JMessageController extends BaseController {
                     'limitLady'=>$handler['handler']->_limitLadyCount,
                     'limitMan'=>$handler['handler']->_limitMan,
                     'limitAngel'=>$handler['handler']->_limitAngel,
+                    'gender'=>$handler['gender'],
                     'pushAddress'=>$handler['pushAddress'],
                     'playAddress'=>$handler['playAddress'],
+                    'describe'=>$handler['describe'],
                     'public'=>$handler['public'],
                     'members'=>$handler['handler']->getUsersArray(),
                     'onLookers'=>$handler['handler']->getOnLookerArray())));
@@ -155,6 +157,7 @@ class JMessageController extends BaseController {
             $info['limitMan'] = $value['handler']->_limitMan;
             $info['limitAngel'] = $value['handler']->_limitAngel; 
             $info['public'] = $value['public'];
+            $info['gender'] = $value['gender'];
             foreach ($value['handler']->getUsersArray() as $user) {
                 if($user['userInfo']['roleType'] == JMChartRoomHandler::ROLRTYPE_ANGEL) {
                     $info['creater'] = $user['userInfo']['userName'];
@@ -227,6 +230,7 @@ class JMessageController extends BaseController {
         $array['pushAddress'] = $userInfo['pushAddress'];
         $array['playAddress'] = $userInfo['playAddress'];
         $array['public'] = $userInfo['public'];
+        $array['describe'] = $_GET['describe'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
@@ -302,6 +306,14 @@ class JMessageController extends BaseController {
             return;
         }
         
+        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_ONLOOKER) {
+            if($_GET['userName'] == NULL) {
+                $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
+                    'lack roomId'));
+                return;
+            }
+        }
+        
         if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
             //参与者
             $this->_joinChatRoomWithParticipants();
@@ -357,21 +369,44 @@ class JMessageController extends BaseController {
         $userInfo = array();
         $userInfo['userName'] = $_GET['userName'];  
         $userInfo['roomRoleType'] = $_GET['roomRoleType'];
+        $userInfo['roomId'] = $_GET['roomId'];
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
-        $handler['handler']->joinChartRoom($this,$userInfo);
-        $this->_returnChatRoomData($handler);  
+        $handler->joinChartRoom($this,$userInfo);       
+        if($this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']] != NULL) {
+            $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']] = $handlerWrapper;
+            //修改了数组，缓存
+            S(CACHE_WAIT, $this->_waitChartRoomArray);
+        }else {
+            $this->_startedChartRoomArray[PRE_KEY.$_GET['roomId']] = $handlerWrapper;
+            //修改了数组，缓存
+            S(CACHE_STARTED, $this->_startedChartRoomArray);
+        }         
+        
+        $this->_returnChatRoomData($handlerWrapper);  
     }
     
      private function _exitChartRoomWithOnLooker() {
-        $mergeArray = $this->_waitChartRoomArray + $this->_startedChartRoomArray;
-        $handlerWrapper = $mergeArray[PRE_KEY.$_GET['roomId']];
+        $type = 1;
+        $handlerWrapper = $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']];
+        if($handlerWrapper === NULL) {
+            $handlerWrapper = $this->_startedChartRoomArray[PRE_KEY.$_GET['roomId']];
+            $type = 2;
+        }
         if($handlerWrapper === NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'can not match chartRoom'
                     . '--'.$_GET['roomId']));
             return;
         }
-        $handlerWrapper['handle']->exitChartRoomWithOnLookers($this,$_GET['roomId'],$_GET['userName']);
-        $this->_returnChatRoomData($handlerWrapper);   
+        $handlerWrapper['handler']->exitChartRoomWithOnLookers($this,$_GET['roomId'],$_GET['userName']);  
+        if($type==1) {
+            $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']] = $handlerWrapper;
+            S(CACHE_WAIT, $this->_waitChartRoomArray);
+        }else if($type == 2) {
+            $this->_waitChartRoomArray[PRE_KEY.$_GET['roomId']] = $handlerWrapper;
+            S(CACHE_STARTED, $this->_waitChartRoomArray);
+        }
+        
+        $this->_returnChatRoomData($handlerWrapper);  
     }
 
      /**

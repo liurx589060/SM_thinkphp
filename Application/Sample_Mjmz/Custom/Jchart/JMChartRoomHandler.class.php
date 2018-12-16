@@ -55,6 +55,7 @@ class JMChartRoomHandler {
      * @return boolean
      */
     public function createChartRoom(JMessageController $controller,$userInfo) {
+        $this->_clearChartRoom($userInfo['userName']);
         $info = $this->_JMRoom->create('test_chartRoom', $userInfo['userName'], array(), '测试room');
         if($info['body']['error'] !== NULL) {
             $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_CREATE_CHARTEOOM
@@ -131,20 +132,26 @@ class JMChartRoomHandler {
         }
         return $index;
     }
+    
+    private function _clearChartRoom($userName) {
+        if($result['body']['error'] === NULL) {
+                //有加入过的聊天室
+                foreach ($result['body'] as $value) {
+                    if($value['owner_username'] == $userName) {
+                        $this->_JMRoom->delete($value['id']);
+                    }else {
+                        $this->_JMRoom->removeMembers($value['id'], array($userInfo['userName']));
+                    }                
+                }
+        }
+    }
 
     /**
      * 加入聊天室
      */
-    public function joinChartRoom(JMessageController $controller,$userInfo,$noJmessage=False) {
-        $index = $this->_conventIndex($userInfo);
+    public function joinChartRoom(JMessageController $controller,$userInfo,$noJmessage=False) {      
         if(!$noJmessage) {
-            $result = $this->_JMUser->chatrooms($userInfo['userName']);
-            if($result['body']['error'] === NULL) {
-                //有加入过的聊天室
-                foreach ($result['body'] as $value) {
-                    $this->_JMRoom->removeMembers($value['id'], array($userInfo['userName']));
-                }
-            }
+            $this->_clearChartRoom($userInfo['userName']);
             $result = $this->_JMRoom->addMembers($userInfo['roomId'], array($userInfo['userName']));
             if($result['body']['error'] !== NULL) {
                 $controller->returnData($controller->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
@@ -154,6 +161,7 @@ class JMChartRoomHandler {
         $userInfo['roleType'] = $_GET['roleType'];
         if($userInfo['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
             //参与者
+            $index = $this->_conventIndex($userInfo);
             $this->_userArray[] = array(
                 'index'=>$index,
                 'roomRoleType'=>$userInfo['roomRoleType'],
@@ -162,7 +170,7 @@ class JMChartRoomHandler {
         } else if($userInfo['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_ONLOOKER){
             //围观者
             $this->_onLookerArray[] = array(
-                'index'=>$_nOnLookerIndex++,
+                'index'=> $this->_nOnLookerIndex++,
                 'roomRoleType'=>$userInfo['roomRoleType'],
                 'userInfo'=>$userInfo
             );
