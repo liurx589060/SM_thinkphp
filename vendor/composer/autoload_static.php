@@ -6,6 +6,10 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit40c88a9a07bb144d641ceff0b60e6533
 {
+    public static $files = array (
+        '968b13b9abb3514a5bb0365cd5f391eb' => __DIR__ . '/..' . '/jpush/jpush/src/JPush/JPush.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'J' => 
         array (
@@ -20,11 +24,22 @@ class ComposerStaticInit40c88a9a07bb144d641ceff0b60e6533
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'j' => 
+        array (
+            'jpush' => 
+            array (
+                0 => __DIR__ . '/..' . '/jpush/jpush/src',
+            ),
+        ),
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit40c88a9a07bb144d641ceff0b60e6533::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit40c88a9a07bb144d641ceff0b60e6533::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit40c88a9a07bb144d641ceff0b60e6533::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

@@ -12,10 +12,14 @@ use JMessage\JMessage;
 use Sample_Mjmz\Custom\Jchart\JMChartRoomHandler;
 use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
 use Sample_Mjmz\Utils\SqlManager;
+use JPush;
 
 const CACHE_WAIT = 'waitChartRoom';
 const CACHE_STARTED = 'startedChartRoom';
 const PRE_KEY = 'chartRoom_';
+const JPUSH_TAG_CHAT = 'tag_chat_room';
+const JPUSH_TYPE_CHAT_ROOM_CREATE = 1;
+const JPUSH_TYPE_CHAT_ROOM_DELETE = 2;
 
 class JMessageController extends BaseController {
     const ERROR_NO_MATCH = 7000;//未匹配上
@@ -30,6 +34,7 @@ class JMessageController extends BaseController {
 
 
     private $JMClient;
+    private $JPushClient;
     private $appKey = '2f3cff28d0bcc572927bf624';
     private $masterSecret = 'cd7be344156c9afc0d218bad'; 
     
@@ -39,6 +44,7 @@ class JMessageController extends BaseController {
     public function __construct() {
         parent::__construct();
         $this->JMClient = new JMessage($this->appKey, $this->masterSecret);
+        $this->JPushClient = new JPush($this->appKey, $this->masterSecret);
         $this->_waitChartRoomArray = S(CACHE_WAIT);
         $this->_startedChartRoomArray = S(CACHE_STARTED);
         
@@ -201,7 +207,7 @@ class JMessageController extends BaseController {
         $userInfo['roomId'] = '';
         $userInfo['pushAddress'] = $_GET['pushAddress'];
         $userInfo['playAddress'] = $_GET['playAddress'];
-        $userInfo['public'] = $_GET['public'];
+        $userInfo['public'] =(int)$_GET['public'];
         $this->_checkUserInfoParams($userInfo);
         
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
@@ -235,6 +241,22 @@ class JMessageController extends BaseController {
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
         S(CACHE_WAIT, $this->_waitChartRoomArray);
+        if($array['public'] == 1) {
+            $pusher = $this->JPushClient->push();
+            $pusher->setPlatform('all');
+            $pusher->addTag(JPUSH_TAG_CHAT);
+            $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_CREATE;
+            $extraArray['info']['creater'] = $userInfo['userName'];
+            $extraArray['info']['public'] = $array['public'];
+            $extraArray['info']['roomId'] = $array['roomId'];
+            $pusher->setMessage(json_encode($extraArray),'create','json',null);
+            try {
+                $pusher->send();
+            } catch (JPushException $e) {
+                // try something else here
+                print $e;
+            }
+        }      
         $this->_returnChatRoomData($array);
     }
     
@@ -242,7 +264,7 @@ class JMessageController extends BaseController {
         if(!$_GET['roomId']) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId'));
         }
-        $this->deleteRoom($_GET['roomId']);
+        $this->deleteRoom($_GET['roomId']);  
     }
 
         /**
@@ -267,6 +289,23 @@ class JMessageController extends BaseController {
             } else {
                 $this->_removeWaitChartRoom($handlerWrapper);
             }
+            
+            if($handlerWrapper['public'] == 1) {
+                $pusher = $this->JPushClient->push();
+                $pusher->setPlatform('all');
+                $pusher->addTag(JPUSH_TAG_CHAT);
+                $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_DELETE;
+                $extraArray['info']['creater'] = $handlerWrapper['userName'];
+                $extraArray['info']['public'] = $handlerWrapper['public'];
+                $extraArray['info']['roomId'] = $handlerWrapper['roomId'];
+                $pusher->setMessage(json_encode($extraArray),'delete','json',null);
+                try {
+                    $pusher->send();
+                } catch (JPushException $e) {
+                    // try something else here
+                    print $e;
+                }
+            } 
             $this->returnData($this->convertReturnJsonSucessed());
         }
     }

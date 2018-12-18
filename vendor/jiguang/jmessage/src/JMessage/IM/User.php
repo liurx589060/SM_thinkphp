@@ -108,9 +108,20 @@ class User extends IM {
         return $response;
     }
 
-    # forbidden
-    public function forbidden($username, bool $enabled) {
-        $uri = self::BASE_URI . $username . '/forbidden?disable=' . $enabled;
+    /**
+     * Forbidden
+     *
+     * @param string $username
+     * @param bool $enabled
+     * @return mixed
+     */
+    public function forbidden($username, $enabled) {
+        if ($enabled) {
+            $bool = 'true';
+        } else {
+            $bool = 'false';
+        }
+        $uri = self::BASE_URI . $username . '/forbidden?disable=' . $bool;
         $response = $this->put($uri);
         return $response;
     }
