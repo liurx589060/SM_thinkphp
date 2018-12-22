@@ -121,6 +121,7 @@ class JMessageController extends BaseController {
                     'pushAddress'=>$handler['pushAddress'],
                     'playAddress'=>$handler['playAddress'],
                     'describe'=>$handler['describe'],
+                    'creater'=>$handler['creater'],
                     'public'=>$handler['public'],
                     'members'=>$handler['handler']->getUsersArray(),
                     'onLookers'=>$handler['handler']->getOnLookerArray())));
@@ -237,6 +238,7 @@ class JMessageController extends BaseController {
         $array['playAddress'] = $userInfo['playAddress'];
         $array['public'] = $userInfo['public'];
         $array['describe'] = $_GET['describe'];
+        $array['creater'] = $userInfo['userName'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
         $this->_addWaitChartRoom($array); 
@@ -246,7 +248,7 @@ class JMessageController extends BaseController {
             $pusher->setPlatform('all');
             $pusher->addTag(JPUSH_TAG_CHAT);
             $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_CREATE;
-            $extraArray['info']['creater'] = $userInfo['userName'];
+            $extraArray['info']['creater'] = $array['creater'];
             $extraArray['info']['public'] = $array['public'];
             $extraArray['info']['roomId'] = $array['roomId'];
             $pusher->setMessage(json_encode($extraArray),'create','json',null);
@@ -256,15 +258,31 @@ class JMessageController extends BaseController {
                 // try something else here
                 print $e;
             }
-        }      
+        }     
+        
+        //存入数据库 
+        $bean['room_id'] = $array['roomId'];
+        $bean['create_time'] = time();
+        $bean['creater'] = $userInfo['userName'];
+        $bean['describe'] = $array['describe'];
+        $bean['status'] = 0;   
+        SqlManager::updateChatRoom($bean, 1);
+        
         $this->_returnChatRoomData($array);
     }
     
     public function deleteChartRoom() {
-        if(!$_GET['roomId']) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId'));
+        if(is_null($_GET['roomId']) || is_null($_GET['status'])) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId,status'));
         }
-        $this->deleteRoom($_GET['roomId']);  
+        
+        //存入数据库
+        $result = SqlManager::getChatRoomById($_GET['roomId']);
+        $result['delete_time'] = time();
+        $result['status'] = $_GET['status'];
+        SqlManager::updateChatRoom($result, 2);
+        
+        $this->deleteRoom($_GET['roomId']);
     }
 
         /**
@@ -389,6 +407,14 @@ class JMessageController extends BaseController {
             S(CACHE_WAIT, $this->_waitChartRoomArray);
         }
         
+        //存入数据库 
+        $bean['room_id'] = $userInfo['roomId'];
+        $bean['user_name'] = $userInfo['userName'];
+        $bean['status'] = 0;
+        $bean['enter_time'] = time();
+        $bean['room_role_type'] = $_GET['roomRoleType'];   
+        SqlManager::updateRoomRecord($bean, 1);
+        
         $this->_returnChatRoomData($handler);
     }
     
@@ -419,7 +445,15 @@ class JMessageController extends BaseController {
             $this->_startedChartRoomArray[PRE_KEY.$_GET['roomId']] = $handlerWrapper;
             //修改了数组，缓存
             S(CACHE_STARTED, $this->_startedChartRoomArray);
-        }         
+        }  
+        
+        //存入数据库 
+        $bean['room_id'] = $userInfo['roomId'];
+        $bean['user_name'] = $userInfo['userName'];
+        $bean['status'] = 0;
+        $bean['enter_time'] = time();
+        $bean['room_role_type'] = $_GET['roomRoleType'];   
+        SqlManager::updateRoomRecord($bean, 1);
         
         $this->_returnChatRoomData($handlerWrapper);  
     }
@@ -445,6 +479,12 @@ class JMessageController extends BaseController {
             S(CACHE_STARTED, $this->_waitChartRoomArray);
         }
         
+        //存入数据库
+        $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
+        $result['exit_time'] = time();
+        $result['status'] = $_GET['status'];
+        SqlManager::updateRoomRecord($result, 2);
+        
         $this->_returnChatRoomData($handlerWrapper);  
     }
 
@@ -453,9 +493,10 @@ class JMessageController extends BaseController {
      * 退出聊天室
      */
     public function exitChartRoom() {
-        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['roomRoleType']=== NULL) {
+        if($_GET['roomId'] === NULL || $_GET['userName']=== NULL || $_GET['roomRoleType']=== NULL
+                || $_GET['status']=== NULL) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
-                    , 'lack roomId or userName,roomRoleType'));
+                    , 'lack roomId or userName,roomRoleType,status'));
             return ;
         }
         
@@ -503,6 +544,11 @@ class JMessageController extends BaseController {
             $this->_removeWaitChartRoom($handlerWrapper);
         }
         S(CACHE_WAIT, $this->_waitChartRoomArray);
+        
+        $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
+        $result['exit_time'] = time();
+        $result['status'] = $_GET['status'];
+        SqlManager::updateRoomRecord($result, 2);
         $this->_returnChatRoomData($handlerWrapper);   
     }
     
@@ -517,6 +563,12 @@ class JMessageController extends BaseController {
             $this->_removeStartedChartRoom($handlerWrapper);
         }
         S(CACHE_STARTED, $this->_startedChartRoomArray);
+        
+        $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
+        $result['exit_time'] = time();
+        $result['status'] = $_GET['status'];
+        SqlManager::updateRoomRecord($result, 2);
+        
         $this->_returnChatRoomData($handlerWrapper);   
     }
 

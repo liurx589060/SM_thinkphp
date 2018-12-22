@@ -7,6 +7,9 @@
  */
 
 namespace Sample_Mjmz\Utils;
+use Sample_Mjmz\Controller\Tools;
+use Sample_Mjmz\Beans\BeanChatRoom;
+use Sample_Mjmz\Beans\BeanRoomRecord;
 
 /**
  * Description of SqlManager
@@ -17,6 +20,8 @@ class SqlManager {
     const SQL_NAME = 'xq_app';
     const TABLE_USER = 'user';
     const TABLE_USERINFO = 'user_info';
+    const TABLE_CHATROOM = 'chat_room';
+    const TABLE_ROOMRECORD = 'room_record';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -145,5 +150,88 @@ class SqlManager {
                 ->field('id',true)->find();
         $sqlInfo['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlInfo['head_image'];
         return $sqlInfo;
+    }
+    
+    /**
+     * 添加或者更新
+     * type  1:添加  2：更新   3:删除
+     * @param BeanChatRoom $info
+     */
+    public static function updateChatRoom(array $info,int $type) {
+        $sql = M(SqlManager::TABLE_CHATROOM);
+        switch ($type) {
+            case 1:
+                //添加
+                $sql->add($info);
+                break;
+            
+            case 2:
+                //更新
+                $sql->where("id='%d'",$info['id'])->save($info);  
+                break;
+            
+            case 3:
+                //删除
+                $sql->where("id='%d'",$info['id'])->delete();  
+                break;
+
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * 获取chatRoomById
+     * type 
+     * @param BeanChatRoom $info
+     */
+    public static function getChatRoomById($id) {
+        $sql = M(SqlManager::TABLE_CHATROOM); 
+        $result = $sql->where("id='%s'",$id)->find();
+        return $result;
+    }
+    
+     /**
+     * 添加或者更新
+     * type  1:添加  2：更新   3:删除
+     * @param BeanChatRoom $info
+     */
+    public static function updateRoomRecord(array $info,int $type) {
+        $sql = M(SqlManager::TABLE_ROOMRECORD); 
+        switch ($type) {
+            case 1:
+                //添加
+                $result = SqlManager::getRoomRecordById($info['user_name'],$info['room_id']);
+                if($result) {
+                    SqlManager::updateRoomRecord($info, 2);
+                }else {
+                    $sql->add($info);
+                }               
+                break;
+            
+            case 2:
+                //更新
+                $sql->where("user_name='%s' and room_id='%s'",$info['user_name'],$info['room_id'])->save($info);  
+                break;
+            
+            case 3:
+                //删除
+                $sql->where("user_name='%s' and room_id='%s'",$info['user_name'],$info['room_id'])->delete();  
+                break;
+
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * RoomRecordById
+     * type 
+     * @param BeanChatRoom $info
+     */
+    public static function getRoomRecordById($userName,$roomId) {
+        $sql = M(SqlManager::TABLE_ROOMRECORD); 
+        $result = $sql->where("user_name='%s' and room_id='%s'",$userName,$roomId)->find();
+        return $result;
     }
 }
