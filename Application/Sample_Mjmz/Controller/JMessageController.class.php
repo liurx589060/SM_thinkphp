@@ -268,19 +268,21 @@ class JMessageController extends BaseController {
         $bean['status'] = 0;   
         SqlManager::updateChatRoom($bean, 1);
         
+         //存入数据库 
+        $bean['room_id'] = $array['roomId'];
+        $bean['user_name'] = $userInfo['userName'];
+        $bean['status'] = 0;
+        $bean['enter_time'] = time();
+        $bean['room_role_type'] = JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS;   
+        SqlManager::updateRoomRecord($bean, 1);
+        
         $this->_returnChatRoomData($array);
     }
     
     public function deleteChartRoom() {
         if(is_null($_GET['roomId']) || is_null($_GET['status'])) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId,status'));
-        }
-        
-        //存入数据库
-        $result = SqlManager::getChatRoomById($_GET['roomId']);
-        $result['delete_time'] = time();
-        $result['status'] = $_GET['status'];
-        SqlManager::updateChatRoom($result, 2);
+        }  
         
         $this->deleteRoom($_GET['roomId']);
     }
@@ -313,7 +315,7 @@ class JMessageController extends BaseController {
                 $pusher->setPlatform('all');
                 $pusher->addTag(JPUSH_TAG_CHAT);
                 $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_DELETE;
-                $extraArray['info']['creater'] = $handlerWrapper['userName'];
+                $extraArray['info']['creater'] = $handlerWrapper['creater'];
                 $extraArray['info']['public'] = $handlerWrapper['public'];
                 $extraArray['info']['roomId'] = $handlerWrapper['roomId'];
                 $pusher->setMessage(json_encode($extraArray),'delete','json',null);
@@ -324,6 +326,19 @@ class JMessageController extends BaseController {
                     print $e;
                 }
             } 
+            
+             //存入数据库
+            $result = SqlManager::getChatRoomById($_GET['roomId']);
+            $result['delete_time'] = time();
+            $result['status'] = $_GET['status'];
+            SqlManager::updateChatRoom($result, 2);
+        
+            //存入数据库
+            $result = SqlManager::getRoomRecordById($handlerWrapper['creater'],$_GET['roomId']);
+            $result['exit_time'] = time();
+            $result['status'] = $_GET['status'];
+            SqlManager::updateRoomRecord($result, 2);
+        
             $this->returnData($this->convertReturnJsonSucessed());
         }
     }
