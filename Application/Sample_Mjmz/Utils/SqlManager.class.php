@@ -187,7 +187,7 @@ class SqlManager {
      */
     public static function getChatRoomById($id) {
         $sql = M(SqlManager::TABLE_CHATROOM); 
-        $result = $sql->where("id='%s'",$id)->find();
+        $result = $sql->where("room_id='%s'",$id)->find();
         return $result;
     }
     
