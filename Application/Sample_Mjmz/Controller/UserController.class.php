@@ -74,10 +74,10 @@ class UserController extends BaseController {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
                     , 'lack userName'));
         }
-        if(SqlManager::checkUserExist($userInfo)) {
+        if(SqlManager::checkUserExist(SqlManager::TABLE_USER,$userInfo)) {
             $this->returnData($this->convertReturnJsonSucessed('用户存在'));
         } else {
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_REGIST_UNEXIST,'user is not exist'));
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST,'user is not exist'));
         }
     }
     

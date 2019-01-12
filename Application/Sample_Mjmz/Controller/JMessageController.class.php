@@ -9,9 +9,11 @@
 namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
 use JMessage\JMessage;
+use JMessage\IM\User;
 use Sample_Mjmz\Custom\Jchart\JMChartRoomHandler;
 use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
 use Sample_Mjmz\Utils\SqlManager;
+use Sample_Mjmz\Utils\Common;
 use JPush;
 
 const CACHE_WAIT = 'waitChartRoom';
@@ -615,5 +617,37 @@ class JMessageController extends BaseController {
         $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH
                     , 'can not match chartRoom'. '--'.$userName));
         return ;
+    }
+    
+    /**
+     * get
+     * http://localhost/thinkphp/Sample_Mjmz/user/changePassword?userName=wys30201&password=aaa1254b4
+     * 修改密码
+     */
+    public function changePassword() {
+        if($_GET['userName'] === NULL || $_GET['password']=== NULL ) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS
+                    , 'lack userName or password'));
+            return ;
+        }
+        
+        $userInfo['userName'] = $_GET['userName'];
+        $userInfo['password'] = $_GET['password'];
+        $sqlResult = SqlManager::checkUserExist(SqlManager::TABLE_USER,$userInfo);
+        if($sqlResult) {
+            $sql = M(SqlManager::TABLE_USER);
+            $JMUser = new User($this->JMClient);
+            $JMUser->updatePassword($userInfo['userName'], $userInfo['password']);
+            $userInfo['modify_time'] = date("Y-m-d G:i:s");
+            $data = array('password'=>$userInfo['password'],'modify_time'=>$userInfo['modify_time']);
+            $result = $sql->where("user_name='%s'",$userInfo['userName'])->setField($data);
+            if($result) {
+                $this->returnData($this->convertReturnJsonSucessed('密码修改成功'));
+            }else {
+                $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_PASSWORD_CHANGE,'change password error'));
+            }
+        } else {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST,'user is not exist'));
+        }
     }
 }

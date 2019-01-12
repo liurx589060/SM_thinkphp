@@ -69,7 +69,7 @@ class SqlManager {
         $sql = M(SqlManager::TABLE_USER);
         //检测是否存在该用户
         if(!SqlManager::checkUserExist(SqlManager::TABLE_USER,$d)) {
-            return SqlManager::_createResultError(Common::ERROR_USER_REGIST_UNEXIST
+            return SqlManager::_createResultError(Common::ERROR_USER_NOT_EXIST
                     , 'the user is not exist');
         }
         $result = $sql->where("user_name='%s'",$d['user_name'])->find();
@@ -103,7 +103,7 @@ class SqlManager {
         //检测是否存在该用户
         $result = SqlManager::checkUserExist(SqlManager::TABLE_USER,$fianlArray);
         if(!$result) {
-            return SqlManager::_createResultError(Common::ERROR_USER_REGIST_UNEXIST
+            return SqlManager::_createResultError(Common::ERROR_USER_NOT_EXIST
                     , 'the user is not exist');
         }
         $fianlArray['user_id'] = $result['user_id'];
@@ -124,7 +124,7 @@ class SqlManager {
     {
         $d['user_name'] = $userInfo['userName'];
         if(!SqlManager::checkUserExist(SqlManager::TABLE_USER, $d)) {
-            return SqlManager::_createResultError(Common::ERROR_USER_REGIST_UNEXIST
+            return SqlManager::_createResultError(Common::ERROR_USER_NOT_EXIST
                     , 'the user is not exist'); 
         }
             
