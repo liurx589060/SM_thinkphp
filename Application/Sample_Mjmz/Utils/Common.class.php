@@ -15,6 +15,7 @@ namespace Sample_Mjmz\Utils;
  */
 class Common {
     const SUCCESS = 0;
+    const ERROR = -1;
     //put your code here
     const ERROR_NO_MATCH = 7000;//未匹配上
     const ERROR_EXIT_CHARTROOM = 7001;//退出失败
@@ -38,4 +39,9 @@ class Common {
     
     const ROLRTYPE_ANGEL = 'angel';
     const ROLETYPE_GUEST = 'guest';
+    
+    const BLACK_BAN_BASE_TIME = 6; //6小时
+    
+    const REPORT_ITEMS = array('故意长时间挂机或离线','注册信息违规','言语或视频违背伦理');
+    
 }

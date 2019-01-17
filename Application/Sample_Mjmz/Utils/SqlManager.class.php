@@ -7,9 +7,8 @@
  */
 
 namespace Sample_Mjmz\Utils;
-use Sample_Mjmz\Controller\Tools;
 use Sample_Mjmz\Beans\BeanChatRoom;
-use Sample_Mjmz\Beans\BeanRoomRecord;
+use Sample_Mjmz\Utils\Common;
 
 /**
  * Description of SqlManager
@@ -22,6 +21,8 @@ class SqlManager {
     const TABLE_USERINFO = 'user_info';
     const TABLE_CHATROOM = 'chat_room';
     const TABLE_ROOMRECORD = 'room_record';
+    const TABLE_USER_REPORT = 'user_report';
+    const TABLE_BLACK_USER = 'black_user';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -233,5 +234,89 @@ class SqlManager {
         $sql = M(SqlManager::TABLE_ROOMRECORD); 
         $result = $sql->where("user_name='%s' and room_id='%s'",$userName,$roomId)->find();
         return $result;
+    }
+    
+    /**
+     * 举报用户
+     * @return type
+     */
+    public static function reportUser($sqlData) {
+        $sql = M(SqlManager::TABLE_USER_REPORT);
+        $returnReslut = $sql->add($sqlData);
+        $sqlReslult = $sql->where("room_id='%d'",$sqlData['room_id'])->select();
+        $count = count($sqlReslult);
+        $banTime = 0;
+        $reports = array();
+        if($count >= 3) {
+            $reportMsg = '';
+            for($index = 0 ; $index < $count ; $index++) {
+                $reportType = $sqlReslult[$index]['report_type'];
+                if(is_null($reports[$reportType])) {
+                    $reportMsg .= Common::REPORT_ITEMS[$reportType-1].';';
+                }
+                $banTime += $reportType*1/3;
+                $reports[$reportType] = '1';
+            }
+            $banTime *= Common::BLACK_BAN_BASE_TIME;
+            $data['user_name'] = $sqlData['user_name'];
+            $data['report_msg'] = $reportMsg;
+            $data['room_id'] = $sqlData['room_id'];      
+            $data['start_time'] = time();
+            $strTime = '+'.$banTime.' hours';
+            $data['end_time'] = strtotime($strTime);
+           
+            SqlManager::addBlackUser($data,1);
+        }
+        return $returnReslut;
+    }
+    
+    /**
+     * 举报用户
+     * @return type
+     */
+    private static function addBlackUser($sqlData,$type) {
+        $sql = M(SqlManager::TABLE_BLACK_USER);
+        switch ($type) {
+            case 1:
+                //添加
+                $sqlResult = $sql->where("user_name='%s' and room_id='%d'"
+                            ,$sqlData['user_name'],$sqlData['room_id'])->select();
+                if(count($sqlResult) > 0) {
+                    SqlManager::addBlackUser($sqlData, 2);
+                    return;
+                }
+                $sql->add($sqlData);
+                break;
+            
+            case 2:
+                //更新
+                $sql->where("user_name='%s' and room_id='%d'"
+                            ,$sqlData['user_name'],$sqlData['room_id'])->save($sqlData);
+                break;
+
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * 获取用户名是否被禁
+     * @param type $sqlData
+     */
+    public static function getBlackUserByName($sqlData) {
+        $sql = M(SqlManager::TABLE_BLACK_USER);
+        $sqlReslult = $sql->where("user_name='%s' and status='%d'",$sqlData['userName'],$sqlData['status'])->select();
+        foreach ($sqlReslult as $value) {
+            if($value['status'] == 1) {
+                if(time() >= $value['end_time']) {
+                    $value['status'] = 0;
+                    SqlManager::addBlackUser($value, 2);
+                }
+            }
+        }
+        
+        $sqlReslult = $sql->where("user_name='%s' and status='%d'",$sqlData['userName'],$sqlData['status'])
+                ->order('end_time desc')->field('id', true)->select();
+        return $sqlReslult[0];
     }
 }

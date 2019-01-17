@@ -270,12 +270,20 @@ class JMessageController extends BaseController {
         $bean['status'] = 0;   
         SqlManager::updateChatRoom($bean, 1);
         
+        //存入数据库 
+        $bean['room_id'] = $array['roomId'];
+        $bean['user_name'] = $userInfo['userName'];
+        $bean['status'] = 0;
+        $bean['enter_time'] = time();
+        $bean['room_role_type'] = 1;
+        SqlManager::updateRoomRecord($bean, 1);
+        
         $this->_returnChatRoomData($array);
     }
     
     public function deleteChartRoom() {
-        if(is_null($_GET['roomId']) || is_null($_GET['status'])) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack roomId,status'));
+        if(is_null($_GET['userName']) || is_null($_GET['roomId']) || is_null($_GET['status'])) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack userName,roomId,status'));
         }
         
         //存入数据库
@@ -283,6 +291,12 @@ class JMessageController extends BaseController {
         $result['delete_time'] = time();
         $result['status'] = $_GET['status'];
         SqlManager::updateChatRoom($result, 2);
+        
+        //存入数据库
+        $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
+        $result['exit_time'] = time();
+        $result['status'] = 0;
+        SqlManager::updateRoomRecord($result, 2);
         
         $this->deleteRoom($_GET['roomId']);
     }
