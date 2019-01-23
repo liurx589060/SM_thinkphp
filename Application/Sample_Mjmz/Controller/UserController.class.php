@@ -195,5 +195,117 @@ class UserController extends BaseController {
         }
         $this->returnData($this->convertReturnJsonSucessed($date));
     }
+    
+    /**
+     * 添加好友
+     * http://localhost/thinkphp/Sample_Mjmz/user/addFriend?userName=wys30201&targetName=wys30204&roomId=124587
+     * @param type $param
+     * @param type $Net   false:内部调用   true：网络接口传入
+     */
+    public function addFriend($param = array(),$Net = TRUE) {
+        $data = array();
+        if($Net) {
+            $data['userName'] = $_GET['userName'];
+            $data['targetName'] = $_GET['targetName'];
+            $data['roomId'] = $_GET['roomId'];
+        }else {
+            $data['userName'] = $param['userName'];
+            $data['targetName'] = $param['targetName'];
+            $data['roomId'] = $param['roomId'];
+        }
+        
+        if(is_null($data['userName']) || is_null($data['targetName'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS , 'lack userName ,targetName'));
+        }
+        
+        if(is_null($data['roomId'])) {
+            $data['roomId'] = '';
+        }
+        
+        $userInfo['user_name'] = $data['userName'];
+        if(!SqlManager::checkUserExist(SqlManager::TABLE_USER, $userInfo)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST , $userInfo['user_name'].'不存在'));
+        }
+        
+        $userInfo['user_name'] = $data['targetName'];
+        if(!SqlManager::checkUserExist(SqlManager::TABLE_USER, $userInfo)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST , $userInfo['user_name'].'不存在'));
+        }
+        
+        if($data['userName'] === $data['targetName']) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_PARAMS_SAME , $userInfo['user_name'].'不可添加自己'));
+        }
+        
+        $result = SqlManager::addFriend($data);
+        if($result) {
+            $this->returnData($this->convertReturnJsonSucessed('添加好友成功'));
+        }else {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR , '添加好友失败'));
+        }
+    }
+    
+    /**
+     * 获取用户信息
+     * http://localhost/thinkphp/Sample_Mjmz/user/getUserInfo?userName=wys30201
+     * @param type $param
+     * @param type $Net   false:内部调用   true：网络接口传入
+     */
+    public function getUserInfo($param = array(),$Net = TRUE) {
+        $userName = '';
+        if($Net) {
+            $userName = $_GET['userName'];
+        }else {
+            $userName = $param['user_name'];
+        }
+        
+        if(is_null($userName)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS , 'lack userName'));
+        }
+        
+        $userInfo['user_name'] = $userName;
+        if(!SqlManager::checkUserExist(SqlManager::TABLE_USER, $userInfo)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST , $userInfo['user_name'].'不存在'));
+        }
+        
+        $sqlData['user_name'] = $userName;
+        $result = SqlManager::getUserInfo($sqlData);
+        if($result) {
+            $this->returnData($this->convertReturnJsonSucessed($result));
+        }else {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR , '查询失败'));
+        }
+    }
+    
+    /**
+     * 获取用户好友列表
+     * http://localhost/thinkphp/Sample_Mjmz/user/getFriendListByUser?userName=wys30201
+     * @param type $param
+     * @param type $Net   false:内部调用   true：网络接口传入
+     */
+    public function getFriendListByUser($param = array(),$Net = TRUE) {
+        $userName = '';
+        if($Net) {
+            $userName = $_GET['userName'];
+        }else {
+            $userName = $param['userName'];
+        }
+        
+        if(is_null($userName)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS , 'lack userName'));
+        }
+        
+        $userInfo['user_name'] = $userName;
+        if(!SqlManager::checkUserExist(SqlManager::TABLE_USER, $userInfo)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST , $userInfo['user_name'].'不存在'));
+        }
+        
+        $sqlData['userName'] = $userName;
+        $result = SqlManager::getFriendListByUser($sqlData);
+        if($result) {
+            $this->returnData($this->convertReturnJsonSucessed($result));
+        }else {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR , '查询失败'));
+        }
+    }
 }
 

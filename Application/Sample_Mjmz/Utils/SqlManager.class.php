@@ -23,6 +23,7 @@ class SqlManager {
     const TABLE_ROOMRECORD = 'room_record';
     const TABLE_USER_REPORT = 'user_report';
     const TABLE_BLACK_USER = 'black_user';
+    const TABLE_USER_FRIEND = 'user_friend';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -318,5 +319,51 @@ class SqlManager {
         $sqlReslult = $sql->where("user_name='%s' and status='%d'",$sqlData['userName'],$sqlData['status'])
                 ->order('end_time desc')->field('id', true)->select();
         return $sqlReslult[0];
+    }
+    
+    /**
+     * 添加好友
+     * @param type $sqlData
+     */
+    public static function addFriend($sqlData) {
+        $sql = M(SqlManager::TABLE_USER_FRIEND);
+        $sqlData['time'] = date("Y-m-d G:i:s");
+        $sqlResult = $sql->where("userName='%s' and targetName='%s'",$sqlData['userName'],$sqlData['targetName'])->select();
+        if(count($sqlResult) == 0) {
+            return $sql->add($sqlData);
+        }
+        return TRUE;
+    }
+    
+     /**
+     * 获取用户信息
+     * @param type $sqlData
+     */
+    public static function getUserInfo($sqlData) {
+        $sql = M(SqlManager::TABLE_USERINFO);
+        $sqlResult = $sql->where("user_name='%s'",$sqlData['user_name'])->select();
+        $sqlResult[0]['head_image'] ='http://'.$_SERVER['SERVER_NAME'].$sqlResult[0]['head_image'];
+        return $sqlResult[0];
+    }
+    
+     /**
+     * 获取用户好友列表
+     * @param type $sqlData
+     */
+    public static function getFriendListByUser($sqlData) {
+        $sql = M(SqlManager::TABLE_USER_FRIEND);
+        $sqlResult = $sql->where("userName='%s'",$sqlData['userName'])->select();
+        $count = count($sqlResult);
+        if($count == 0) {
+            return FALSE;
+        }
+        
+        $friendList = array();
+        for($i = 0 ;$i < $count ; $i++) {
+            $param['user_name'] = $sqlResult[$i]['targetName'];
+            $info = SqlManager::getUserInfo($param);
+            $friendList[] = $info;
+        }
+        return $friendList;
     }
 }
