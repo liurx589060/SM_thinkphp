@@ -14,6 +14,9 @@ namespace Sample_Mjmz\Utils;
  * @author Administrator
  */
 class Common {
+    const JM_appKey = '2f3cff28d0bcc572927bf624';
+    const JM_masterSecret = 'cd7be344156c9afc0d218bad';
+
     const SUCCESS = 0;
     const ERROR = -1;
     //put your code here
@@ -31,6 +34,13 @@ class Common {
     const ERROR_USER_PASSWORD_WRONG = 7104;//密码错误
     const ERROR_USER_PASSWORD_CHANGE = 7105;//修改密码出错
     const ERROR_PARAMS_SAME = 7106;//参数相同
+
+    //极光推送
+    const JPUSH_TAG_CHAT = 'tag_chat_room';  //标签
+    const JPUSH_TYPE_CHAT_ROOM_CREATE = 1;   //创建房间
+    const JPUSH_TYPE_CHAT_ROOM_DELETE = 2;   //删除房间
+
+    const JPUSH_TYPE_PAY_SUCCESS = 100;      //支付成功
 
 
     const MAN = '男';  //男士

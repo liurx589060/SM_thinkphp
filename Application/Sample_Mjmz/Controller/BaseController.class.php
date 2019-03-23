@@ -25,25 +25,35 @@ class BaseController extends Controller {
 
 
     public function convertReturnJsonSucessed($array=NULL,$extra=NULL) {
-        if(count($array) > COM) {
-            $callback['status'] = Common::SUCCESS;
-            $callback['msg'] = '操作成功'; 
-        }elseif (!isset ($array)) {//没有传值
-            $callback['status'] = Common::SUCCESS;
-            $callback['msg'] = '操作成功'; 
-        } else {//没有数据
-            $callback['status'] = 9000;
-            $callback['msg'] = '没有数据';
+//        if(count($array) > 0) {
+//            $callback['status'] = Common::SUCCESS;
+//            $callback['msg'] = '操作成功';
+//        }elseif (!isset ($array)) {//没有传值
+//            $callback['status'] = Common::SUCCESS;
+//            $callback['msg'] = '操作成功';
+//        } else {//没有数据
+//            $callback['status'] = 9000;
+//            $callback['msg'] = '没有数据';
+//        }
+
+        if($array === false) {
+            $callback['status'] = Common::ERROR;
+            $callback['msg'] = '操作失败';
+            return $callback;
         }
+
+        $callback['status'] = Common::SUCCESS;
+        $callback['msg'] = '操作成功';
         //额外的参数
         while ($key = key($extra)) {
             $callback[$key] = $extra[$key];
             next($extra);
         }
         
-        if(!empty($array)) {
-            $callback['data'] = $array;
-        }
+//        if(!empty($array)) {
+//            $callback['data'] = $array;
+//        }
+        $callback['data'] = $array;
         return $callback;
     }
     

@@ -19,9 +19,6 @@ use JPush;
 const CACHE_WAIT = 'waitChartRoom';
 const CACHE_STARTED = 'startedChartRoom';
 const PRE_KEY = 'chartRoom_';
-const JPUSH_TAG_CHAT = 'tag_chat_room';
-const JPUSH_TYPE_CHAT_ROOM_CREATE = 1;
-const JPUSH_TYPE_CHAT_ROOM_DELETE = 2;
 
 class JMessageController extends BaseController {
     const ERROR_NO_MATCH = 7000;//未匹配上
@@ -37,16 +34,14 @@ class JMessageController extends BaseController {
 
     private $JMClient;
     private $JPushClient;
-    private $appKey = '2f3cff28d0bcc572927bf624';
-    private $masterSecret = 'cd7be344156c9afc0d218bad'; 
-    
+
     private $_waitChartRoomArray;  //未满员，等待的聊天室
     private $_startedChartRoomArray; //满员，开始了的聊天室
 
     public function __construct() {
         parent::__construct();
-        $this->JMClient = new JMessage($this->appKey, $this->masterSecret);
-        $this->JPushClient = new JPush($this->appKey, $this->masterSecret);
+        $this->JMClient = new JMessage(Common::JM_appKey, Common::JM_masterSecret);
+        $this->JPushClient = new JPush(Common::JM_appKey, Common::JM_masterSecret);
         $this->_waitChartRoomArray = S(CACHE_WAIT);
         $this->_startedChartRoomArray = S(CACHE_STARTED);
         
@@ -248,8 +243,8 @@ class JMessageController extends BaseController {
         if($array['public'] == 1) {
             $pusher = $this->JPushClient->push();
             $pusher->setPlatform('all');
-            $pusher->addTag(JPUSH_TAG_CHAT);
-            $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_CREATE;
+            $pusher->addTag(Common::JPUSH_TAG_CHAT);
+            $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_CREATE;
             $extraArray['info']['creater'] = $array['creater'];
             $extraArray['info']['public'] = $array['public'];
             $extraArray['info']['roomId'] = $array['roomId'];
@@ -327,8 +322,8 @@ class JMessageController extends BaseController {
             if($handlerWrapper['public'] == 1) {
                 $pusher = $this->JPushClient->push();
                 $pusher->setPlatform('all');
-                $pusher->addTag(JPUSH_TAG_CHAT);
-                $extraArray['type'] = JPUSH_TYPE_CHAT_ROOM_DELETE;
+                $pusher->addTag(Common::JPUSH_TAG_CHAT);
+                $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_DELETE;
                 $extraArray['info']['creater'] = $handlerWrapper['userName'];
                 $extraArray['info']['public'] = $handlerWrapper['public'];
                 $extraArray['info']['roomId'] = $handlerWrapper['roomId'];

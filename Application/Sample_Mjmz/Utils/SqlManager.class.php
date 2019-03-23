@@ -24,6 +24,11 @@ class SqlManager {
     const TABLE_USER_REPORT = 'user_report';
     const TABLE_BLACK_USER = 'black_user';
     const TABLE_USER_FRIEND = 'user_friend';
+    const TABLE_PAY_ITEM = 'pay_item';
+    const TABLE_PAY_ORDER = 'pay_order';
+    const TABLE_GIFT_ITEM = 'gift_item';
+    const TABLE_GIFT_USER = 'gift_user';
+    const TABLE_COIN_CONSUME_HISTORY = 'coin_consume_history';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -365,5 +370,154 @@ class SqlManager {
             $friendList[] = $info;
         }
         return $friendList;
+    }
+
+    /**
+     * 获取充值项目
+     * @return mixed
+     */
+    public static function getPayItem() {
+        $sql = M(SqlManager::TABLE_PAY_ITEM);
+        $sqlResult = $sql->order("sort asc")->select();
+        return $sqlResult;
+    }
+
+    /**
+     * 创建支付订单
+     * @return mixed
+     */
+    public static function makePayOrder($sqlData) {
+        $sql = M(SqlManager::TABLE_PAY_ORDER);
+        $sqlResult = $sql->add($sqlData);
+        return $sqlResult;
+    }
+
+    /**
+     * 支付回调
+     * @return mixed
+     */
+    public static function handlePayCallback($sqlData) {
+        $sql = M(SqlManager::TABLE_PAY_ORDER);
+        $sqlResult = $sql->where("order_id='%s'",$sqlData['order_id'])->find();
+        if($sqlResult['status'] != 0) {
+            return -2;
+        }
+        $result = $sql->where("order_id='%s'",$sqlData['order_id'])->save($sqlData);
+        if($result) {
+            $sqlResult = $sql->where("order_id='%s'",$sqlData['order_id'])->find();
+            $user_name = $sqlResult['user_name'];
+            $sqlUser = M(SqlManager::TABLE_USERINFO);
+            $result = $sqlUser->where("user_name='%s'",$user_name)->setInc('balance',$sqlResult['coin']);
+            if($result) {
+                $userInfo = $sqlUser->where("user_name='%s'",$user_name)->find();
+                return array('balance'=>$userInfo['balance'],'coin'=>$sqlResult['coin'],
+                    'modify_time'=>$sqlResult['modify_time'],
+                    'userInfo'=>$userInfo);
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * 获取充值列表
+     * @return mixed
+     */
+    public static function getPayHistory($sqlData) {
+        $sql = M(SqlManager::TABLE_PAY_ORDER);
+        $sqlResult = $sql->where("user_name='%s' and status='%s'",$sqlData['user_name'],$sqlData['status'])
+            ->field('id,user_name',true)->order('modify_time desc')->select();
+        return $sqlResult;
+    }
+
+    /**
+     * 获取礼品项目
+     * @return mixed
+     */
+    public static function getGiftItem() {
+        $sql = M(SqlManager::TABLE_GIFT_ITEM);
+        $sqlResult = $sql->field('id',true)->order("sort asc")->select();
+        for($i = 0 ; $i < count($sqlResult) ; $i ++) {
+            $sqlResult[$i]['image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['image'];
+        }
+        return $sqlResult;
+    }
+
+    /**
+     * 用钻石购买礼物
+     * @return mixed
+     */
+    public static function buyGiftByCoin($sqlData) {
+        $sql = M(SqlManager::TABLE_COIN_CONSUME_HISTORY);
+        $sqlResult = $sql->add($sqlData);
+        if(!$sqlResult) return $sqlResult;
+        if($sqlData['handleType'] == 1) {
+            //充值到我的礼物中
+            $sqlUser = M(SqlManager::TABLE_USERINFO);
+            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
+            if(!$sqlResult) return $sqlResult;
+            $sql = M(SqlManager::TABLE_GIFT_USER);
+            $param['user_name'] = $sqlData['user_name'];
+            $param['to_user'] = $sqlData['user_name'];
+            $param['gift_id'] = $sqlData['gift_id'];
+            $param['create_time'] = time();
+            $sqlResult = $sql->add($param);
+        }
+        return $sqlResult;
+    }
+
+    /**
+     * 获取自己礼物列表
+     * @return mixed
+     */
+    public static function getGiftList($sqlData) {
+        $querySql = sprintf("SELECT a.gift_id,b.type,b.coin,b.description,b.image,
+              b.`name`,COUNT(a.gift_id) AS num FROM xq_gift_user AS a,
+              xq_gift_item AS b WHERE a.gift_id = b.gift_id and 
+              a.user_name='%s' GROUP BY a.gift_id ORDER BY num DESC",
+                  $sqlData['user_name']);
+        $sqlResult = M()->query($querySql);
+        for($i = 0 ; $i < count($sqlResult) ; $i ++) {
+            $sqlResult[$i]['image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['image'];
+        }
+        return $sqlResult;
+    }
+
+    /**
+     * 获取消费记录
+     * @return mixed
+     */
+    public static function getConsumeHistory($sqlData) {
+        $querySql = sprintf("SELECT a.gift_id,a.to_user,b.type,b.coin,b.`name`,b.image,c.nick_name,
+            c.head_image,a.create_time FROM xq_gift_user AS a,xq_gift_item AS b,
+            xq_user_info AS c WHERE a.gift_id = b.gift_id and a.user_name='%s' 
+            and a.to_user=c.user_name ORDER BY a.create_time DESC",
+            $sqlData['user_name']);
+        $sqlResult = M()->query($querySql);
+        $convertResult = [];
+        foreach ($sqlResult as $value) {
+            if(count($convertResult) == 0) {
+                $value['num'] = 1;
+                array_push($convertResult,$value);
+            }else {
+                $temp = $convertResult[count($convertResult)-1];
+                if(($value['gift_id'] == $temp['gift_id'])
+                    && abs($temp['create_time']-$value['create_time']) < 8) {
+                    //8秒内的算一个组
+                    $temp['num'] ++;
+                    $convertResult[count($convertResult)-1] = $temp;
+                }else {
+                    //不是同类的
+                    $value['num'] = 1;
+                    array_push($convertResult,$value);
+                }
+            }
+        }
+
+        for($i = 0 ; $i < count($convertResult) ; $i ++) {
+            $convertResult[$i]['image'] = 'http://'.$_SERVER['SERVER_NAME'].$convertResult[$i]['image'];
+            $convertResult[$i]['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$convertResult[$i]['head_image'];
+        }
+        return $convertResult;
     }
 }

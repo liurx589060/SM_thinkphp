@@ -80,6 +80,23 @@ class UserController extends BaseController {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST,'user is not exist'));
         }
     }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/user/getUserInfoByUserName?userName=wys30201
+     *获取用户信息
+     */
+    public function getUserInfoByUserName() {
+        $userName = $_GET['userName'];
+        if(is_null($userName)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
+                , 'lack userName'));
+            return ;
+        }
+
+        $userInfo['user_name'] = $userName;
+        $sqlResult = SqlManager::getUserInfo($userInfo);
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+    }
     
     /**
      * http://localhost/thinkphp/Sample_Mjmz/user/checkUserRegist?userName=aaa&type=0
