@@ -129,7 +129,7 @@ class JMessageController extends BaseController {
     
     /**
      * 获取所有房间
-     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getArrays?pulic=0  //0:非公开  1：公开  不填则全部
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getArrays?pulic=1  //0:非公开  1：公开  不填则全部
      */
     public function getArrays() {
 //        $this->returnData($this->convertReturnJsonSucessed(array(
@@ -630,7 +630,7 @@ class JMessageController extends BaseController {
     
     /**
      * get
-     * http://localhost/thinkphp/Sample_Mjmz/user/changePassword?userName=wys30201&password=aaa1254b4
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/changePassword?userName=wys30201&password=aaa1254b4
      * 修改密码
      */
     public function changePassword() {

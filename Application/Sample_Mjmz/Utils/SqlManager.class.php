@@ -27,8 +27,10 @@ class SqlManager {
     const TABLE_PAY_ITEM = 'pay_item';
     const TABLE_PAY_ORDER = 'pay_order';
     const TABLE_GIFT_ITEM = 'gift_item';
+    const TABLE_GIFT_CATEGORY = 'gift_category';
     const TABLE_GIFT_USER = 'gift_user';
     const TABLE_COIN_CONSUME_HISTORY = 'coin_consume_history';
+    const TABLE_GIFT_EXPIRY = 'gift_expiry';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -434,11 +436,15 @@ class SqlManager {
      * 获取礼品项目
      * @return mixed
      */
-    public static function getGiftItem() {
-        $sql = M(SqlManager::TABLE_GIFT_ITEM);
-        $sqlResult = $sql->field('id',true)->order("sort asc")->select();
+    public static function getGiftItem($position) {
+        $querySql = sprintf("SELECT a.gift_id,a.is_trade,b.`name`,b.coin,b.image,
+            b.description,b.gif FROM xq_gift_category a,xq_gift_item b WHERE a.gift_id = b.gift_id 
+            and a.position = '%d' ORDER BY sort",
+            $position);
+        $sqlResult = M()->query($querySql);
         for($i = 0 ; $i < count($sqlResult) ; $i ++) {
             $sqlResult[$i]['image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['image'];
+            $sqlResult[$i]['gif'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['gif'];
         }
         return $sqlResult;
     }
@@ -451,19 +457,13 @@ class SqlManager {
         $sql = M(SqlManager::TABLE_COIN_CONSUME_HISTORY);
         $sqlResult = $sql->add($sqlData);
         if(!$sqlResult) return $sqlResult;
-        if($sqlData['handleType'] == 1) {
-            //充值到我的礼物中
-            $sqlUser = M(SqlManager::TABLE_USERINFO);
-            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
-            if(!$sqlResult) return $sqlResult;
-            $sql = M(SqlManager::TABLE_GIFT_USER);
-            $param['user_name'] = $sqlData['user_name'];
-            $param['to_user'] = $sqlData['user_name'];
-            $param['gift_id'] = $sqlData['gift_id'];
-            $param['create_time'] = time();
-            $sqlResult = $sql->add($param);
-        }
-        return $sqlResult;
+        $sqlUser = M(SqlManager::TABLE_USERINFO);
+        $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
+        if(!$sqlResult) return $sqlResult;
+        $sql = M(SqlManager::TABLE_GIFT_USER);
+        $sqlResult = $sql->add($sqlData);
+        $userInfo = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->find();
+        return $userInfo['balance'];
     }
 
     /**
@@ -474,8 +474,8 @@ class SqlManager {
         $querySql = sprintf("SELECT a.gift_id,b.type,b.coin,b.description,b.image,
               b.`name`,COUNT(a.gift_id) AS num FROM xq_gift_user AS a,
               xq_gift_item AS b WHERE a.gift_id = b.gift_id and 
-              a.user_name='%s' GROUP BY a.gift_id ORDER BY num DESC",
-                  $sqlData['user_name']);
+              a.user_name='%s' and a.to_user='%s' GROUP BY a.gift_id ORDER BY num DESC",
+                  $sqlData['user_name'],$sqlData['user_name']);
         $sqlResult = M()->query($querySql);
         for($i = 0 ; $i < count($sqlResult) ; $i ++) {
             $sqlResult[$i]['image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['image'];
@@ -519,5 +519,84 @@ class SqlManager {
             $convertResult[$i]['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$convertResult[$i]['head_image'];
         }
         return $convertResult;
+    }
+
+    /**
+     * 消费礼物
+     * @return mixed
+     */
+    public static function consumeGift($sqlData) {
+        $sqlUser = M(SqlManager::TABLE_USERINFO);
+        $sqlGiftUser = M(SqlManager::TABLE_GIFT_USER);
+        $giftList = [];
+        if($sqlData['handleType'] == 1) {
+            //直接金币消费
+            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
+            if(!$sqlResult) return $sqlResult;
+            //存入到金币消费记录中
+            $sql = M(SqlManager::TABLE_COIN_CONSUME_HISTORY);
+            $sqlResult = $sql->add($sqlData);
+            //记录到我的礼物中
+            $sqlResult = $sqlGiftUser->add($sqlData);
+            //给用户添加金币
+            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['to_user'])->setInc('balance',$sqlData['coin']);
+        }else if($sqlData['handleType'] == 2){
+            //从我的包裹中消费,删除一条
+            $sqlResult = $sqlGiftUser->where("user_name='%s' and gift_id='%d' and to_user='%s'",
+                $sqlData['user_name'],$sqlData['gift_id'],$sqlData['user_name'])->limit(1)->delete();
+            //存入到金币消费记录中
+            $sqlResult = $sqlGiftUser->add($sqlData);
+            if($sqlResult == 0) return $sqlResult;
+            //给用户添加金币
+            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['to_user'])->setInc('balance',$sqlData['coin']);
+            //获取自己的礼物列表
+            $giftList = SqlManager::getGiftList($sqlData);
+        }
+
+        $userInfo = $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->find();
+        $data['balance'] = $userInfo['balance']; //余额
+        $data['gift_list'] = $giftList; //礼物列表
+        return $data;
+    }
+
+    /**
+     *
+     * 创房间的时候检测是否免费的卡
+     */
+    public static function checkRoomExpiry($sqlData) {
+        $coin = 0;
+        $sqlResult = [];
+        $gift = [];
+        if($sqlData['handleType'] == 1) {
+            //创建房间
+            //建房卡
+            $sqlResult = M(SqlManager::TABLE_GIFT_EXPIRY)->field("id",true)
+                ->where("gift_id=6 and end_time<'%d' and user_name='%s'",time(),$sqlData['user_name'])
+                ->select();
+            $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=1000")->find()['coin'];
+            $gift = M()->query(sprintf("SELECT COUNT(a.gift_id) AS num,b.gift_id,b.`name`,
+                b.description FROM xq_gift_user a,xq_gift_item b WHERE 
+                a.user_name='%s' AND a.to_user='%s' AND 
+                a.gift_id=6 AND a.gift_id = b.gift_id GROUP BY a.gift_id",
+                $sqlResult['user_name'],
+                $sqlResult['user_name']));
+        }else if($sqlData['handleType'] == 2) {
+            //加入房间
+            //入门券
+            $sqlResult = M(SqlManager::TABLE_GIFT_EXPIRY)->where("gift_id=4 and num>0 and user_name='%s'",$sqlData['user_name'])
+                ->field("id",true)->select();
+            $gift = M()->query(sprintf("SELECT COUNT(a.gift_id) AS num,b.gift_id,b.`name`,
+                b.description FROM xq_gift_user a,xq_gift_item b WHERE 
+                a.user_name='%s' AND a.to_user='%s' AND 
+                a.gift_id=4 AND a.gift_id = b.gift_id GROUP BY a.gift_id",
+                $sqlResult['user_name'],
+                $sqlResult['user_name']));
+            $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=1001")->find()['coin'];
+        }
+
+        $result['expiry'] = $sqlResult;
+        $result['coin'] = $coin;
+        $result['gift'] = $gift;
+        return $result;
     }
 }

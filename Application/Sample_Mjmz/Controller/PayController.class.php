@@ -122,33 +122,39 @@ class PayController extends BaseController {
     }
 
     /**
-     * http://localhost/thinkphp/Sample_Mjmz/Pay/getGiftItem
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/getGiftItem?position=1
      * 获取礼品项目
      */
     public function getGiftItem() {
-        $result = SqlManager::getGiftItem();
+        $position = $_GET['position'];
+        if(is_null($position)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack position'));
+            return ;
+        }
+
+        $result = SqlManager::getGiftItem($position);
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
 
     /**
-     * http://localhost/thinkphp/Sample_Mjmz/Pay/buyGiftByCoin?userName=wys30201&giftId=2&handleType=1
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/buyGiftByCoin?userName=wys30201&giftId=2&coin=2
      * 用钻石购买礼物
      */
     public function buyGiftByCoin() {
         $user_name = $_GET['userName'];
         $gift_id = $_GET['giftId'];
         $coin = $_GET['coin'];
-        $handleType = $_GET['handleType']; //1：充值到我的礼物中   2：直接送出
 
-        if(is_null($user_name) || is_null($gift_id) || is_null($coin) || is_null($handleType)) {
+        if(is_null($user_name) || is_null($gift_id) || is_null($coin)) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack userName，giftId,coin,handle'));
+                'lack userName，giftId,coin'));
             return ;
         }
         $sqlData['user_name'] = $user_name;
         $sqlData['gift_id'] = $gift_id;
         $sqlData['coin'] = $coin;
-        $sqlData['handleType'] = $handleType;
+        $sqlData['to_user'] = $user_name;  //标识去向为自己
         $sqlData['create_time'] = time();
 
         $result = SqlManager::buyGiftByCoin($sqlData);
@@ -188,4 +194,55 @@ class PayController extends BaseController {
         $result = SqlManager::getConsumeHistory($sqlData);
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/consumeGift?userName=wys30201&giftId=2&coin=2&toUser=wys30202handleType=1
+     * 用消费礼物
+     */
+    public function consumeGift() {
+        $user_name = $_GET['userName'];
+        $gift_id = $_GET['giftId'];
+        $coin = $_GET['coin'];
+        $to_user = $_GET['toUser'];  //目标用户
+        $handleType = $_GET['handleType'];  //1:直接金币消费   2：从我的包裹中消费
+
+        if(is_null($user_name) || is_null($gift_id) || is_null($coin) || is_null($to_user) || is_null($handleType)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName，giftId,coin,toUser,handleType'));
+            return ;
+        }
+        $sqlData['to_user'] = $to_user;
+        $sqlData['user_name'] = $user_name;
+        $sqlData['gift_id'] = $gift_id;
+        $sqlData['coin'] = $coin;
+        $sqlData['create_time'] = time();
+        $sqlData['handleType'] = $handleType;
+
+        $result = SqlManager::consumeGift($sqlData);
+        if($result == 0) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_GIFT_LACK_STOCK ,
+                'lack gift stock'));
+        }
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
+    /**
+     *http://localhost/thinkphp/Sample_Mjmz/Pay/checkRoomExpiry?userName=wys30201&type=1
+     * 创房间的时候检测是否免费的卡
+     */
+    public function checkRoomExpiry() {
+        $user_name = $_GET['userName'];
+        $handleType = $_GET['handleType'];   //1: 创建房间   2;加入房间
+        if(is_null($user_name) || is_null($handleType)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName,handleType'));
+            return ;
+        }
+
+        $data['user_name'] = $user_name;
+        $data['handleType'] = $handleType;
+        $result = SqlManager::checkCreateRoomExpiry($data);
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
 }
