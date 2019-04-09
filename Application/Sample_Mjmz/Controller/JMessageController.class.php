@@ -15,6 +15,7 @@ use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
 use Sample_Mjmz\Utils\SqlManager;
 use Sample_Mjmz\Utils\Common;
 use JPush;
+use Sample_Mjmz\Utils\ToolUtil;
 
 const CACHE_WAIT = 'waitChartRoom';
 const CACHE_STARTED = 'startedChartRoom';
@@ -259,7 +260,7 @@ class JMessageController extends BaseController {
         
         //存入数据库 
         $bean['room_id'] = $array['roomId'];
-        $bean['create_time'] = time();
+        $bean['create_time'] = ToolUtil::getCurrentTime();
         $bean['creater'] = $userInfo['userName'];
         $bean['describe'] = $array['describe'];
         $bean['status'] = 0;   
@@ -269,7 +270,7 @@ class JMessageController extends BaseController {
         $bean['room_id'] = $array['roomId'];
         $bean['user_name'] = $userInfo['userName'];
         $bean['status'] = 0;
-        $bean['enter_time'] = time();
+        $bean['enter_time'] = ToolUtil::getCurrentTime();
         $bean['room_role_type'] = 1;
         SqlManager::updateRoomRecord($bean, 1);
         
@@ -283,13 +284,13 @@ class JMessageController extends BaseController {
         
         //存入数据库
         $result = SqlManager::getChatRoomById($_GET['roomId']);
-        $result['delete_time'] = time();
+        $result['delete_time'] = ToolUtil::getCurrentTime();
         $result['status'] = $_GET['status'];
         SqlManager::updateChatRoom($result, 2);
         
         //存入数据库
         $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
-        $result['exit_time'] = time();
+        $result['exit_time'] = ToolUtil::getCurrentTime();
         $result['status'] = 0;
         SqlManager::updateRoomRecord($result, 2);
         
@@ -422,7 +423,7 @@ class JMessageController extends BaseController {
         $bean['room_id'] = $userInfo['roomId'];
         $bean['user_name'] = $userInfo['userName'];
         $bean['status'] = 0;
-        $bean['enter_time'] = time();
+        $bean['enter_time'] = ToolUtil::getCurrentTime();
         $bean['room_role_type'] = $_GET['roomRoleType'];   
         SqlManager::updateRoomRecord($bean, 1);
         
@@ -462,7 +463,7 @@ class JMessageController extends BaseController {
         $bean['room_id'] = $userInfo['roomId'];
         $bean['user_name'] = $userInfo['userName'];
         $bean['status'] = 0;
-        $bean['enter_time'] = time();
+        $bean['enter_time'] = ToolUtil::getCurrentTime();
         $bean['room_role_type'] = $_GET['roomRoleType'];   
         SqlManager::updateRoomRecord($bean, 1);
         
@@ -492,7 +493,7 @@ class JMessageController extends BaseController {
         
         //存入数据库
         $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
-        $result['exit_time'] = time();
+        $result['exit_time'] = ToolUtil::getCurrentTime();
         $result['status'] = $_GET['status'];
         SqlManager::updateRoomRecord($result, 2);
         
@@ -557,7 +558,7 @@ class JMessageController extends BaseController {
         S(CACHE_WAIT, $this->_waitChartRoomArray);
         
         $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
-        $result['exit_time'] = time();
+        $result['exit_time'] = ToolUtil::getCurrentTime();
         $result['status'] = $_GET['status'];
         SqlManager::updateRoomRecord($result, 2);
         $this->_returnChatRoomData($handlerWrapper);   
@@ -576,7 +577,7 @@ class JMessageController extends BaseController {
         S(CACHE_STARTED, $this->_startedChartRoomArray);
         
         $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
-        $result['exit_time'] = time();
+        $result['exit_time'] = ToolUtil::getCurrentTime();
         $result['status'] = $_GET['status'];
         SqlManager::updateRoomRecord($result, 2);
         

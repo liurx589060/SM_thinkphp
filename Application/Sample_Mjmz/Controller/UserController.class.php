@@ -166,7 +166,7 @@ class UserController extends BaseController {
             $sqlData['report_type'] = $reportType;
             $sqlData['report_msg'] = $reportMsg;
             $sqlData['room_id'] = $roomId;
-            $sqlData['time'] = time();
+            $sqlData['time'] = ToolUtil::getCurrentTime();
             
             if(SqlManager::reportUser($sqlData)) {
                 $this->returnData($this->convertReturnJsonSucessed('举报成功'));

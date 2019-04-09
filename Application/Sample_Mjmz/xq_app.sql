@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : lrx
+Source Server         : xq
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-03-26 23:02:49
+Date: 2019-04-03 22:48:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -48,7 +48,7 @@ CREATE TABLE `xq_chat_room` (
   `delete_time` int(255) NOT NULL COMMENT '解散时间',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_chat_room
@@ -100,6 +100,21 @@ INSERT INTO `xq_chat_room` VALUES ('44', '15380262', '一起来相亲吧', 'wys3
 INSERT INTO `xq_chat_room` VALUES ('45', '15395858', '一起来相亲吧', 'wys30201', '1548571602', '1548571608', '0');
 INSERT INTO `xq_chat_room` VALUES ('46', '17504623', '一起来相亲吧', 'wys30201', '1548571669', '1548571771', '0');
 INSERT INTO `xq_chat_room` VALUES ('47', '17504627', '一起来相亲吧', 'wys30201', '1548571894', '1548571897', '0');
+INSERT INTO `xq_chat_room` VALUES ('48', '17741211', '一起来相亲吧', 'wys30201', '1554129881', '1554129913', '0');
+INSERT INTO `xq_chat_room` VALUES ('49', '17741219', '一起来相亲吧', 'wys30201', '1554130045', '1554130136', '0');
+INSERT INTO `xq_chat_room` VALUES ('50', '17741233', '一起来相亲吧', 'wys30201', '1554130285', '1554130383', '0');
+INSERT INTO `xq_chat_room` VALUES ('51', '17741259', '一起来相亲吧', 'wys30201', '1554130583', '1554130970', '0');
+INSERT INTO `xq_chat_room` VALUES ('52', '17741297', '一起来相亲吧', 'wys30201', '1554131194', '1554131288', '0');
+INSERT INTO `xq_chat_room` VALUES ('53', '17741305', '一起来相亲吧', 'wys30201', '1554131330', '1554131393', '0');
+INSERT INTO `xq_chat_room` VALUES ('54', '17741321', '一起来相亲吧', 'wys30201', '1554131567', '1554131849', '0');
+INSERT INTO `xq_chat_room` VALUES ('55', '17741361', '一起来相亲吧', 'wys30201', '1554132336', '1554132584', '0');
+INSERT INTO `xq_chat_room` VALUES ('56', '17741367', '一起来相亲吧', 'wys30201', '1554132393', '1554132592', '0');
+INSERT INTO `xq_chat_room` VALUES ('57', '15632592', '一起来相亲吧', 'wys30201', '1554132662', '1554132722', '0');
+INSERT INTO `xq_chat_room` VALUES ('58', '17741395', '一起来相亲吧', 'wys30201', '1554132839', '1554132997', '0');
+INSERT INTO `xq_chat_room` VALUES ('59', '15632614', '一起来相亲吧', 'wys30201', '1554133048', '1554133079', '0');
+INSERT INTO `xq_chat_room` VALUES ('60', '15632618', '一起来相亲吧', 'wys30201', '1554133090', '1554133095', '0');
+INSERT INTO `xq_chat_room` VALUES ('61', '15632626', '一起来相亲吧', 'wys30201', '1554133166', '1554133203', '0');
+INSERT INTO `xq_chat_room` VALUES ('62', '17741471', '一起来相亲吧', 'wys30201', '1554133989', '1554134058', '0');
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -111,100 +126,169 @@ CREATE TABLE `xq_coin_consume_history` (
   `user_name` varchar(255) DEFAULT NULL COMMENT '用户',
   `create_time` int(11) DEFAULT NULL COMMENT '购买时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=298 DEFAULT CHARSET=utf8 COMMENT='金币消费记录';
 
 -- ----------------------------
 -- Records of xq_coin_consume_history
 -- ----------------------------
-INSERT INTO `xq_coin_consume_history` VALUES ('33', '4', 'wys30201', '1553263239');
-INSERT INTO `xq_coin_consume_history` VALUES ('34', '1', 'wys30201', '1553263969');
-INSERT INTO `xq_coin_consume_history` VALUES ('35', '2', 'wys30201', '1553263975');
-INSERT INTO `xq_coin_consume_history` VALUES ('36', '2', 'wys30201', '1553264003');
-INSERT INTO `xq_coin_consume_history` VALUES ('37', '1', 'wys30201', '1553264007');
-INSERT INTO `xq_coin_consume_history` VALUES ('38', '2', 'wys30201', '1553264014');
-INSERT INTO `xq_coin_consume_history` VALUES ('39', '2', 'wys30201', '1553264015');
-INSERT INTO `xq_coin_consume_history` VALUES ('40', '2', 'wys30201', '1553264015');
-INSERT INTO `xq_coin_consume_history` VALUES ('41', '2', 'wys30201', '1553264015');
-INSERT INTO `xq_coin_consume_history` VALUES ('42', '2', 'wys30201', '1553264016');
-INSERT INTO `xq_coin_consume_history` VALUES ('43', '2', 'wys30202', '1553264182');
-INSERT INTO `xq_coin_consume_history` VALUES ('44', '2', 'wys30202', '1553264187');
-INSERT INTO `xq_coin_consume_history` VALUES ('45', '2', 'wys30201', '1553264408');
-INSERT INTO `xq_coin_consume_history` VALUES ('46', '1', 'wys30201', '1553264416');
-INSERT INTO `xq_coin_consume_history` VALUES ('47', '4', 'wys30201', '1553264454');
-INSERT INTO `xq_coin_consume_history` VALUES ('48', '5', 'wys30201', '1553264484');
-INSERT INTO `xq_coin_consume_history` VALUES ('49', '7', 'wys30201', '1553265167');
-INSERT INTO `xq_coin_consume_history` VALUES ('50', '7', 'wys30201', '1553266254');
-INSERT INTO `xq_coin_consume_history` VALUES ('51', '2', 'wys30201', '1553266395');
-INSERT INTO `xq_coin_consume_history` VALUES ('52', '2', 'wys30201', '1553266396');
-INSERT INTO `xq_coin_consume_history` VALUES ('53', '5', 'wys30201', '1553267204');
-INSERT INTO `xq_coin_consume_history` VALUES ('54', '6', 'wys30201', '1553267209');
-INSERT INTO `xq_coin_consume_history` VALUES ('55', '5', 'wys30201', '1553280055');
-INSERT INTO `xq_coin_consume_history` VALUES ('56', '2', 'wys30201', '1553280060');
-INSERT INTO `xq_coin_consume_history` VALUES ('57', '6', 'wys30201', '1553280067');
-INSERT INTO `xq_coin_consume_history` VALUES ('58', '1', 'wys30201', '1553317246');
-INSERT INTO `xq_coin_consume_history` VALUES ('59', '1', 'wys30201', '1553317247');
-INSERT INTO `xq_coin_consume_history` VALUES ('60', '1', 'wys30201', '1553317247');
-INSERT INTO `xq_coin_consume_history` VALUES ('61', '1', 'wys30201', '1553317247');
-INSERT INTO `xq_coin_consume_history` VALUES ('62', '1', 'wys30201', '1553317248');
-INSERT INTO `xq_coin_consume_history` VALUES ('63', '1', 'wys30201', '1553317248');
-INSERT INTO `xq_coin_consume_history` VALUES ('64', '1', 'wys30201', '1553317248');
-INSERT INTO `xq_coin_consume_history` VALUES ('65', '1', 'wys30201', '1553317248');
-INSERT INTO `xq_coin_consume_history` VALUES ('66', '1', 'wys30201', '1553317248');
-INSERT INTO `xq_coin_consume_history` VALUES ('67', '5', 'wys30201', '1553317250');
-INSERT INTO `xq_coin_consume_history` VALUES ('68', '5', 'wys30201', '1553317254');
-INSERT INTO `xq_coin_consume_history` VALUES ('69', '6', 'wys30201', '1553317256');
-INSERT INTO `xq_coin_consume_history` VALUES ('70', '6', 'wys30201', '1553317256');
-INSERT INTO `xq_coin_consume_history` VALUES ('71', '6', 'wys30201', '1553317256');
-INSERT INTO `xq_coin_consume_history` VALUES ('72', '6', 'wys30201', '1553317257');
-INSERT INTO `xq_coin_consume_history` VALUES ('73', '3', 'wys30201', '1553321569');
-INSERT INTO `xq_coin_consume_history` VALUES ('74', '7', 'wys30201', '1553321572');
-INSERT INTO `xq_coin_consume_history` VALUES ('75', '2', 'wys30201', '1553321609');
-INSERT INTO `xq_coin_consume_history` VALUES ('76', '2', 'wys30201', '1553321609');
-INSERT INTO `xq_coin_consume_history` VALUES ('77', '2', 'wys30201', '1553321609');
-INSERT INTO `xq_coin_consume_history` VALUES ('78', '2', 'wys30201', '1553321610');
-INSERT INTO `xq_coin_consume_history` VALUES ('79', '2', 'wys30201', '1553321610');
-INSERT INTO `xq_coin_consume_history` VALUES ('80', '2', 'wys30201', '1553321611');
-INSERT INTO `xq_coin_consume_history` VALUES ('81', '2', 'wys30201', '1553321611');
-INSERT INTO `xq_coin_consume_history` VALUES ('82', '2', 'wys30201', '1553321612');
-INSERT INTO `xq_coin_consume_history` VALUES ('83', '2', 'wys30201', '1553321612');
-INSERT INTO `xq_coin_consume_history` VALUES ('84', '2', 'wys30201', '1553321612');
-INSERT INTO `xq_coin_consume_history` VALUES ('85', '3', 'wys30201', '1553321886');
-INSERT INTO `xq_coin_consume_history` VALUES ('86', '3', 'wys30201', '1553321887');
-INSERT INTO `xq_coin_consume_history` VALUES ('87', '3', 'wys30201', '1553321887');
-INSERT INTO `xq_coin_consume_history` VALUES ('88', '3', 'wys30201', '1553321887');
-INSERT INTO `xq_coin_consume_history` VALUES ('89', '3', 'wys30201', '1553321888');
-INSERT INTO `xq_coin_consume_history` VALUES ('90', '3', 'wys30201', '1553321888');
-INSERT INTO `xq_coin_consume_history` VALUES ('91', '3', 'wys30201', '1553321902');
-INSERT INTO `xq_coin_consume_history` VALUES ('92', '2', 'wys30201', '1553322175');
-INSERT INTO `xq_coin_consume_history` VALUES ('93', '2', 'wys30201', '1553322175');
-INSERT INTO `xq_coin_consume_history` VALUES ('94', '2', 'wys30201', '1553322175');
-INSERT INTO `xq_coin_consume_history` VALUES ('95', '2', 'wys30201', '1553322177');
-INSERT INTO `xq_coin_consume_history` VALUES ('96', '2', 'wys30201', '1553322177');
-INSERT INTO `xq_coin_consume_history` VALUES ('97', '3', 'wys30201', '1553322177');
-INSERT INTO `xq_coin_consume_history` VALUES ('98', '1', 'wys30201', '1553322179');
-INSERT INTO `xq_coin_consume_history` VALUES ('99', '2', 'wys30201', '1553322209');
-INSERT INTO `xq_coin_consume_history` VALUES ('100', '2', 'wys30201', '1553322209');
-INSERT INTO `xq_coin_consume_history` VALUES ('101', '1', 'wys30201', '1553322210');
-INSERT INTO `xq_coin_consume_history` VALUES ('102', '1', 'wys30201', '1553322210');
-INSERT INTO `xq_coin_consume_history` VALUES ('103', '3', 'wys30201', '1553322212');
-INSERT INTO `xq_coin_consume_history` VALUES ('104', '3', 'wys30201', '1553322212');
-INSERT INTO `xq_coin_consume_history` VALUES ('105', '1', 'wys30201', '1553325092');
-INSERT INTO `xq_coin_consume_history` VALUES ('106', '1', 'wys30201', '1553325093');
-INSERT INTO `xq_coin_consume_history` VALUES ('107', '1', 'wys30201', '1553325093');
-INSERT INTO `xq_coin_consume_history` VALUES ('108', '1', 'wys30201', '1553325094');
-INSERT INTO `xq_coin_consume_history` VALUES ('109', '1', 'wys30201', '1553325094');
-INSERT INTO `xq_coin_consume_history` VALUES ('110', '1', 'wys30201', '1553325094');
-INSERT INTO `xq_coin_consume_history` VALUES ('111', '1', 'wys30201', '1553325095');
-INSERT INTO `xq_coin_consume_history` VALUES ('112', '1', 'wys30201', '1553325095');
-INSERT INTO `xq_coin_consume_history` VALUES ('113', '1', 'wys30201', '1553325096');
-INSERT INTO `xq_coin_consume_history` VALUES ('114', '1', 'wys30201', '1553325096');
-INSERT INTO `xq_coin_consume_history` VALUES ('115', '2', 'wys30201', '1553325099');
-INSERT INTO `xq_coin_consume_history` VALUES ('116', '1', 'wys30201', '1553325100');
-INSERT INTO `xq_coin_consume_history` VALUES ('117', '7', 'wys30201', '1553328113');
-INSERT INTO `xq_coin_consume_history` VALUES ('118', '7', 'wys30201', '1553328114');
-INSERT INTO `xq_coin_consume_history` VALUES ('119', '7', 'wys30201', '1553328114');
-INSERT INTO `xq_coin_consume_history` VALUES ('120', '3', 'wys30201', '1553333611');
-INSERT INTO `xq_coin_consume_history` VALUES ('121', '6', 'wys30201', '1553333752');
+INSERT INTO `xq_coin_consume_history` VALUES ('185', '1', 'wys30201', '1554020270');
+INSERT INTO `xq_coin_consume_history` VALUES ('186', '3', 'wys30201', '1554020271');
+INSERT INTO `xq_coin_consume_history` VALUES ('187', '2', 'wys30201', '1554020272');
+INSERT INTO `xq_coin_consume_history` VALUES ('188', '2', 'wys30201', '1554020380');
+INSERT INTO `xq_coin_consume_history` VALUES ('189', '3', 'wys30201', '1554020382');
+INSERT INTO `xq_coin_consume_history` VALUES ('190', '1', 'wys30201', '1554020383');
+INSERT INTO `xq_coin_consume_history` VALUES ('191', '2', 'wys30201', '1554020386');
+INSERT INTO `xq_coin_consume_history` VALUES ('192', '2', 'wys30201', '1554020387');
+INSERT INTO `xq_coin_consume_history` VALUES ('193', '4', 'wys30201', '1554020679');
+INSERT INTO `xq_coin_consume_history` VALUES ('194', '1', 'wys30201', '1554020920');
+INSERT INTO `xq_coin_consume_history` VALUES ('195', '2', 'wys30201', '1554021152');
+INSERT INTO `xq_coin_consume_history` VALUES ('196', '2', 'wys30201', '1554021509');
+INSERT INTO `xq_coin_consume_history` VALUES ('197', '2', 'wys30201', '1554021550');
+INSERT INTO `xq_coin_consume_history` VALUES ('198', '1', 'wys30201', '1554021567');
+INSERT INTO `xq_coin_consume_history` VALUES ('199', '7', 'wys30201', '1554032855');
+INSERT INTO `xq_coin_consume_history` VALUES ('200', '1', 'wys30201', '1554034299');
+INSERT INTO `xq_coin_consume_history` VALUES ('201', '1', 'wys30201', '1554034302');
+INSERT INTO `xq_coin_consume_history` VALUES ('202', '7', 'wys30201', '1554034343');
+INSERT INTO `xq_coin_consume_history` VALUES ('203', '3', 'wys30201', '1554036168');
+INSERT INTO `xq_coin_consume_history` VALUES ('204', '1', 'wys30201', '1554039673');
+INSERT INTO `xq_coin_consume_history` VALUES ('205', '1', 'wys30201', '1554039790');
+INSERT INTO `xq_coin_consume_history` VALUES ('206', '1', 'wys30201', '1554039880');
+INSERT INTO `xq_coin_consume_history` VALUES ('207', '1', 'wys30201', '1554039979');
+INSERT INTO `xq_coin_consume_history` VALUES ('208', '1', 'wys30201', '1554040054');
+INSERT INTO `xq_coin_consume_history` VALUES ('209', '1', 'wys30201', '1554040425');
+INSERT INTO `xq_coin_consume_history` VALUES ('210', '1', 'wys30201', '1554040433');
+INSERT INTO `xq_coin_consume_history` VALUES ('211', '3', 'wys30201', '1554040438');
+INSERT INTO `xq_coin_consume_history` VALUES ('212', '1', 'wys30201', '1554040503');
+INSERT INTO `xq_coin_consume_history` VALUES ('213', '1', 'wys30201', '1554040598');
+INSERT INTO `xq_coin_consume_history` VALUES ('214', '3', 'wys30201', '1554040611');
+INSERT INTO `xq_coin_consume_history` VALUES ('215', '3', 'wys30201', '1554040628');
+INSERT INTO `xq_coin_consume_history` VALUES ('216', '1', 'wys30201', '1554040716');
+INSERT INTO `xq_coin_consume_history` VALUES ('217', '1', 'wys30201', '1554040873');
+INSERT INTO `xq_coin_consume_history` VALUES ('218', '1', 'wys30201', '1554040964');
+INSERT INTO `xq_coin_consume_history` VALUES ('219', '3', 'wys30201', '1554041226');
+INSERT INTO `xq_coin_consume_history` VALUES ('220', '2', 'wys30201', '1554041232');
+INSERT INTO `xq_coin_consume_history` VALUES ('221', '3', 'wys30201', '1554041539');
+INSERT INTO `xq_coin_consume_history` VALUES ('222', '3', 'wys30201', '1554041569');
+INSERT INTO `xq_coin_consume_history` VALUES ('223', '1', 'wys30201', '1554041581');
+INSERT INTO `xq_coin_consume_history` VALUES ('224', '3', 'wys30201', '1554041694');
+INSERT INTO `xq_coin_consume_history` VALUES ('225', '2', 'wys30201', '1554041718');
+INSERT INTO `xq_coin_consume_history` VALUES ('226', '3', 'wys30201', '1554042187');
+INSERT INTO `xq_coin_consume_history` VALUES ('227', '2', 'wys30201', '1554042194');
+INSERT INTO `xq_coin_consume_history` VALUES ('228', '3', 'wys30201', '1554044039');
+INSERT INTO `xq_coin_consume_history` VALUES ('229', '3', 'wys30201', '1554044053');
+INSERT INTO `xq_coin_consume_history` VALUES ('230', '3', 'wys30201', '1554044053');
+INSERT INTO `xq_coin_consume_history` VALUES ('231', '3', 'wys30201', '1554044069');
+INSERT INTO `xq_coin_consume_history` VALUES ('232', '3', 'wys30201', '1554044073');
+INSERT INTO `xq_coin_consume_history` VALUES ('233', '3', 'wys30201', '1554044089');
+INSERT INTO `xq_coin_consume_history` VALUES ('234', '3', 'wys30201', '1554044667');
+INSERT INTO `xq_coin_consume_history` VALUES ('235', '3', 'wys30201', '1554044751');
+INSERT INTO `xq_coin_consume_history` VALUES ('236', '3', 'wys30201', '1554044760');
+INSERT INTO `xq_coin_consume_history` VALUES ('237', '3', 'wys30201', '1554044765');
+INSERT INTO `xq_coin_consume_history` VALUES ('238', '3', 'wys30201', '1554044800');
+INSERT INTO `xq_coin_consume_history` VALUES ('239', '1', 'wys30201', '1554044816');
+INSERT INTO `xq_coin_consume_history` VALUES ('240', '1', 'wys30201', '1554044816');
+INSERT INTO `xq_coin_consume_history` VALUES ('241', '1', 'wys30201', '1554044817');
+INSERT INTO `xq_coin_consume_history` VALUES ('242', '1', 'wys30201', '1554044820');
+INSERT INTO `xq_coin_consume_history` VALUES ('243', '1', 'wys30201', '1554044820');
+INSERT INTO `xq_coin_consume_history` VALUES ('244', '1', 'wys30201', '1554044821');
+INSERT INTO `xq_coin_consume_history` VALUES ('245', '1', 'wys30201', '1554044821');
+INSERT INTO `xq_coin_consume_history` VALUES ('246', '1', 'wys30201', '1554044824');
+INSERT INTO `xq_coin_consume_history` VALUES ('247', '1', 'wys30201', '1554044828');
+INSERT INTO `xq_coin_consume_history` VALUES ('248', '1', 'wys30201', '1554044832');
+INSERT INTO `xq_coin_consume_history` VALUES ('249', '1', 'wys30201', '1554044836');
+INSERT INTO `xq_coin_consume_history` VALUES ('250', '1', 'wys30201', '1554044840');
+INSERT INTO `xq_coin_consume_history` VALUES ('251', '1', 'wys30201', '1554044843');
+INSERT INTO `xq_coin_consume_history` VALUES ('252', '1', 'wys30201', '1554044848');
+INSERT INTO `xq_coin_consume_history` VALUES ('253', '1', 'wys30201', '1554044851');
+INSERT INTO `xq_coin_consume_history` VALUES ('254', '1', 'wys30201', '1554044855');
+INSERT INTO `xq_coin_consume_history` VALUES ('255', '1', 'wys30201', '1554044859');
+INSERT INTO `xq_coin_consume_history` VALUES ('256', '1', 'wys30201', '1554044864');
+INSERT INTO `xq_coin_consume_history` VALUES ('257', '1', 'wys30201', '1554044867');
+INSERT INTO `xq_coin_consume_history` VALUES ('258', '1', 'wys30201', '1554044871');
+INSERT INTO `xq_coin_consume_history` VALUES ('259', '1', 'wys30201', '1554044875');
+INSERT INTO `xq_coin_consume_history` VALUES ('260', '3', 'wys30201', '1554050011');
+INSERT INTO `xq_coin_consume_history` VALUES ('261', '3', 'wys30201', '1554128208');
+INSERT INTO `xq_coin_consume_history` VALUES ('262', '1', 'wys30201', '1554128304');
+INSERT INTO `xq_coin_consume_history` VALUES ('263', '1', 'wys30201', '1554128411');
+INSERT INTO `xq_coin_consume_history` VALUES ('264', '1', 'wys30201', '1554128472');
+INSERT INTO `xq_coin_consume_history` VALUES ('265', '2', 'wys30201', '1554128482');
+INSERT INTO `xq_coin_consume_history` VALUES ('266', '1', 'wys30201', '1554130064');
+INSERT INTO `xq_coin_consume_history` VALUES ('267', '2', 'wys30201', '1554130313');
+INSERT INTO `xq_coin_consume_history` VALUES ('268', '2', 'wys30201', '1554130596');
+INSERT INTO `xq_coin_consume_history` VALUES ('269', '1', 'wys30201', '1554130710');
+INSERT INTO `xq_coin_consume_history` VALUES ('270', '1', 'wys30201', '1554130739');
+INSERT INTO `xq_coin_consume_history` VALUES ('271', '3', 'wys30201', '1554130805');
+INSERT INTO `xq_coin_consume_history` VALUES ('272', '1', 'wys30202', '1554130872');
+INSERT INTO `xq_coin_consume_history` VALUES ('273', '1', 'wys30201', '1554131228');
+INSERT INTO `xq_coin_consume_history` VALUES ('274', '3', 'wys30201', '1554131253');
+INSERT INTO `xq_coin_consume_history` VALUES ('275', '3', 'wys30201', '1554131258');
+INSERT INTO `xq_coin_consume_history` VALUES ('276', '2', 'wys30201', '1554131344');
+INSERT INTO `xq_coin_consume_history` VALUES ('277', '1', 'wys30201', '1554131587');
+INSERT INTO `xq_coin_consume_history` VALUES ('278', '3', 'wys30202', '1554131612');
+INSERT INTO `xq_coin_consume_history` VALUES ('279', '3', 'wys30202', '1554131618');
+INSERT INTO `xq_coin_consume_history` VALUES ('280', '1', 'wys30202', '1554131667');
+INSERT INTO `xq_coin_consume_history` VALUES ('281', '3', 'wys30202', '1554131689');
+INSERT INTO `xq_coin_consume_history` VALUES ('282', '3', 'wys30201', '1554131715');
+INSERT INTO `xq_coin_consume_history` VALUES ('283', '2', 'wys30201', '1554132685');
+INSERT INTO `xq_coin_consume_history` VALUES ('284', '3', 'wys30201', '1554132850');
+INSERT INTO `xq_coin_consume_history` VALUES ('285', '3', 'wys30202', '1554132893');
+INSERT INTO `xq_coin_consume_history` VALUES ('286', '1', 'wys30202', '1554132916');
+INSERT INTO `xq_coin_consume_history` VALUES ('287', '3', 'wys30202', '1554132927');
+INSERT INTO `xq_coin_consume_history` VALUES ('288', '2', 'wys30202', '1554132934');
+INSERT INTO `xq_coin_consume_history` VALUES ('289', '2', 'wys30202', '1554132942');
+INSERT INTO `xq_coin_consume_history` VALUES ('290', '1', 'wys30202', '1554133062');
+INSERT INTO `xq_coin_consume_history` VALUES ('291', '1', 'wys30201', '1554133178');
+INSERT INTO `xq_coin_consume_history` VALUES ('292', '3', 'wys30202', '1554133194');
+INSERT INTO `xq_coin_consume_history` VALUES ('293', '3', 'wys30201', '1554134012');
+INSERT INTO `xq_coin_consume_history` VALUES ('294', '1', 'wys30202', '1554134024');
+INSERT INTO `xq_coin_consume_history` VALUES ('295', '1', 'wys30201', '1554134035');
+INSERT INTO `xq_coin_consume_history` VALUES ('296', '1', 'wys30201', '1554134043');
+INSERT INTO `xq_coin_consume_history` VALUES ('297', '1', 'wys30201', '1554134049');
+
+-- ----------------------------
+-- Table structure for `xq_gift_category`
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_gift_category`;
+CREATE TABLE `xq_gift_category` (
+  `position` int(11) DEFAULT NULL COMMENT '位置 （1：我的   2：房间礼品  3：房间卡包）',
+  `gift_id` int(11) DEFAULT NULL,
+  `sort` int(11) DEFAULT NULL,
+  `is_trade` int(11) DEFAULT '1' COMMENT '是否可交易（0：不可交易  1：可交易）',
+  `name` varchar(255) DEFAULT NULL COMMENT '名称'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of xq_gift_category
+-- ----------------------------
+INSERT INTO `xq_gift_category` VALUES ('1', '1', '3', '1', '玫瑰');
+INSERT INTO `xq_gift_category` VALUES ('1', '2', '5', '1', '爱心');
+INSERT INTO `xq_gift_category` VALUES ('1', '3', '4', '1', '白开水');
+INSERT INTO `xq_gift_category` VALUES ('1', '5', '6', '1', '礼品券');
+INSERT INTO `xq_gift_category` VALUES ('1', '6', '2', '1', '建房卡（1天）');
+INSERT INTO `xq_gift_category` VALUES ('1', '7', '1', '1', '延时卡');
+INSERT INTO `xq_gift_category` VALUES ('2', '1', '1', '1', '玫瑰');
+INSERT INTO `xq_gift_category` VALUES ('2', '2', '2', '1', '爱心');
+INSERT INTO `xq_gift_category` VALUES ('2', '3', '3', '1', '白开水');
+INSERT INTO `xq_gift_category` VALUES ('3', '7', '1', '1', '延时卡');
+INSERT INTO `xq_gift_category` VALUES ('1', '4', '7', '1', '入门券');
+
+-- ----------------------------
+-- Table structure for `xq_gift_expiry`
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_gift_expiry`;
+CREATE TABLE `xq_gift_expiry` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255) DEFAULT '',
+  `gift_id` int(11) DEFAULT NULL COMMENT '礼物Id',
+  `num` int(11) DEFAULT '0' COMMENT '总共可使用次数',
+  `start_time` int(11) DEFAULT '0' COMMENT '使用的开始时间',
+  `end_time` int(11) DEFAULT '0' COMMENT '使用的截至时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用来记录卡的使用期限';
+
+-- ----------------------------
+-- Records of xq_gift_expiry
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `xq_gift_item`
@@ -212,28 +296,29 @@ INSERT INTO `xq_coin_consume_history` VALUES ('121', '6', 'wys30201', '155333375
 DROP TABLE IF EXISTS `xq_gift_item`;
 CREATE TABLE `xq_gift_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `type` int(11) NOT NULL COMMENT '类型（1：礼品   2：卡券）',
-  `sort` int(11) NOT NULL COMMENT '次序',
+  `type` int(11) NOT NULL COMMENT '类型（1：礼品   2：卡券  100：固定消耗品）',
   `gift_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL COMMENT '礼品名称',
   `coin` int(11) NOT NULL COMMENT '需要的coin',
-  `is_show` int(11) NOT NULL DEFAULT '1' COMMENT '是否显示（1：显示   0：不显示）',
-  `is_trade` int(11) NOT NULL DEFAULT '1' COMMENT '是否可交易（1：可交易    0：不可交易）',
+  `value` varchar(11) NOT NULL DEFAULT '' COMMENT '数值（比如积分或者延时秒数）',
   `image` varchar(255) NOT NULL COMMENT '图片',
   `description` varchar(255) DEFAULT NULL COMMENT '描述',
+  `gif` varchar(255) DEFAULT NULL COMMENT 'gif动图',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_gift_item
 -- ----------------------------
-INSERT INTO `xq_gift_item` VALUES ('1', '1', '1', '1', '玫瑰', '2', '1', '1', '/thinkphp/image/rose.png', '赠人玫瑰，手留余香');
-INSERT INTO `xq_gift_item` VALUES ('2', '1', '2', '2', '爱心', '2', '1', '1', '/thinkphp/image/love.png', '给你的爱滔滔不绝');
-INSERT INTO `xq_gift_item` VALUES ('3', '1', '3', '3', '白开水', '2', '1', '1', '/thinkphp/image/bottle.png', '平平淡淡');
-INSERT INTO `xq_gift_item` VALUES ('4', '1', '4', '4', '入门券', '50', '1', '1', '/thinkphp/image/card_enter_room.png', '用于免费进入房间一次');
-INSERT INTO `xq_gift_item` VALUES ('5', '1', '5', '5', '礼品券', '2', '1', '1', '/thinkphp/image/card_gift.png', '可兑换2钻石的礼物，只能兑换一次');
-INSERT INTO `xq_gift_item` VALUES ('6', '2', '6', '6', '建房卡（1天）', '100', '1', '1', '/thinkphp/image/card_jianfang.png', '可用于1天免费建房');
-INSERT INTO `xq_gift_item` VALUES ('7', '2', '7', '7', '延时卡', '300', '1', '1', '/thinkphp/image/card_yanshi.png', '在房间中当自己发言时，使用后可增加30s的发言时间');
+INSERT INTO `xq_gift_item` VALUES ('1', '1', '1', '玫瑰', '2', '0', '/thinkphp/image/rose.png', '赠人玫瑰，手留余香', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('2', '1', '2', '爱心', '2', '0', '/thinkphp/image/love.png', '给你的爱滔滔不绝', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('3', '1', '3', '白开水', '2', '0', '/thinkphp/image/bottle.png', '平平淡淡', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('4', '1', '4', '入门券', '50', '0', '/thinkphp/image/card_enter_room.png', '用于免费进入房间一次', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('5', '1', '5', '礼品券', '2', '0', '/thinkphp/image/card_gift.png', '可兑换2钻石的礼物，只能兑换一次', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('6', '2', '6', '建房卡（1天）', '100', '0', '/thinkphp/image/card_jianfang.png', '可用于1天免费建房', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('7', '2', '7', '延时卡', '300', '30', '/thinkphp/image/card_yanshi.png', '在房间中当自己发言时，使用后可增加30s的发言时间', '/thinkphp/image/gif_love.gif');
+INSERT INTO `xq_gift_item` VALUES ('8', '100', '1000', '创建房间', '2', '', '', null, null);
+INSERT INTO `xq_gift_item` VALUES ('9', '100', '1001', '加入房间', '1', '', '', null, null);
 
 -- ----------------------------
 -- Table structure for `xq_gift_user`
@@ -246,75 +331,124 @@ CREATE TABLE `xq_gift_user` (
   `to_user` varchar(255) DEFAULT NULL COMMENT '来自用户名',
   `create_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_gift_user
 -- ----------------------------
-INSERT INTO `xq_gift_user` VALUES ('1', '1', 'wys30201', 'wys30201', '1553317247');
-INSERT INTO `xq_gift_user` VALUES ('2', '1', 'wys30201', 'wys30201', '1553317247');
-INSERT INTO `xq_gift_user` VALUES ('3', '1', 'wys30201', 'wys30201', '1553317248');
-INSERT INTO `xq_gift_user` VALUES ('4', '1', 'wys30201', 'wys30201', '1553317248');
-INSERT INTO `xq_gift_user` VALUES ('5', '1', 'wys30201', 'wys30201', '1553317249');
-INSERT INTO `xq_gift_user` VALUES ('6', '1', 'wys30201', 'wys30201', '1553317249');
-INSERT INTO `xq_gift_user` VALUES ('7', '1', 'wys30201', 'wys30201', '1553317249');
-INSERT INTO `xq_gift_user` VALUES ('8', '1', 'wys30201', 'wys30201', '1553317249');
-INSERT INTO `xq_gift_user` VALUES ('9', '1', 'wys30201', 'wys30201', '1553317249');
-INSERT INTO `xq_gift_user` VALUES ('10', '5', 'wys30201', 'wys30201', '1553317251');
-INSERT INTO `xq_gift_user` VALUES ('11', '5', 'wys30201', 'wys30201', '1553317254');
-INSERT INTO `xq_gift_user` VALUES ('12', '6', 'wys30201', 'wys30201', '1553317256');
-INSERT INTO `xq_gift_user` VALUES ('13', '6', 'wys30201', 'wys30201', '1553317256');
-INSERT INTO `xq_gift_user` VALUES ('14', '6', 'wys30201', 'wys30201', '1553317257');
-INSERT INTO `xq_gift_user` VALUES ('15', '6', 'wys30201', 'wys30201', '1553317257');
-INSERT INTO `xq_gift_user` VALUES ('16', '3', 'wys30201', 'wys30201', '1553321569');
-INSERT INTO `xq_gift_user` VALUES ('17', '7', 'wys30201', 'wys30201', '1553321573');
-INSERT INTO `xq_gift_user` VALUES ('18', '2', 'wys30201', 'wys30201', '1553321610');
-INSERT INTO `xq_gift_user` VALUES ('19', '2', 'wys30201', 'wys30201', '1553321610');
-INSERT INTO `xq_gift_user` VALUES ('20', '2', 'wys30201', 'wys30201', '1553321611');
-INSERT INTO `xq_gift_user` VALUES ('21', '2', 'wys30201', 'wys30201', '1553321611');
-INSERT INTO `xq_gift_user` VALUES ('22', '2', 'wys30201', 'wys30201', '1553321611');
-INSERT INTO `xq_gift_user` VALUES ('23', '2', 'wys30201', 'wys30201', '1553321611');
-INSERT INTO `xq_gift_user` VALUES ('24', '2', 'wys30201', 'wys30201', '1553321612');
-INSERT INTO `xq_gift_user` VALUES ('25', '2', 'wys30201', 'wys30201', '1553321612');
-INSERT INTO `xq_gift_user` VALUES ('26', '2', 'wys30201', 'wys30201', '1553321612');
-INSERT INTO `xq_gift_user` VALUES ('27', '2', 'wys30201', 'wys30201', '1553321613');
-INSERT INTO `xq_gift_user` VALUES ('28', '3', 'wys30201', 'wys30201', '1553321887');
-INSERT INTO `xq_gift_user` VALUES ('29', '3', 'wys30201', 'wys30201', '1553321888');
-INSERT INTO `xq_gift_user` VALUES ('30', '3', 'wys30201', 'wys30201', '1553321888');
-INSERT INTO `xq_gift_user` VALUES ('31', '3', 'wys30201', 'wys30201', '1553321888');
-INSERT INTO `xq_gift_user` VALUES ('32', '3', 'wys30201', 'wys30201', '1553321888');
-INSERT INTO `xq_gift_user` VALUES ('33', '3', 'wys30201', 'wys30201', '1553321889');
-INSERT INTO `xq_gift_user` VALUES ('34', '3', 'wys30201', 'wys30201', '1553321902');
-INSERT INTO `xq_gift_user` VALUES ('35', '2', 'wys30201', 'wys30201', '1553322175');
-INSERT INTO `xq_gift_user` VALUES ('36', '2', 'wys30201', 'wys30201', '1553322176');
-INSERT INTO `xq_gift_user` VALUES ('37', '2', 'wys30201', 'wys30201', '1553322178');
-INSERT INTO `xq_gift_user` VALUES ('38', '3', 'wys30201', 'wys30201', '1553322178');
-INSERT INTO `xq_gift_user` VALUES ('39', '2', 'wys30201', 'wys30201', '1553322178');
-INSERT INTO `xq_gift_user` VALUES ('40', '2', 'wys30201', 'wys30201', '1553322178');
-INSERT INTO `xq_gift_user` VALUES ('41', '1', 'wys30201', 'wys30201', '1553322179');
-INSERT INTO `xq_gift_user` VALUES ('42', '2', 'wys30201', 'wys30201', '1553322209');
-INSERT INTO `xq_gift_user` VALUES ('43', '2', 'wys30201', 'wys30201', '1553322209');
-INSERT INTO `xq_gift_user` VALUES ('44', '1', 'wys30201', 'wys30201', '1553322210');
-INSERT INTO `xq_gift_user` VALUES ('45', '1', 'wys30201', 'wys30201', '1553322211');
-INSERT INTO `xq_gift_user` VALUES ('46', '3', 'wys30201', 'wys30201', '1553322212');
-INSERT INTO `xq_gift_user` VALUES ('47', '3', 'wys30201', 'wys30201', '1553322213');
-INSERT INTO `xq_gift_user` VALUES ('48', '1', 'wys30201', 'wys30201', '1553325094');
-INSERT INTO `xq_gift_user` VALUES ('49', '1', 'wys30201', 'wys30201', '1553325094');
-INSERT INTO `xq_gift_user` VALUES ('50', '1', 'wys30201', 'wys30201', '1553325094');
-INSERT INTO `xq_gift_user` VALUES ('51', '1', 'wys30201', 'wys30201', '1553325094');
-INSERT INTO `xq_gift_user` VALUES ('52', '1', 'wys30201', 'wys30201', '1553325095');
-INSERT INTO `xq_gift_user` VALUES ('53', '1', 'wys30201', 'wys30201', '1553325095');
-INSERT INTO `xq_gift_user` VALUES ('54', '1', 'wys30201', 'wys30201', '1553325095');
-INSERT INTO `xq_gift_user` VALUES ('55', '1', 'wys30201', 'wys30201', '1553325096');
-INSERT INTO `xq_gift_user` VALUES ('56', '1', 'wys30201', 'wys30201', '1553325096');
-INSERT INTO `xq_gift_user` VALUES ('57', '1', 'wys30201', 'wys30201', '1553325097');
-INSERT INTO `xq_gift_user` VALUES ('58', '2', 'wys30201', 'wys30201', '1553325099');
-INSERT INTO `xq_gift_user` VALUES ('59', '1', 'wys30201', 'wys30201', '1553325100');
-INSERT INTO `xq_gift_user` VALUES ('60', '7', 'wys30201', 'wys30201', '1553328114');
-INSERT INTO `xq_gift_user` VALUES ('61', '7', 'wys30201', 'wys30201', '1553328114');
-INSERT INTO `xq_gift_user` VALUES ('62', '7', 'wys30201', 'wys30201', '1553328115');
-INSERT INTO `xq_gift_user` VALUES ('63', '3', 'wys30201', 'wys30201', '1553333611');
-INSERT INTO `xq_gift_user` VALUES ('64', '6', 'wys30201', 'wys30201', '1553333752');
+INSERT INTO `xq_gift_user` VALUES ('114', '3', 'wys30201', 'wys30201', '1554020271');
+INSERT INTO `xq_gift_user` VALUES ('116', '2', 'wys30201', 'wys30202', '1554020344');
+INSERT INTO `xq_gift_user` VALUES ('117', '2', 'wys30201', 'wys30202', '1554020380');
+INSERT INTO `xq_gift_user` VALUES ('118', '3', 'wys30201', 'wys30202', '1554020382');
+INSERT INTO `xq_gift_user` VALUES ('119', '1', 'wys30201', 'wys30202', '1554020383');
+INSERT INTO `xq_gift_user` VALUES ('120', '2', 'wys30201', 'wys30202', '1554020386');
+INSERT INTO `xq_gift_user` VALUES ('121', '2', 'wys30201', 'wys30202', '1554020387');
+INSERT INTO `xq_gift_user` VALUES ('122', '4', 'wys30201', 'wys30201', '1554020679');
+INSERT INTO `xq_gift_user` VALUES ('123', '1', 'wys30201', 'wys30202', '1554020920');
+INSERT INTO `xq_gift_user` VALUES ('127', '1', 'wys30201', 'wys30202', '1554021567');
+INSERT INTO `xq_gift_user` VALUES ('128', '2', 'wys30201', 'wys30202', '1554021586');
+INSERT INTO `xq_gift_user` VALUES ('129', '2', 'wys30201', 'wys30202', '1554021586');
+INSERT INTO `xq_gift_user` VALUES ('130', '1', 'wys30201', 'wys30202', '1554021587');
+INSERT INTO `xq_gift_user` VALUES ('131', '2', 'wys30201', 'wys30202', '1554021588');
+INSERT INTO `xq_gift_user` VALUES ('132', '7', 'wys30201', 'wys30202', '1554032855');
+INSERT INTO `xq_gift_user` VALUES ('135', '7', 'wys30201', 'wys30201', '1554034343');
+INSERT INTO `xq_gift_user` VALUES ('136', '3', 'wys30201', 'wys30202', '1554036168');
+INSERT INTO `xq_gift_user` VALUES ('137', '1', 'wys30201', 'wys30202', '1554037020');
+INSERT INTO `xq_gift_user` VALUES ('138', '1', 'wys30201', 'wys30202', '1554037224');
+INSERT INTO `xq_gift_user` VALUES ('139', '1', 'wys30201', 'wys30202', '1554039673');
+INSERT INTO `xq_gift_user` VALUES ('140', '1', 'wys30201', 'wys30202', '1554039790');
+INSERT INTO `xq_gift_user` VALUES ('141', '1', 'wys30201', 'wys30202', '1554039880');
+INSERT INTO `xq_gift_user` VALUES ('142', '1', 'wys30201', 'wys30202', '1554039979');
+INSERT INTO `xq_gift_user` VALUES ('143', '1', 'wys30201', 'wys30202', '1554040054');
+INSERT INTO `xq_gift_user` VALUES ('144', '1', 'wys30201', 'wys30202', '1554040425');
+INSERT INTO `xq_gift_user` VALUES ('145', '1', 'wys30201', 'wys30202', '1554040433');
+INSERT INTO `xq_gift_user` VALUES ('146', '3', 'wys30201', 'wys30202', '1554040438');
+INSERT INTO `xq_gift_user` VALUES ('147', '1', 'wys30201', 'wys30202', '1554040503');
+INSERT INTO `xq_gift_user` VALUES ('148', '1', 'wys30201', 'wys30202', '1554040598');
+INSERT INTO `xq_gift_user` VALUES ('149', '3', 'wys30201', 'wys30202', '1554040611');
+INSERT INTO `xq_gift_user` VALUES ('150', '3', 'wys30201', 'wys30202', '1554040628');
+INSERT INTO `xq_gift_user` VALUES ('151', '1', 'wys30201', 'wys30202', '1554040716');
+INSERT INTO `xq_gift_user` VALUES ('152', '1', 'wys30201', 'wys30202', '1554040873');
+INSERT INTO `xq_gift_user` VALUES ('153', '1', 'wys30201', 'wys30202', '1554040964');
+INSERT INTO `xq_gift_user` VALUES ('154', '3', 'wys30201', 'wys30202', '1554041226');
+INSERT INTO `xq_gift_user` VALUES ('155', '2', 'wys30201', 'wys30202', '1554041232');
+INSERT INTO `xq_gift_user` VALUES ('156', '3', 'wys30201', 'wys30202', '1554041539');
+INSERT INTO `xq_gift_user` VALUES ('157', '3', 'wys30201', 'wys30202', '1554041569');
+INSERT INTO `xq_gift_user` VALUES ('158', '1', 'wys30201', 'wys30202', '1554041581');
+INSERT INTO `xq_gift_user` VALUES ('159', '3', 'wys30201', 'wys30202', '1554041694');
+INSERT INTO `xq_gift_user` VALUES ('160', '2', 'wys30201', 'wys30202', '1554041718');
+INSERT INTO `xq_gift_user` VALUES ('161', '3', 'wys30201', 'wys30202', '1554042187');
+INSERT INTO `xq_gift_user` VALUES ('162', '2', 'wys30201', 'wys30202', '1554042194');
+INSERT INTO `xq_gift_user` VALUES ('163', '3', 'wys30201', 'wys30202', '1554044039');
+INSERT INTO `xq_gift_user` VALUES ('164', '3', 'wys30201', 'wys30202', '1554044053');
+INSERT INTO `xq_gift_user` VALUES ('165', '3', 'wys30201', 'wys30202', '1554044053');
+INSERT INTO `xq_gift_user` VALUES ('166', '3', 'wys30201', 'wys30202', '1554044069');
+INSERT INTO `xq_gift_user` VALUES ('167', '3', 'wys30201', 'wys30202', '1554044073');
+INSERT INTO `xq_gift_user` VALUES ('168', '3', 'wys30201', 'wys30202', '1554044089');
+INSERT INTO `xq_gift_user` VALUES ('169', '3', 'wys30201', 'wys30202', '1554044667');
+INSERT INTO `xq_gift_user` VALUES ('170', '3', 'wys30201', 'wys30202', '1554044751');
+INSERT INTO `xq_gift_user` VALUES ('171', '3', 'wys30201', 'wys30202', '1554044760');
+INSERT INTO `xq_gift_user` VALUES ('172', '3', 'wys30201', 'wys30202', '1554044765');
+INSERT INTO `xq_gift_user` VALUES ('173', '3', 'wys30201', 'wys30202', '1554044800');
+INSERT INTO `xq_gift_user` VALUES ('174', '1', 'wys30201', 'wys30202', '1554044816');
+INSERT INTO `xq_gift_user` VALUES ('175', '1', 'wys30201', 'wys30202', '1554044816');
+INSERT INTO `xq_gift_user` VALUES ('176', '1', 'wys30201', 'wys30202', '1554044817');
+INSERT INTO `xq_gift_user` VALUES ('177', '1', 'wys30201', 'wys30202', '1554044820');
+INSERT INTO `xq_gift_user` VALUES ('178', '1', 'wys30201', 'wys30202', '1554044820');
+INSERT INTO `xq_gift_user` VALUES ('179', '1', 'wys30201', 'wys30202', '1554044821');
+INSERT INTO `xq_gift_user` VALUES ('180', '1', 'wys30201', 'wys30202', '1554044821');
+INSERT INTO `xq_gift_user` VALUES ('181', '1', 'wys30201', 'wys30202', '1554044824');
+INSERT INTO `xq_gift_user` VALUES ('182', '1', 'wys30201', 'wys30202', '1554044828');
+INSERT INTO `xq_gift_user` VALUES ('183', '1', 'wys30201', 'wys30202', '1554044832');
+INSERT INTO `xq_gift_user` VALUES ('184', '1', 'wys30201', 'wys30202', '1554044836');
+INSERT INTO `xq_gift_user` VALUES ('185', '1', 'wys30201', 'wys30202', '1554044840');
+INSERT INTO `xq_gift_user` VALUES ('186', '1', 'wys30201', 'wys30202', '1554044843');
+INSERT INTO `xq_gift_user` VALUES ('187', '1', 'wys30201', 'wys30202', '1554044848');
+INSERT INTO `xq_gift_user` VALUES ('188', '1', 'wys30201', 'wys30202', '1554044851');
+INSERT INTO `xq_gift_user` VALUES ('189', '1', 'wys30201', 'wys30202', '1554044855');
+INSERT INTO `xq_gift_user` VALUES ('190', '1', 'wys30201', 'wys30202', '1554044859');
+INSERT INTO `xq_gift_user` VALUES ('191', '1', 'wys30201', 'wys30202', '1554044864');
+INSERT INTO `xq_gift_user` VALUES ('192', '1', 'wys30201', 'wys30202', '1554044867');
+INSERT INTO `xq_gift_user` VALUES ('193', '1', 'wys30201', 'wys30202', '1554044871');
+INSERT INTO `xq_gift_user` VALUES ('194', '1', 'wys30201', 'wys30202', '1554044875');
+INSERT INTO `xq_gift_user` VALUES ('195', '3', 'wys30201', 'wys30202', '1554050011');
+INSERT INTO `xq_gift_user` VALUES ('196', '3', 'wys30201', 'wys30202', '1554128208');
+INSERT INTO `xq_gift_user` VALUES ('197', '1', 'wys30201', 'wys30202', '1554128304');
+INSERT INTO `xq_gift_user` VALUES ('198', '1', 'wys30201', 'wys30202', '1554128411');
+INSERT INTO `xq_gift_user` VALUES ('199', '1', 'wys30201', 'wys30202', '1554128472');
+INSERT INTO `xq_gift_user` VALUES ('200', '2', 'wys30201', 'wys30202', '1554128482');
+INSERT INTO `xq_gift_user` VALUES ('201', '1', 'wys30201', 'wys30202', '1554130064');
+INSERT INTO `xq_gift_user` VALUES ('202', '2', 'wys30201', 'wys30202', '1554130313');
+INSERT INTO `xq_gift_user` VALUES ('203', '2', 'wys30201', 'wys30202', '1554130596');
+INSERT INTO `xq_gift_user` VALUES ('204', '1', 'wys30201', 'wys30202', '1554130710');
+INSERT INTO `xq_gift_user` VALUES ('205', '1', 'wys30201', 'wys30202', '1554130739');
+INSERT INTO `xq_gift_user` VALUES ('206', '3', 'wys30201', 'wys30202', '1554130805');
+INSERT INTO `xq_gift_user` VALUES ('207', '1', 'wys30202', 'wys30201', '1554130872');
+INSERT INTO `xq_gift_user` VALUES ('208', '1', 'wys30201', 'wys30202', '1554131228');
+INSERT INTO `xq_gift_user` VALUES ('209', '3', 'wys30201', 'wys30202', '1554131253');
+INSERT INTO `xq_gift_user` VALUES ('210', '3', 'wys30201', 'wys30202', '1554131258');
+INSERT INTO `xq_gift_user` VALUES ('211', '2', 'wys30201', 'wys30202', '1554131344');
+INSERT INTO `xq_gift_user` VALUES ('212', '1', 'wys30201', 'wys30202', '1554131587');
+INSERT INTO `xq_gift_user` VALUES ('213', '3', 'wys30202', 'wys30201', '1554131612');
+INSERT INTO `xq_gift_user` VALUES ('214', '3', 'wys30202', 'wys30201', '1554131618');
+INSERT INTO `xq_gift_user` VALUES ('215', '1', 'wys30202', 'wys30201', '1554131667');
+INSERT INTO `xq_gift_user` VALUES ('216', '3', 'wys30202', 'wys30201', '1554131689');
+INSERT INTO `xq_gift_user` VALUES ('217', '3', 'wys30201', 'wys30202', '1554131715');
+INSERT INTO `xq_gift_user` VALUES ('218', '2', 'wys30201', 'wys30202', '1554132685');
+INSERT INTO `xq_gift_user` VALUES ('219', '3', 'wys30201', 'wys30202', '1554132850');
+INSERT INTO `xq_gift_user` VALUES ('220', '3', 'wys30202', 'wys30201', '1554132893');
+INSERT INTO `xq_gift_user` VALUES ('221', '1', 'wys30202', 'wys30201', '1554132916');
+INSERT INTO `xq_gift_user` VALUES ('222', '3', 'wys30202', 'wys30201', '1554132927');
+INSERT INTO `xq_gift_user` VALUES ('223', '2', 'wys30202', 'wys30201', '1554132934');
+INSERT INTO `xq_gift_user` VALUES ('224', '2', 'wys30202', 'wys30201', '1554132942');
+INSERT INTO `xq_gift_user` VALUES ('225', '1', 'wys30202', 'wys30201', '1554133062');
+INSERT INTO `xq_gift_user` VALUES ('226', '1', 'wys30201', 'wys30202', '1554133178');
+INSERT INTO `xq_gift_user` VALUES ('227', '3', 'wys30202', 'wys30201', '1554133194');
+INSERT INTO `xq_gift_user` VALUES ('228', '3', 'wys30201', 'wys30202', '1554134012');
+INSERT INTO `xq_gift_user` VALUES ('229', '1', 'wys30202', 'wys30201', '1554134024');
+INSERT INTO `xq_gift_user` VALUES ('230', '1', 'wys30201', 'wys30202', '1554134035');
+INSERT INTO `xq_gift_user` VALUES ('231', '1', 'wys30201', 'wys30202', '1554134043');
+INSERT INTO `xq_gift_user` VALUES ('232', '1', 'wys30201', 'wys30202', '1554134049');
 
 -- ----------------------------
 -- Table structure for `xq_pay_item`
@@ -323,20 +457,21 @@ DROP TABLE IF EXISTS `xq_pay_item`;
 CREATE TABLE `xq_pay_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `coin` int(11) NOT NULL DEFAULT '0' COMMENT '钻石数',
-  `money` int(11) NOT NULL DEFAULT '0' COMMENT '人民币',
+  `money` int(11) NOT NULL DEFAULT '0' COMMENT '人民币（分）',
   `bonus` int(11) NOT NULL DEFAULT '0' COMMENT '额外奖励',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '次序',
+  `description` varchar(255) NOT NULL DEFAULT '' COMMENT '商品描述',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_pay_item
 -- ----------------------------
-INSERT INTO `xq_pay_item` VALUES ('1', '60', '6', '0', '1');
-INSERT INTO `xq_pay_item` VALUES ('2', '300', '30', '0', '3');
-INSERT INTO `xq_pay_item` VALUES ('3', '980', '98', '0', '4');
-INSERT INTO `xq_pay_item` VALUES ('4', '1980', '198', '0', '5');
-INSERT INTO `xq_pay_item` VALUES ('5', '100', '10', '0', '2');
+INSERT INTO `xq_pay_item` VALUES ('1', '60', '60', '0', '1', '60钻石');
+INSERT INTO `xq_pay_item` VALUES ('2', '300', '300', '0', '3', '300钻石');
+INSERT INTO `xq_pay_item` VALUES ('3', '980', '980', '0', '4', '980钻石');
+INSERT INTO `xq_pay_item` VALUES ('4', '1980', '1980', '0', '5', '1980钻石');
+INSERT INTO `xq_pay_item` VALUES ('5', '100', '100', '0', '2', '100钻石');
 
 -- ----------------------------
 -- Table structure for `xq_pay_order`
@@ -354,32 +489,18 @@ CREATE TABLE `xq_pay_order` (
   `create_time` bigint(20) DEFAULT NULL COMMENT '生产时间',
   `modify_time` bigint(20) DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_pay_order
 -- ----------------------------
-INSERT INTO `xq_pay_order` VALUES ('2', 'O2019031997100495', '2019032055974954', '1', 'wys30201', '60', '6', '1', '1553004490', '1553093591');
-INSERT INTO `xq_pay_order` VALUES ('3', 'O2019031997101555', '2019031910152515', '1', 'wys30201', '60', '6', '1', '1553004554', '1553011054');
-INSERT INTO `xq_pay_order` VALUES ('4', 'O2019031952101499', '2019032155491005', '1', 'wys30201', '60', '6', '1', '1553004788', '1553098999');
-INSERT INTO `xq_pay_order` VALUES ('5', 'O2019032349985498', '2019032356514898', '1', 'wys30201', '60', '6', '1', '1553325809', '1553325896');
-INSERT INTO `xq_pay_order` VALUES ('6', 'O2019032353509954', '2019032354102515', '1', 'wys30201', '60', '6', '1', '1553325829', '1553325958');
-INSERT INTO `xq_pay_order` VALUES ('7', 'O2019032350515350', '2019032355100495', '1', 'wys30201', '60', '6', '1', '1553325986', '1553325991');
-INSERT INTO `xq_pay_order` VALUES ('8', 'O2019032357554852', '2019032351101101', '1', 'wys30201', '60', '6', '1', '1553327433', '1553327523');
-INSERT INTO `xq_pay_order` VALUES ('9', 'O2019032349565450', '2019032350485751', '1', 'wys30201', '60', '6', '1', '1553327537', '1553327538');
-INSERT INTO `xq_pay_order` VALUES ('10', 'O2019032350985455', '2019032350101985', '1', 'wys30201', '60', '6', '1', '1553327570', '1553327570');
-INSERT INTO `xq_pay_order` VALUES ('11', 'O2019032397531021', '2019032397575052', '1', 'wys30201', '100', '10', '1', '1553327578', '1553327578');
-INSERT INTO `xq_pay_order` VALUES ('12', 'O2019032353555551', '2019032353985698', '1', 'wys30201', '1980', '198', '1', '1553327589', '1553327589');
-INSERT INTO `xq_pay_order` VALUES ('13', 'O2019032352535051', '2019032352565753', '1', 'wys30201', '60', '6', '1', '1553333588', '1553333588');
-INSERT INTO `xq_pay_order` VALUES ('14', 'O2019032398501005', '2019032398554910', '1', 'wys30201', '60', '6', '1', '1553333595', '1553333595');
-INSERT INTO `xq_pay_order` VALUES ('15', 'O2019032598529957', '2019032599555399', '1', 'wys30201', '60', '6', '1', '1553522747', '1553522748');
-INSERT INTO `xq_pay_order` VALUES ('16', 'O2019032551100505', '2019032552495710', '1', 'wys30201', '60', '6', '1', '1553523267', '1553523268');
-INSERT INTO `xq_pay_order` VALUES ('17', 'O2019032557541005', '2019032557975153', '1', 'wys30201', '60', '6', '1', '1553523577', '1553523577');
-INSERT INTO `xq_pay_order` VALUES ('18', 'O2019032551495457', '2019032551525697', '1', 'wys30201', '100', '10', '1', '1553525043', '1553525043');
-INSERT INTO `xq_pay_order` VALUES ('19', 'O2019032553525249', '2019032553555457', '1', 'wys30201', '60', '6', '1', '1553525061', '1553525061');
-INSERT INTO `xq_pay_order` VALUES ('20', 'O2019032553511015', '2019032553555554', '1', 'wys30201', '60', '6', '1', '1553525189', '1553525189');
-INSERT INTO `xq_pay_order` VALUES ('21', 'O2019032556481021', '2019032556511001', '1', 'wys30201', '1980', '198', '1', '1553525720', '1553525720');
-INSERT INTO `xq_pay_order` VALUES ('22', 'O2019032550525599', '2019032550575752', '1', 'wys30201', '60', '6', '1', '1553526530', '1553526530');
+INSERT INTO `xq_pay_order` VALUES ('26', 'O2019033156102495', '2019033157495754', '1', 'wys30201', '60', '60', '1', '1554021496', '1554021497');
+INSERT INTO `xq_pay_order` VALUES ('27', 'O2019033199985153', '2019033199100485', '1', 'wys30201', '60', '60', '1', '1554032652', '1554032652');
+INSERT INTO `xq_pay_order` VALUES ('28', 'O2019033156519798', '2019033156544810', '1', 'wys30201', '60', '60', '1', '1554032840', '1554032840');
+INSERT INTO `xq_pay_order` VALUES ('29', 'O2019033110198535', '2019033110110048', '1', 'wys30201', '100', '100', '1', '1554032846', '1554032846');
+INSERT INTO `xq_pay_order` VALUES ('30', 'O2019033148534854', '2019033148545356', '1', 'wys30201', '100', '100', '1', '1554032848', '1554032848');
+INSERT INTO `xq_pay_order` VALUES ('31', 'O2019033148559949', '2019033148575210', '1', 'wys30201', '300', '300', '1', '1554034336', '1554034336');
+INSERT INTO `xq_pay_order` VALUES ('32', 'O2019033149101511', '2019033150484810', '1', 'wys30201', '300', '300', '1', '1554044081', '1554044082');
 
 -- ----------------------------
 -- Table structure for `xq_room_record`
@@ -394,7 +515,7 @@ CREATE TABLE `xq_room_record` (
   `exit_time` int(11) NOT NULL COMMENT '退出时间',
   `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
 
 -- ----------------------------
 -- Records of xq_room_record
@@ -469,6 +590,33 @@ INSERT INTO `xq_room_record` VALUES ('67', '15380262', 'wys30201', '0', '1547821
 INSERT INTO `xq_room_record` VALUES ('68', '15395858', 'wys30201', '0', '1548571603', '1548571609', '1');
 INSERT INTO `xq_room_record` VALUES ('69', '17504623', 'wys30201', '0', '1548571670', '1548571772', '1');
 INSERT INTO `xq_room_record` VALUES ('70', '17504627', 'wys30201', '0', '1548571894', '1548571897', '1');
+INSERT INTO `xq_room_record` VALUES ('71', '17741211', 'wys30201', '0', '1554129881', '1554129913', '1');
+INSERT INTO `xq_room_record` VALUES ('72', '17741219', 'wys30201', '0', '1554130045', '1554130136', '1');
+INSERT INTO `xq_room_record` VALUES ('73', '17741219', 'wys30202', '0', '1554130049', '1554130117', '1');
+INSERT INTO `xq_room_record` VALUES ('74', '17741233', 'wys30201', '0', '1554130285', '1554130383', '1');
+INSERT INTO `xq_room_record` VALUES ('75', '17741233', 'wys30202', '0', '1554130305', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('76', '17741259', 'wys30201', '0', '1554130583', '1554130970', '1');
+INSERT INTO `xq_room_record` VALUES ('77', '17741259', 'wys30202', '0', '1554130586', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('78', '17741297', 'wys30201', '0', '1554131194', '1554131288', '1');
+INSERT INTO `xq_room_record` VALUES ('79', '17741297', 'wys30202', '0', '1554131197', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('80', '17741305', 'wys30201', '0', '1554131330', '1554131393', '1');
+INSERT INTO `xq_room_record` VALUES ('81', '17741305', 'wys30202', '0', '1554131332', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('82', '17741321', 'wys30201', '0', '1554131567', '1554131849', '1');
+INSERT INTO `xq_room_record` VALUES ('83', '17741321', 'wys30202', '0', '1554131574', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('84', '17741361', 'wys30201', '0', '1554132336', '1554132584', '1');
+INSERT INTO `xq_room_record` VALUES ('85', '17741367', 'wys30201', '0', '1554132393', '1554132592', '1');
+INSERT INTO `xq_room_record` VALUES ('86', '17741361', 'wys30202', '0', '1554132401', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('87', '15632592', 'wys30201', '0', '1554132662', '1554132722', '1');
+INSERT INTO `xq_room_record` VALUES ('88', '15632592', 'wys30202', '0', '1554132665', '1554132720', '1');
+INSERT INTO `xq_room_record` VALUES ('89', '17741395', 'wys30201', '0', '1554132839', '1554132997', '1');
+INSERT INTO `xq_room_record` VALUES ('90', '17741395', 'wys30202', '0', '1554132843', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('91', '15632614', 'wys30201', '0', '1554133048', '1554133079', '1');
+INSERT INTO `xq_room_record` VALUES ('92', '15632614', 'wys30202', '0', '1554133052', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('93', '15632618', 'wys30201', '0', '1554133090', '1554133095', '1');
+INSERT INTO `xq_room_record` VALUES ('94', '15632626', 'wys30201', '0', '1554133166', '1554133203', '1');
+INSERT INTO `xq_room_record` VALUES ('95', '15632626', 'wys30202', '0', '1554133169', '0', '1');
+INSERT INTO `xq_room_record` VALUES ('96', '17741471', 'wys30201', '0', '1554133989', '1554134058', '1');
+INSERT INTO `xq_room_record` VALUES ('97', '17741471', 'wys30202', '0', '1554134002', '0', '1');
 
 -- ----------------------------
 -- Table structure for `xq_user`
@@ -545,8 +693,8 @@ CREATE TABLE `xq_user_info` (
 -- ----------------------------
 -- Records of xq_user_info
 -- ----------------------------
-INSERT INTO `xq_user_info` VALUES ('1', '1', 'wys30201', '神龙', '男', 'angel', '0', '4571', '26', '172', '博士及以上', 'IT工程师', '湖南', '0', '深圳市南山区', '', '/thinkphp/upload/XQ/IMG_20181120001732_901.jpg', '2018-05-15 21:57:43', '2018-12-02 0:49:11', '我的世界我做主');
-INSERT INTO `xq_user_info` VALUES ('4', '10', 'wys30202', '莹宝', '女', 'guest', '0', '-4', '23', '170', '本科', 'IT', '广东', '0', '长沙', '', '/thinkphp/upload/XQ/IMG_20180616164817_283.jpg', '2018-05-16 23:59:15', '2018-08-03 23:57:16', '');
+INSERT INTO `xq_user_info` VALUES ('1', '1', 'wys30201', '神龙', '男', 'angel', '0', '222', '26', '172', '博士及以上', 'IT工程师', '湖南', '0', '深圳市南山区', '', '/thinkphp/upload/XQ/IMG_20181120001732_901.jpg', '2018-05-15 21:57:43', '2018-12-02 0:49:11', '我的世界我做主');
+INSERT INTO `xq_user_info` VALUES ('4', '10', 'wys30202', '莹宝', '女', 'guest', '0', '466', '23', '170', '本科', 'IT', '广东', '0', '长沙', '', '/thinkphp/upload/XQ/IMG_20180616164817_283.jpg', '2018-05-16 23:59:15', '2018-08-03 23:57:16', '');
 INSERT INTO `xq_user_info` VALUES ('5', '12', 'wys30203', '孤星', '女', 'guest', '0', '0', '22', '158', '硕士', '销售', '湖北', '0', '武汉', '', '/thinkphp/upload/XQ/IMG_20190112162444_308.jpg', '2018-05-30 23:31:29', '2019-01-13 0:24:46', '');
 INSERT INTO `xq_user_info` VALUES ('6', '15', 'wys30204', '如风', '男', 'guest', '0', '0', '27', '183', '博士', '工程经理', '湖南', '0', '南山科技园', '', '/thinkphp/upload/XQ/IMG_20180617104128_144.jpg', '2018-05-31 21:37:17', '2018-12-01 22:27:14', '新高浮雕升高个');
 INSERT INTO `xq_user_info` VALUES ('7', '16', 'wys30205', 'wys30205', '男', 'guest', '0', '0', '28', '170', '硕士', '及', '湖南', '0', '上海', '', '/thinkphp/upload/XQ/IMG_20181216140228_600.jpg', '2018-12-16 14:02:16', '2018-12-16 14:03:34', '理想随风');

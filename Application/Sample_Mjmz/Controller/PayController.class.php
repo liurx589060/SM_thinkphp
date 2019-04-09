@@ -56,7 +56,7 @@ class PayController extends BaseController {
         $orderId = 'O'.ToolUtil::createUniqueNumber();
         $sqlData['order_id'] = $orderId;
         $sqlData['status'] = 0;
-        $sqlData['create_time'] = time();
+        $sqlData['create_time'] = ToolUtil::getCurrentTime();
 
         $sqlResult = SqlManager::makePayOrder($sqlData);
 //        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
@@ -78,7 +78,7 @@ class PayController extends BaseController {
         $sqlData['order_id'] = $order_id;
         $sqlData['status'] = 1;   //支付成功
         $sqlData['serial_id'] = ToolUtil::createUniqueNumber();
-        $sqlData['modify_time'] = time();
+        $sqlData['modify_time'] = ToolUtil::getCurrentTime();
         $SqlResult = SqlManager::handlePayCallback($sqlData);
         if($SqlResult == -1) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR , '订单支付回调处理失败'));
@@ -88,7 +88,8 @@ class PayController extends BaseController {
             //极光推送到客户端
             $pusher = $this->JPushClient->push();
             $pusher->setPlatform('all');
-            $pusher->addTag(Common::JPUSH_TAG_CHAT);
+            $pusher->addAllAudience();
+//            $pusher->addTag(Common::JPUSH_TAG_CHAT);
             $extraArray['type'] = Common::JPUSH_TYPE_PAY_SUCCESS;
             $extraArray['data'] = $SqlResult;
             $pusher->setMessage(json_encode($extraArray),'create','json',null);
@@ -152,17 +153,21 @@ class PayController extends BaseController {
             return ;
         }
         $sqlData['user_name'] = $user_name;
+        $sqlData['to_user'] = $user_name;
         $sqlData['gift_id'] = $gift_id;
         $sqlData['coin'] = $coin;
-        $sqlData['to_user'] = $user_name;  //标识去向为自己
-        $sqlData['create_time'] = time();
+        $sqlData['create_time'] = ToolUtil::getCurrentTime();
 
         $result = SqlManager::buyGiftByCoin($sqlData);
+        if($result == Common::ERROR_LACK_STOCK) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_STOCK ,
+                'lack coin stock'));
+        }
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
 
     /**
-     * http://localhost/thinkphp/Sample_Mjmz/Pay/getGiftListByUserName?userName=wys30201
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/getGiftList?userName=wys30201
      * 获取自己礼物列表
      */
     public function getGiftList() {
@@ -196,7 +201,7 @@ class PayController extends BaseController {
     }
 
     /**
-     * http://localhost/thinkphp/Sample_Mjmz/Pay/consumeGift?userName=wys30201&giftId=2&coin=2&toUser=wys30202handleType=1
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/consumeGift?userName=wys30201&giftId=2&coin=2&toUser=wys30202&handleType=1
      * 用消费礼物
      */
     public function consumeGift() {
@@ -215,20 +220,20 @@ class PayController extends BaseController {
         $sqlData['user_name'] = $user_name;
         $sqlData['gift_id'] = $gift_id;
         $sqlData['coin'] = $coin;
-        $sqlData['create_time'] = time();
+        $sqlData['create_time'] = ToolUtil::getCurrentTime();
         $sqlData['handleType'] = $handleType;
 
         $result = SqlManager::consumeGift($sqlData);
-        if($result == 0) {
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_GIFT_LACK_STOCK ,
+        if($result == Common::ERROR_LACK_STOCK) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_STOCK ,
                 'lack gift stock'));
         }
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
 
     /**
-     *http://localhost/thinkphp/Sample_Mjmz/Pay/checkRoomExpiry?userName=wys30201&type=1
-     * 创房间的时候检测是否免费的卡
+     *http://localhost/thinkphp/Sample_Mjmz/Pay/checkRoomExpiry?userName=wys30201&handleType=1
+     * 创建或者进入房间的时候检测是否免费的卡
      */
     public function checkRoomExpiry() {
         $user_name = $_GET['userName'];
@@ -241,8 +246,7 @@ class PayController extends BaseController {
 
         $data['user_name'] = $user_name;
         $data['handleType'] = $handleType;
-        $result = SqlManager::checkCreateRoomExpiry($data);
+        $result = SqlManager::checkRoomExpiry($data);
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
-
 }

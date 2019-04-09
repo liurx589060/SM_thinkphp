@@ -34,7 +34,7 @@ class Common {
     const ERROR_USER_PASSWORD_WRONG = 7104;//密码错误
     const ERROR_USER_PASSWORD_CHANGE = 7105;//修改密码出错
     const ERROR_PARAMS_SAME = 7106;//参数相同
-    const ERROR_GIFT_LACK_STOCK = 7107;//库存不够
+    const ERROR_LACK_STOCK = 7107;//库存不够
 
     //极光推送
     const JPUSH_TAG_CHAT = 'tag_chat_room';  //标签

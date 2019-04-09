@@ -75,7 +75,7 @@ class TestController extends BaseController {
             return;
         }
         $d['user_data'] = $info;
-        $d['create_time'] = time();
+        $d['create_time'] = ToolUtil::getCurrentTime();
         $result=$data->add($d);
         if($result) {
             $this->returnData($this->convertReturnJsonSucessed());
@@ -128,7 +128,7 @@ class TestController extends BaseController {
         
         $data = M(TABLE_USER);
         $d['user_data'] = $newData;
-        $d['modify_time'] = time();
+        $d['modify_time'] = ToolUtil::getCurrentTime();
         $ret = $data->where("user_data='%s'",$oldData)->save($d);
         
 //        echo $data->getLastSql().'</br>';

@@ -42,7 +42,7 @@ class WebController extends BaseController {
     public function updataUserByForm() {
         $User = D(TABLE_USER);
         if($User->create()) {
-            $User->modify_time = time();
+            $User->modify_time = ToolUtil::getCurrentTime();
             $result = $User->save();
             if($result) {
                 $this->success('数据修改成功！');
@@ -83,10 +83,10 @@ class WebController extends BaseController {
                 $Head_image = M(TABLE_HEAD_IMAGE);
                 foreach ($info as $file) {                  
                     $d['head_image'] = $file['savepath'].$file['savename'];
-                    $d['modify_time'] = time();
+                    $d['modify_time'] = ToolUtil::getCurrentTime();
                     $User->where('user_id=%d',$userId)->save($d);
                     
-                    $d['create_time'] = time(); 
+                    $d['create_time'] = ToolUtil::getCurrentTime();
                     $d['user_id'] = $userId;
                     $Head_image->add($d);
                     
