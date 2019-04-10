@@ -483,8 +483,10 @@ class SqlManager {
      * @return mixed
      */
     public static function getGiftList($sqlData) {
+        SqlManager::_checkExpiryDate();
+
         $querySql = sprintf("SELECT a.*,b.type,b.coin,b.`name`,b.image,b.gif,CONCAT(a.gift_id,a.status) 
-                  AS _f FROM xq_gift_user a,xq_gift_item b WHERE a.user_name='%s' 
+                  AS _f FROM xq_gift_user a,xq_gift_item b WHERE a.user_name='%s' AND a.num > 0
                   AND a.gift_id = b.gift_id and a.status <> 2 GROUP BY _f ORDER BY a.num DESC",
                   $sqlData['user_name']);
         $sqlResult = M()->query($querySql);
@@ -693,26 +695,58 @@ class SqlManager {
      * 创建或者进入房间的时候检测是否免费的卡
      */
     public static function checkRoomExpiry($sqlData) {
-        $coin = 0;
+        SqlManager::_checkExpiryDate();
+
+        $coin = [];
         $sqlResult = [];
+        $gift = [];
+        $hasCard = 0;
+        $gift_id = 0;
+        $fix_id = 0;
         if($sqlData['handleType'] == 1) {
             //创建房间
             //建房卡
-            $sqlResult = M(SqlManager::TABLE_GIFT_USER)->field("id",true)
-                ->where("gift_id=6 and status='%d' and user_name='%s'",1,$sqlData['user_name'])
-                ->find();
-            $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=1000")->find()['coin'];
+            $gift_id = 6;
+            $fix_id = 1000;
         }else if($sqlData['handleType'] == 2) {
             //加入房间
             //入门券
-            $sqlResult = M(SqlManager::TABLE_GIFT_USER)
-                ->where("gift_id=4 and status='%d' and user_name='%s'",1,$sqlData['user_name'])
-                ->field("id",true)->find();
-            $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=1001")->find()['coin'];
+            $gift_id = 4;
+            $fix_id = 1001;
+        }else {
+            return false;
+        }
+        $sqlResult = M()->query(sprintf("SELECT a.gift_id,a.expiry_num,a.start_time,a.end_time,
+                              b.coin,b.`name`,b.description,b.`value` FROM xq_gift_user a,xq_gift_item b 
+                              WHERE a.gift_id='%d' AND a.`status`=1 AND a.gift_id = b.gift_id AND a.user_name='%s'",
+            $gift_id,$sqlData['user_name']));
+        $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id='%d'",$fix_id)->find();
+        $gift = M()->query(sprintf("SELECT a.gift_id,b.coin,b.`name`,b.description,
+                              b.`value` FROM xq_gift_user a,xq_gift_item b WHERE a.gift_id='%d' AND a.`status`=0 
+                              AND a.gift_id = b.gift_id AND a.user_name='%s'",
+            $gift_id,$sqlData['user_name']));
+        if(count($gift) > 0) {
+            $hasCard = 1;
+        }else {
+            $hasCard = 0;
+            $gift = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=6")
+                ->field("coin,name,description,value")->select();
         }
 
-        $result['expiry'] = $sqlResult;
-        $result['coin'] = $coin;
+        $result['expiry'] = count($sqlResult)?$sqlResult[0]:null;
+        $result['targetGift'] = $coin;
+        $result['gift'] = count($gift)?$gift[0]:null;
+        $result['hasCard'] = $hasCard;
         return $result;
+    }
+
+    /**检测并设置过期卡
+     * @return false
+     */
+    private static function _checkExpiryDate() {
+        $sqlStr = sprintf("UPDATE xq_gift_user SET `status`=2 WHERE `status`=1 
+                        AND end_time <> '0000-00-00 00:00:00' AND end_time <= NOW()");
+        $sqlResult = M()->query($sqlStr);
+        return $sqlResult;
     }
 }
