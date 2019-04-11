@@ -159,11 +159,11 @@ class PayController extends BaseController {
         $sqlData['create_time'] = ToolUtil::getCurrentTime();
 
         $result = SqlManager::buyGiftByCoin($sqlData);
-        if($result == Common::ERROR_LACK_STOCK) {
+        if($result['code'] == Common::ERROR_LACK_STOCK) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_STOCK ,
-                'lack coin stock'));
+                'lack coin stock',$result['data']));
         }
-        $this->returnData($this->convertReturnJsonSucessed($result));
+        $this->returnData($this->convertReturnJsonSucessed($result['data']));
     }
 
     /**
@@ -224,11 +224,11 @@ class PayController extends BaseController {
         $sqlData['handleType'] = $handleType;
 
         $result = SqlManager::consumeGift($sqlData);
-        if($result == Common::ERROR_LACK_STOCK) {
+        if($result['code'] == Common::ERROR_LACK_STOCK) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_STOCK ,
-                'lack gift stock'));
+                'lack gift stock',$result['data']));
         }
-        $this->returnData($this->convertReturnJsonSucessed($result));
+        $this->returnData($this->convertReturnJsonSucessed($result['data']));
     }
 
     /**

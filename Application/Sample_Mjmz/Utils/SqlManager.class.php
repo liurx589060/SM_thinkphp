@@ -453,29 +453,35 @@ class SqlManager {
      * @return mixed
      */
     public static function buyGiftByCoin($sqlData) {
-        $sql = M(SqlManager::TABLE_COIN_CONSUME_HISTORY);
-        $sqlResult = $sql->add($sqlData);
-        if(!$sqlResult) return $sqlResult;
+        $result = [];
+
         $sqlUser = M(SqlManager::TABLE_USERINFO);
-        $userInfo = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'",$sqlData['user_name'])->find();
+        $userInfo = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->find();
         if($userInfo['balance'] - $sqlData['coin'] < 0) {
             //金币不够
-            return Common::ERROR_LACK_STOCK;
-        }
-        $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
-        if(!$sqlResult) return $sqlResult;
-        $sql = M(SqlManager::TABLE_GIFT_USER);
-        $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",
-            $sqlData['user_name'],$sqlData['gift_id'])->find();
-        if($sqlResult) {
-            $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",$sqlData['user_name'],$sqlData['gift_id'])
-                ->setInc('num',1);
+            $result['code'] = Common::ERROR_LACK_STOCK;
+            $result['data'] = $userInfo['balance'];
         }else {
-            $sqlData['num'] = 1;
+            $sql = M(SqlManager::TABLE_COIN_CONSUME_HISTORY);
             $sqlResult = $sql->add($sqlData);
+            if(!$sqlResult) return $sqlResult;
+            $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
+            if(!$sqlResult) return $sqlResult;
+            $sql = M(SqlManager::TABLE_GIFT_USER);
+            $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",
+                $sqlData['user_name'],$sqlData['gift_id'])->find();
+            if($sqlResult) {
+                $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",$sqlData['user_name'],$sqlData['gift_id'])
+                    ->setInc('num',1);
+            }else {
+                $sqlData['num'] = 1;
+                $sqlResult = $sql->add($sqlData);
+            }
+            $userInfo = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->find();
+            $result['code'] = Common::SUCCESS;
+            $result['data'] = $userInfo['balance'];
         }
-        $userInfo = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->find();
-        return $userInfo['balance'];
+        return $result;
     }
 
     /**
@@ -670,8 +676,11 @@ class SqlManager {
         $sql = M(SqlManager::TABLE_GIFT_ITEM);
         $giftInfo = $sql->where("gift_id='%d'",$sqlData['gift_id'])->find();
         $userInfo = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'",$sqlData['user_name'])->find();
-        if($sqlData['handleType'] == 1 && $userInfo['balance'] - $sqlData['coin'] < 0) {
-            return Common::ERROR_LACK_STOCK;
+        if($sqlData['handleType'] == 1 && ($userInfo['balance'] - $sqlData['coin'] < 0)) {
+            $result['code'] = Common::ERROR_LACK_STOCK;
+            $result['data']['balance'] = $userInfo['balance'];
+            $result['data']['gift_list'] = []; //礼物列表
+            return $result;
         }
 
         if($giftInfo['type'] == 1) {
@@ -688,7 +697,10 @@ class SqlManager {
         $userInfo = $sqlResult = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'",$sqlData['user_name'])->find();
         $data['balance'] = $userInfo['balance']; //余额
         $data['gift_list'] = $giftList; //礼物列表
-        return $data;
+
+        $result['code'] = Common::SUCCESS;
+        $result['data'] = $data;
+        return $result;
     }
 
     /**
@@ -723,14 +735,20 @@ class SqlManager {
         $coin = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id='%d'",$fix_id)->find();
         $gift = M()->query(sprintf("SELECT a.gift_id,b.coin,b.`name`,b.description,
                               b.`value` FROM xq_gift_user a,xq_gift_item b WHERE a.gift_id='%d' AND a.`status`=0 
-                              AND a.gift_id = b.gift_id AND a.user_name='%s'",
+                              AND a.gift_id = b.gift_id AND a.user_name='%s' AND a.num > 0",
             $gift_id,$sqlData['user_name']));
         if(count($gift) > 0) {
             $hasCard = 1;
         }else {
             $hasCard = 0;
-            $gift = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=6")
+            $gift = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id='%d'",$gift_id)
                 ->field("coin,name,description,value")->select();
+        }
+        if($sqlData['handleType'] == 2 && count($sqlResult) > 0) {
+            //加入房间，则expiry_num减一
+            M(SqlManager::TABLE_GIFT_USER)->where("user_name='%s' and gift_id='%d' and status=1"
+                ,$sqlData['user_name'],$gift_id)->setDec("expiry_num",1);
+            $sqlResult[0]['expiry_num'] -= 1;
         }
 
         $result['expiry'] = count($sqlResult)?$sqlResult[0]:null;
@@ -745,7 +763,11 @@ class SqlManager {
      */
     private static function _checkExpiryDate() {
         $sqlStr = sprintf("UPDATE xq_gift_user SET `status`=2 WHERE `status`=1 
-                        AND end_time <> '0000-00-00 00:00:00' AND end_time <= NOW()");
+                        AND end_time is not  null AND end_time <= NOW()");
+        $sqlResult = M()->query($sqlStr);
+
+        $sqlStr = sprintf("UPDATE xq_gift_user SET `status`=2 WHERE `status`=1 
+                        AND expiry_num = 0");
         $sqlResult = M()->query($sqlStr);
         return $sqlResult;
     }

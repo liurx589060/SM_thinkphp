@@ -242,6 +242,7 @@ class JMessageController extends BaseController {
         $this->_addWaitChartRoom($array); 
         S(CACHE_WAIT, $this->_waitChartRoomArray);
         if($array['public'] == 1) {
+            //公开的
             $pusher = $this->JPushClient->push();
             $pusher->setPlatform('all');
             $pusher->addTag(Common::JPUSH_TAG_CHAT);
@@ -263,6 +264,7 @@ class JMessageController extends BaseController {
         $bean['create_time'] = ToolUtil::getCurrentTime();
         $bean['creater'] = $userInfo['userName'];
         $bean['describe'] = $array['describe'];
+        $bean['public'] = $array['public'];
         $bean['status'] = 0;   
         SqlManager::updateChatRoom($bean, 1);
         

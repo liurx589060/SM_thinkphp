@@ -57,9 +57,12 @@ class BaseController extends Controller {
         return $callback;
     }
     
-    public function convertReturnJsonError($status,$msg) {
+    public function convertReturnJsonError($status,$msg,$dataArray = null) {
         $callback['status'] = $status;
         $callback['msg'] = $msg;
+        if($dataArray) {
+            $callback['data'] = $dataArray;
+        }
         return $callback;
     }
     
