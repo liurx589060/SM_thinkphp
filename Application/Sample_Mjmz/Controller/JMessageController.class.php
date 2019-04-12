@@ -130,9 +130,9 @@ class JMessageController extends BaseController {
     
     /**
      * 获取所有房间
-     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getArrays?pulic=1  //0:非公开  1：公开  不填则全部
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getNowChatRoomList?pulic=1  //0:非公开  1：公开  不填则全部
      */
-    public function getArrays() {
+    public function getNowChatRoomList() {
 //        $this->returnData($this->convertReturnJsonSucessed(array(
 //            'wait'=>$this->_waitChartRoomArray,
 //            'started'=> $this->_startedChartRoomArray)
@@ -661,5 +661,22 @@ class JMessageController extends BaseController {
         } else {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST,'user is not exist'));
         }
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChatRoomListByUser?userName=wys30201
+     * 获取用户参与过的房间
+     */
+    public function getChatRoomListByUser() {
+        $user_name = $_GET['userName'];
+        if(is_null($user_name)) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName'));
+            return ;
+        }
+
+        $sqlData['user_name'] = $user_name;
+        $SqlResult = SqlManager::getChatRoomListByUser($sqlData);
+        $this->returnData($this->convertReturnJsonSucessed($SqlResult));
     }
 }

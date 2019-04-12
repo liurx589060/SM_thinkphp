@@ -30,6 +30,7 @@ class SqlManager {
     const TABLE_GIFT_CATEGORY = 'gift_category';
     const TABLE_GIFT_USER = 'gift_user';
     const TABLE_COIN_CONSUME_HISTORY = 'coin_consume_history';
+    const TABLE_ROOM_RECORD = 'room_record';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -401,7 +402,8 @@ class SqlManager {
         $sql = M(SqlManager::TABLE_PAY_ORDER);
         $sqlResult = $sql->where("order_id='%s'",$sqlData['order_id'])->find();
         if($sqlResult['status'] != 0) {
-            return -2;
+            LogUtil::writePayCallbackLog('订单已经处理');
+            return -1;
         }
         $result = $sql->where("order_id='%s'",$sqlData['order_id'])->save($sqlData);
         if($result) {
@@ -417,7 +419,8 @@ class SqlManager {
             }
         }
 
-        return -1;
+        LogUtil::writePayCallbackLog('订单处理失败');
+        return -2;
     }
 
     /**
@@ -770,5 +773,18 @@ class SqlManager {
                         AND expiry_num = 0");
         $sqlResult = M()->query($sqlStr);
         return $sqlResult;
+    }
+
+    /**
+     * 获取用户参与过的房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function getChatRoomListByUser($sqlData) {
+        $sqlStr = sprintf("SELECT a.room_id,a.enter_time,a.exit_time,a.room_role_type,a.`status`,b.creater,b.`describe`,
+                      b.public AS isPublic FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' AND a.room_id = b.room_id",
+            $sqlData['user_name']);
+        $result = M()->query($sqlStr);
+        return $result;
     }
 }

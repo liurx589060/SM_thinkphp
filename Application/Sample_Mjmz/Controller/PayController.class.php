@@ -9,10 +9,12 @@
 namespace Sample_Mjmz\Controller;
 
 
+use Sample_Mjmz\Utils\LogUtil;
 use Sample_Mjmz\Utils\SqlManager;
 use Sample_Mjmz\Utils\Common;
 use Sample_Mjmz\Utils\ToolUtil;
 use JPush;
+use Think\Log;
 
 class PayController extends BaseController {
     private $JPushClient;  //极光推送
@@ -80,9 +82,9 @@ class PayController extends BaseController {
         $sqlData['serial_id'] = ToolUtil::createUniqueNumber();
         $sqlData['modify_time'] = ToolUtil::getCurrentTime();
         $SqlResult = SqlManager::handlePayCallback($sqlData);
-        if($SqlResult == -1) {
+        if($SqlResult == -2) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR , '订单支付回调处理失败'));
-        }else if($SqlResult == -2){
+        }else if($SqlResult == -1){
             $this->returnData($this->convertReturnJsonError(Common::ERROR , '订单已经处理'));
         }else if($SqlResult){
             //极光推送到客户端
@@ -102,6 +104,99 @@ class PayController extends BaseController {
             $this->returnData($this->convertReturnJsonSucessed($SqlResult));
         }
     }
+
+
+    /**
+     * POST请求
+     * http://localhost/thinkphp/Sample_Mjmz/Pay/handleTrPayCallback
+     * TrPay支付回调（真实第三方支付回调）
+     */
+    public function handleTrPayCallback() {
+        $strLog = json_encode($_POST).'======';
+        if($_POST['appkey'] != Common::TrPay_appKey) {
+            //不是自己的app
+            LogUtil::writePayCallbackLog($strLog.'Failed---not self app,appkey='.$_POST['appkey']);
+            return 'success';
+        }
+
+        $needKeys = ['appkey','method','timestamp','version'];
+        $srcData = [];
+        foreach ($_POST as $key => $value) {
+            if(in_array($key,$needKeys) && !empty($value)) {
+                $srcData[$key] = $value;
+            }
+        }
+        //排序参数名ASCII码从小到大排序（字典序）
+        ksort($srcData);
+        $stringSignTemp = '';
+        $i = 0;
+        foreach ($srcData as $key => $value) {
+            $stringSignTemp .= $key.'='.$value;
+            //最后一项，则不加上&字符
+           if($i >= count($srcData)-1) {
+               $stringSignTemp .= '&';
+           }
+           $i++;
+        }
+        //对$stringSignTemp拼接appSceret
+        $stringSignTemp .= 'appSceret='.Common::TrPay_masterSecret;
+        //对$stringSignTemp进行MD5加密
+        $strSign = strtoupper(md5($stringSignTemp));
+        //比对sign
+        if($strSign == $_POST['sign']) {
+            //比对成功,做自己的业务
+            $order_id = $_POST['outTradeNo'];
+            $pay_type = $_POST['payType'];
+            $name = $_POST['tradeName'];
+            $money = $_POST['amount'];   //订单金额，单位分
+            $status = $_POST['status'];
+            $modify_time = $_POST['notifyTime'];
+            $user_name = $_POST['payUserId'];
+            $channel = $_POST['channel'];
+            $extra = $_POST['backParams'];
+
+            $sqlData['order_id'] = $order_id;
+            $sqlData['pay_type'] = $pay_type;
+            $sqlData['money'] = $money;
+            $temp = 0;
+            if($status == 1) {
+                $temp = 0;//未支付
+            }else if($status == 2){
+                $temp = 1;//支付成功
+            }else if($status == 3){
+                $temp = 2;//支付失败
+            }
+            $sqlData['status'] = $temp;
+            $sqlData['modify_time'] = $modify_time;
+            $sqlData['user_name'] = $user_name;
+            $sqlData['channel'] = $channel;
+
+            $SqlResult = SqlManager::handlePayCallback($sqlData);
+            if($SqlResult){
+                //极光推送到客户端
+                $pusher = $this->JPushClient->push();
+                $pusher->setPlatform('all');
+                $pusher->addAllAudience();
+//            $pusher->addTag(Common::JPUSH_TAG_CHAT);
+                $extraArray['type'] = Common::JPUSH_TYPE_PAY_SUCCESS;
+                $extraArray['data'] = $SqlResult;
+                $pusher->setMessage(json_encode($extraArray),'create','json',null);
+                try {
+                    $pusher->send();
+                } catch (JPushException $e) {
+                    // try something else here
+                    LogUtil::writePayCallbackLog($strLog.'Failed--JMPush:'.json_encode($e));
+                }
+            }
+            LogUtil::writePayCallbackLog($strLog.'Succeed--order='.$sqlData['order_id'].'---status='.$sqlData['status']);
+
+        }else {
+            LogUtil::writePayCallbackLog($strLog.'Failed---sign not correct src.sign='.$_POST['sign'].'---self.sign='.$strSign);
+        }
+        return 'success';
+    }
+
+
 
     /**
      * http://localhost/thinkphp/Sample_Mjmz/Pay/getPayHistory?userName=wys30201&status=1

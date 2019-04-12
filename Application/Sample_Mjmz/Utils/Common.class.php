@@ -14,8 +14,10 @@ namespace Sample_Mjmz\Utils;
  * @author Administrator
  */
 class Common {
-    const JM_appKey = '2f3cff28d0bcc572927bf624';
-    const JM_masterSecret = 'cd7be344156c9afc0d218bad';
+    const JM_appKey = '2f3cff28d0bcc572927bf624';                           //极光appkey
+    const JM_masterSecret = 'cd7be344156c9afc0d218bad';                     //极光Secret
+    const TrPay_appKey = 'e08c9287fc9b4f8990c254457820141a';                        //TrPay appkey
+    const TrPay_masterSecret = '22e2bc4499e94b65b9b9c60384c3deb5';          //TrPay Secret
 
     const SUCCESS = 0;
     const ERROR = -1;
