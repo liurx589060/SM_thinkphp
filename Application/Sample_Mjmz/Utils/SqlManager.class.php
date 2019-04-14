@@ -360,20 +360,10 @@ class SqlManager {
      * @param type $sqlData
      */
     public static function getFriendListByUser($sqlData) {
-        $sql = M(SqlManager::TABLE_USER_FRIEND);
-        $sqlResult = $sql->where("userName='%s'",$sqlData['userName'])->select();
-        $count = count($sqlResult);
-        if($count == 0) {
-            return FALSE;
-        }
-        
-        $friendList = array();
-        for($i = 0 ;$i < $count ; $i++) {
-            $param['user_name'] = $sqlResult[$i]['targetName'];
-            $info = SqlManager::getUserInfo($param);
-            $friendList[] = $info;
-        }
-        return $friendList;
+        $sqlStr = sprintf("SELECT b.* FROM xq_user_friend a,xq_user_info b WHERE 
+              a.userName='%s' AND a.targetName = b.user_name",$sqlData['userName']);
+        $sqlResult = M()->query($sqlStr);
+        return $sqlResult;
     }
 
     /**
@@ -769,11 +759,11 @@ class SqlManager {
     private static function _checkExpiryDate() {
         $sqlStr = sprintf("UPDATE xq_gift_user SET `status`=2 WHERE `status`=1 
                         AND end_time is not  null AND end_time <= NOW()");
-        $sqlResult = M()->query($sqlStr);
+        $sqlResult = M()->execute($sqlStr);
 
         $sqlStr = sprintf("UPDATE xq_gift_user SET `status`=2 WHERE `status`=1 
                         AND expiry_num = 0");
-        $sqlResult = M()->query($sqlStr);
+        $sqlResult = M()->execute($sqlStr);
         return $sqlResult;
     }
 
