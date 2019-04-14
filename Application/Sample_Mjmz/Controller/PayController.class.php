@@ -79,7 +79,7 @@ class PayController extends BaseController {
 
         $sqlData['order_id'] = $order_id;
         $sqlData['status'] = 1;   //支付成功
-        $sqlData['serial_id'] = ToolUtil::createUniqueNumber();
+//        $sqlData['serial_id'] = ToolUtil::createUniqueNumber();
         $sqlData['modify_time'] = ToolUtil::getCurrentTime();
         $SqlResult = SqlManager::handlePayCallback($sqlData);
         if($SqlResult == -2) {

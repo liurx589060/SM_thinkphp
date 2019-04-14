@@ -31,6 +31,8 @@ class SqlManager {
     const TABLE_GIFT_USER = 'gift_user';
     const TABLE_COIN_CONSUME_HISTORY = 'coin_consume_history';
     const TABLE_ROOM_RECORD = 'room_record';
+    const TABLE_VERSION = 'version';
+    const TABLE_BANNER = 'banner';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -785,6 +787,24 @@ class SqlManager {
                       b.public AS isPublic FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' AND a.room_id = b.room_id",
             $sqlData['user_name']);
         $result = M()->query($sqlStr);
+        return $result;
+    }
+
+    /**检查是否更新
+     * @param $sqlData
+     * @return false
+     */
+    public static function checkUpdate($sqlData) {
+        $result = M(SqlManager::TABLE_VERSION)->where("version_code>'%d'",$sqlData['version_code'])->field("id",true)
+            ->order("time DESC")->find();
+        return $result;
+    }
+
+    /**获取Banner数据
+     * @return false
+     */
+    public static function getBanner() {
+        $result = M(SqlManager::TABLE_BANNER)->field("id",true)->order("sort")->select();
         return $result;
     }
 }
