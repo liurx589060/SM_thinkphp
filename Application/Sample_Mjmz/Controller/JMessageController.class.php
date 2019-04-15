@@ -178,8 +178,10 @@ class JMessageController extends BaseController {
 ;    }
     
     private function _checkUserInfoParams($userInfo) {
-        if($userInfo['userName'] === NULL || $userInfo['gender'] === NULL || $userInfo['level'] === NULL) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS, "lack userName or gender or level"));
+        if($userInfo['userName'] === NULL || $userInfo['gender'] === NULL || $userInfo['level'] === NULL
+            || is_null($userInfo['appoint_time'])) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
+                "lack userName or gender or level,appointTime"));
         }
     }
 
@@ -207,6 +209,7 @@ class JMessageController extends BaseController {
         $userInfo['pushAddress'] = $_GET['pushAddress'];
         $userInfo['playAddress'] = $_GET['playAddress'];
         $userInfo['public'] =(int)$_GET['public'];
+        $userInfo['appoint_time'] = $_GET['appointTime'];
         $this->_checkUserInfoParams($userInfo);
         
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
@@ -236,6 +239,7 @@ class JMessageController extends BaseController {
         $array['playAddress'] = $userInfo['playAddress'];
         $array['public'] = $userInfo['public'];
         $array['describe'] = $_GET['describe'];
+        $array['appoint_time'] = $userInfo['appoint_time'];
         $array['creater'] = $userInfo['userName'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
@@ -265,6 +269,7 @@ class JMessageController extends BaseController {
         $bean['creater'] = $userInfo['userName'];
         $bean['describe'] = $array['describe'];
         $bean['public'] = $array['public'];
+        $bean['appoint_time'] = $array['appoint_time'];
         $bean['status'] = 0;   
         SqlManager::updateChatRoom($bean, 1);
         
