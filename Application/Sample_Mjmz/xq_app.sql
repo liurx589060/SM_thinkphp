@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-16 01:32:13
+Date: 2019-04-17 00:29:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -62,18 +62,25 @@ CREATE TABLE `xq_chat_room` (
   `room_id` int(255) NOT NULL COMMENT '房间Id',
   `describe` varchar(2048) NOT NULL COMMENT '房间描述',
   `creater` varchar(255) NOT NULL COMMENT '创建者',
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
-  `delete_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '解散时间',
-  `public` int(11) NOT NULL DEFAULT '0' COMMENT '是否公开（0：私密   1：公开）',
-  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功）',
+  `create_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+  `delete_time` timestamp NULL DEFAULT NULL COMMENT '解散时间',
+  `public` int(11) NOT NULL DEFAULT '1' COMMENT '是否公开（0：私密   1：公开）',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功  -1：取消）',
   `appoint_time` timestamp NULL DEFAULT NULL COMMENT '预约的时间',
+  `limit_lady` int(11) NOT NULL DEFAULT '10' COMMENT '女嘉宾上限',
+  `limit_man` int(11) NOT NULL DEFAULT '1' COMMENT '男嘉宾上限',
+  `count_lady` int(11) NOT NULL DEFAULT '0' COMMENT '当前女嘉宾人数',
+  `count_man` int(11) NOT NULL DEFAULT '0' COMMENT '当前男嘉宾人数',
+  `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
+  `push_address` varchar(255) DEFAULT NULL,
+  `play_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_chat_room
 -- ----------------------------
-INSERT INTO `xq_chat_room` VALUES ('94', '15730344', '一起来相亲吧', 'wys30201', '2019-04-15 23:41:35', '2019-04-15 23:42:23', '1', '0', '2019-04-15 23:52:00');
+INSERT INTO `xq_chat_room` VALUES ('2', '0', '', '', null, null, '1', '0', '2019-04-16 22:19:26', '10', '1', '0', '0', '0', null, null);
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -360,7 +367,7 @@ CREATE TABLE `xq_room_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `room_id` int(11) NOT NULL COMMENT '房间Id',
   `user_name` varchar(255) NOT NULL COMMENT '用户名',
-  `status` int(11) NOT NULL COMMENT '房间状态（0：未匹配成功  1：匹配成功）',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功）',
   `enter_time` datetime NOT NULL COMMENT '进入时间',
   `exit_time` datetime DEFAULT NULL COMMENT '退出时间',
   `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',

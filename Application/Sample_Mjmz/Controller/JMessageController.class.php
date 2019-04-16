@@ -35,6 +35,7 @@ class JMessageController extends BaseController {
 
     private $JMClient;
     private $JPushClient;
+    private $JMRoom;
 
     private $_waitChartRoomArray;  //未满员，等待的聊天室
     private $_startedChartRoomArray; //满员，开始了的聊天室
@@ -43,6 +44,8 @@ class JMessageController extends BaseController {
         parent::__construct();
         $this->JMClient = new JMessage(Common::JM_appKey, Common::JM_masterSecret);
         $this->JPushClient = new JPush(Common::JM_appKey, Common::JM_masterSecret);
+        $this->JMRoom = new ChatRoom($this->JMClient);
+        
         $this->_waitChartRoomArray = S(CACHE_WAIT);
         $this->_startedChartRoomArray = S(CACHE_STARTED);
         
@@ -133,10 +136,6 @@ class JMessageController extends BaseController {
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/getNowChatRoomList?pulic=1  //0:非公开  1：公开  不填则全部
      */
     public function getNowChatRoomList() {
-//        $this->returnData($this->convertReturnJsonSucessed(array(
-//            'wait'=>$this->_waitChartRoomArray,
-//            'started'=> $this->_startedChartRoomArray)
-//        ));
         $public = -1;
         if(isset($_GET['public'])) {
             $public = $_GET['public'];
@@ -195,6 +194,51 @@ class JMessageController extends BaseController {
     }
 
     /***********************************************************************************************/
+    /**检测房间是否过期并删除JM Room
+     * @param $sqlData
+     * @return bool
+     */
+    private function _subCheckExpiryChatRoom($sqlData) {
+        $result = SqlManager::subCheckExpiryChatRoom();
+        foreach ($result as $info) {
+            //删除JM room
+            $result = $this->JMRoom->delete($info['room_id']);
+        }
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/appointChatRoom?userName=wsy30201&appointTime=2019-04-16 21:29&public=1&limitLady=10
+     * 预约房间
+     */
+    public function appointChatRoom() {
+        $userInfo['creater'] = $_GET['userName'];
+        $userInfo['gender'] = $_GET['gender'];
+        $userInfo['level'] = $_GET['level'];
+        $userInfo['roomId'] = '';
+        $userInfo['push_address'] = $_GET['pushAddress'];
+        $userInfo['play_address'] = $_GET['playAddress'];
+        $userInfo['public'] =(int)$_GET['public'];
+        $userInfo['appoint_time'] = $_GET['appointTime'];
+        $userInfo['limit_lady'] = $_GET['limitLady'];
+        $userInfo['limit_man'] = $_GET['limitMan'];
+        if(is_null($userInfo['userName']) || is_null($userInfo['gender']) || is_null($userInfo['push_address'])
+            || is_null($userInfo['play_address']) || is_null($userInfo['appoint_time']) || is_null($userInfo['limit_lady'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName，appointTime,public,limitLady,pushAddress,playAddress'));
+            return ;
+        }
+
+        $this->_subCheckExpiryChatRoom();
+        $sqlResult = SqlManager::appointChatRoom($userInfo);
+        //创建JMMessage 房间
+
+    }
+
+    private function _createJMChat() {
+
+    }
+
+
     
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/createChartRoom?userName=sy30201&gender=女&level=12
@@ -210,6 +254,8 @@ class JMessageController extends BaseController {
         $userInfo['playAddress'] = $_GET['playAddress'];
         $userInfo['public'] =(int)$_GET['public'];
         $userInfo['appoint_time'] = $_GET['appointTime'];
+        $userInfo['limit_lady'] = $_GET['limitLady'];
+        $userInfo['limit_man'] = $_GET['limitMan'];
         $this->_checkUserInfoParams($userInfo);
         
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);

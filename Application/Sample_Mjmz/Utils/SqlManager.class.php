@@ -797,4 +797,31 @@ class SqlManager {
         $result = M(SqlManager::TABLE_BANNER)->field("id",true)->order("sort")->select();
         return $result;
     }
+
+    /**
+     * 预约房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function appointChatRoom($sqlData) {
+    }
+
+    /**检测房间是否过期
+     * 子调用方法
+     * @return false
+     */
+    public static function subCheckExpiryChatRoom() {
+        $createTime_limit = ToolUtil::getTimeStrByTime(time()-2*60*60*1000);//两个小时前
+        $appointTime_limit = ToolUtil::getTimeStrByTime(time()-15*60*1000);//15分钟
+        //取出开始并且两小时还没结束获取已经预约大于15分钟才没开始的
+        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE (create_time<='2019-04' AND `work`=1) 
+                  OR (appoint_time<'2019-04' AND `work`=0)",
+            $createTime_limit,$appointTime_limit);
+        $sqlResult = M()->query($sqlStr);
+        foreach ($sqlResult as $info) {
+            //设置结束
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$info['room_id'])->setField("work",2);
+        }
+        return $sqlResult;
+    }
 }
