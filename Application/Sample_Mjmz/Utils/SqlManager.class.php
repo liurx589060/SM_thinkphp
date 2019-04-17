@@ -873,6 +873,112 @@ class SqlManager {
         return $data;
     }
 
+    /**
+     * 退出房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function exitChatRoom($sqlData,bool $isCreator) {
+        $newData['delete_time'] = ToolUtil::getCurrentTime();
+        $newData['status'] = $sqlData['status'];
+        $newData['work'] = 2;
+        $result = '';
+        if($isCreator) {
+            //是创建者
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
+            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2 WHERE room_id='%s'",
+                $newData['delete_time'],$sqlData['room_id']);
+            $result = M()->execute($sqlStr);
+        }else {
+            $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name"
+                ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
+        }
+        return $result;
+    }
+
+    /**
+     * 在预约期间退出房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function cancelChatRoom($sqlData,$isCreator) {
+        $newData['delete_time'] = ToolUtil::getCurrentTime();
+        $newData['status'] = -1;
+        $newData['work'] = 2;
+        $result = '';
+        if($isCreator) {
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
+            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2,`status`=-1, WHERE room_id='%s'",
+                $newData['delete_time'],$sqlData['room_id']);
+            $result = M()->execute($sqlStr);
+        }else {
+            $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s'"
+                ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
+        }
+        return $result;
+    }
+
+    /**
+     * 获取房间的所有参与成员
+     * @param $sqlData
+     * @return array
+     */
+    public static function getChatRoomMember($sqlData,$room_role_type) {
+        $sqlStr = sprintf("SELECT b.user_name,b.nick_name,b.gender,b.role_type,b.`level`,b.age,b.tall,
+                  b.scholling,b.professional,b.native_place,b.marrige,b.job_address,b.head_image,b.special_info 
+                  FROM xq_room_record a,xq_user_info b WHERE a.user_name = b.user_name AND a.room_id='%s' 
+                  AND a.room_role_type='%s'",
+            $sqlData['room_id'],$room_role_type);
+        $result = M()->query($sqlStr);
+
+        $resultData = [];
+        $index = 0;
+        $manIndex = 0;
+        $angelIndex = 0;
+        $ladyIndex = 0;
+        foreach ($result as $item) {
+            $item['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['head_image'];
+            if($room_role_type == 1) {
+                //参与者
+                if($item['role_type'] == Common::ANGEL) {
+                    //爱心大使
+                    $index = $angelIndex;
+                    $angelIndex++;
+                }else {
+                    if($item['gender'] == Common::LADY) {
+                        //女嘉宾
+                        $index = $ladyIndex;
+                        $ladyIndex++;
+                    }else {
+                        //男嘉宾
+                        $index = $manIndex;
+                        $manIndex++;
+                    }
+                }
+
+                $resultData['index'] = $index;
+            }else {
+                $resultData['index'] = $index;
+                $index++;
+            }
+            $resultData['roomRoleType'] = $room_role_type;
+            $resultData['userInfo'] = $item;
+        }
+        return $resultData;
+    }
+
+    /**
+     * 开始房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function startChatRoom($sqlData) {
+        $newData['work'] = 1;
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=0 and room_role_type=1",
+            $sqlData['room_id'])->save($newData);
+        return $result;
+    }
+
     /**检测房间是否过期
      * 子调用方法
      * @return false

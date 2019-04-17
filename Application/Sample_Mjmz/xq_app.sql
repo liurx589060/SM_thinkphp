@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : xq_app
+Source Server         : xq
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-17 18:51:33
+Date: 2019-04-18 01:45:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -67,8 +67,11 @@ CREATE TABLE `xq_chat_room` (
   `public` int(11) NOT NULL DEFAULT '1' COMMENT '是否公开（0：私密   1：公开）',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功  -1：取消）',
   `appoint_time` timestamp NULL DEFAULT NULL COMMENT '预约的时间',
+  `limit_level` int(11) NOT NULL DEFAULT '-1' COMMENT '等级（-1：不限等级）',
+  `limit_angel` int(11) NOT NULL DEFAULT '1' COMMENT '爱心大使上限',
   `limit_lady` int(11) NOT NULL DEFAULT '10' COMMENT '女嘉宾上限',
   `limit_man` int(11) NOT NULL DEFAULT '1' COMMENT '男嘉宾上限',
+  `count_angel` int(11) DEFAULT '0' COMMENT '当前爱心大使人数',
   `count_lady` int(11) NOT NULL DEFAULT '0' COMMENT '当前女嘉宾人数',
   `count_man` int(11) NOT NULL DEFAULT '0' COMMENT '当前男嘉宾人数',
   `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
@@ -80,7 +83,7 @@ CREATE TABLE `xq_chat_room` (
 -- ----------------------------
 -- Records of xq_chat_room
 -- ----------------------------
-INSERT INTO `xq_chat_room` VALUES ('2', '0', '', '', null, null, '1', '0', '2019-04-16 22:19:26', '10', '1', '0', '0', '0', null, null);
+INSERT INTO `xq_chat_room` VALUES ('2', '0', '', '', null, null, '1', '0', '2019-04-16 22:19:26', '-1', '1', '10', '1', '0', '0', '0', '0', null, null);
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -367,17 +370,18 @@ CREATE TABLE `xq_room_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `room_id` int(11) NOT NULL COMMENT '房间Id',
   `user_name` varchar(255) NOT NULL COMMENT '用户名',
-  `status` int(11) NOT NULL DEFAULT '-1' COMMENT '房间状态（0：未匹配成功  1：匹配成功   -1：未开始过）',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功  -1:没进房间（取消） ）',
   `enter_time` datetime NOT NULL COMMENT '进入时间',
   `exit_time` datetime DEFAULT NULL COMMENT '退出时间',
   `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
+  `work` int(11) DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
 
 -- ----------------------------
 -- Records of xq_room_record
 -- ----------------------------
-INSERT INTO `xq_room_record` VALUES ('137', '15730344', 'wys30201', '-1', '2019-04-15 23:41:35', '2019-04-15 23:42:23', '1');
+INSERT INTO `xq_room_record` VALUES ('137', '15730344', 'wys30201', '-1', '2019-04-15 23:41:35', '2019-04-15 23:42:23', '1', '0');
 
 -- ----------------------------
 -- Table structure for `xq_user`

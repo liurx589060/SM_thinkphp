@@ -55,6 +55,9 @@ class Common {
     const LADY = '女'; //女生
     const ANGEL = '天使'; //天使
     const FULL = ''; //满员
+
+    const CHAT_ROOM_ROLETYPE_PARTICIPANTS = 1; //参与者
+    const CHAT_ROOM_ROLETYPE_ONLOOKER = 2; //围观者
     
     const ROLRTYPE_ANGEL = 'angel';
     const ROLETYPE_GUEST = 'guest';
