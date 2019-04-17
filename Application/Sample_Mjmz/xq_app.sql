@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : xq
+Source Server         : xq_app
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-17 00:29:29
+Date: 2019-04-17 18:51:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -367,7 +367,7 @@ CREATE TABLE `xq_room_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `room_id` int(11) NOT NULL COMMENT '房间Id',
   `user_name` varchar(255) NOT NULL COMMENT '用户名',
-  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功）',
+  `status` int(11) NOT NULL DEFAULT '-1' COMMENT '房间状态（0：未匹配成功  1：匹配成功   -1：未开始过）',
   `enter_time` datetime NOT NULL COMMENT '进入时间',
   `exit_time` datetime DEFAULT NULL COMMENT '退出时间',
   `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
@@ -377,7 +377,7 @@ CREATE TABLE `xq_room_record` (
 -- ----------------------------
 -- Records of xq_room_record
 -- ----------------------------
-INSERT INTO `xq_room_record` VALUES ('137', '15730344', 'wys30201', '0', '2019-04-15 23:41:35', '2019-04-15 23:42:23', '1');
+INSERT INTO `xq_room_record` VALUES ('137', '15730344', 'wys30201', '-1', '2019-04-15 23:41:35', '2019-04-15 23:42:23', '1');
 
 -- ----------------------------
 -- Table structure for `xq_user`

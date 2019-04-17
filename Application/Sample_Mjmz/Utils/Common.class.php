@@ -28,6 +28,11 @@ class Common {
     const ERROR_DELETE_CHARTEOOM = 7003;//删除聊天室失败
     const ERROR_CREATE_CHARTEOOM = 7004;//创建聊天室失败
     const ERROR_JOIN_CHARTEOOM = 7005;//创建聊天室失败
+    const ERROR_ALREADY_APPOINT_CHATROOM = 7006;//已经有预约的房间
+    const ERROR_NOT_FIND_CHATROOM = 7007; //找不到房间
+    const ERROR_FULL_CHATROOM = 7008; //房间满员
+    const ERROR_ALREADY_START_CHATROOM = 7009; //房间已开始
+    const ERROR_ROLETYPE_NOT_MATCH = 7010; //角色身份不对
     
     const ERROR_USER_REGIST = 7100;//注册失败
     const ERROR_USER_REGIST_EXIST = 7101;//已经存在账户

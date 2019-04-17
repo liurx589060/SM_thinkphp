@@ -36,6 +36,7 @@ class JMessageController extends BaseController {
     private $JMClient;
     private $JPushClient;
     private $JMRoom;
+    private $JMUser;
 
     private $_waitChartRoomArray;  //未满员，等待的聊天室
     private $_startedChartRoomArray; //满员，开始了的聊天室
@@ -45,6 +46,7 @@ class JMessageController extends BaseController {
         $this->JMClient = new JMessage(Common::JM_appKey, Common::JM_masterSecret);
         $this->JPushClient = new JPush(Common::JM_appKey, Common::JM_masterSecret);
         $this->JMRoom = new ChatRoom($this->JMClient);
+        $this->JMUser = new User($this->JMClient);
         
         $this->_waitChartRoomArray = S(CACHE_WAIT);
         $this->_startedChartRoomArray = S(CACHE_STARTED);
@@ -194,15 +196,14 @@ class JMessageController extends BaseController {
     }
 
     /***********************************************************************************************/
-    /**检测房间是否过期并删除JM Room
-     * @param $sqlData
-     * @return bool
+    /**
+     * 检测房间是否过期并删除JM Room
      */
-    private function _subCheckExpiryChatRoom($sqlData) {
+    private function _subCheckExpiryChatRoom() {
         $result = SqlManager::subCheckExpiryChatRoom();
         foreach ($result as $info) {
             //删除JM room
-            $result = $this->JMRoom->delete($info['room_id']);
+            $this->_deleteJMChat($info);
         }
     }
 
@@ -214,6 +215,7 @@ class JMessageController extends BaseController {
         $userInfo['creater'] = $_GET['userName'];
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
+        $userInfo['describe'] = $_GET['describe'];
         $userInfo['roomId'] = '';
         $userInfo['push_address'] = $_GET['pushAddress'];
         $userInfo['play_address'] = $_GET['playAddress'];
@@ -229,13 +231,147 @@ class JMessageController extends BaseController {
         }
 
         $this->_subCheckExpiryChatRoom();
-        $sqlResult = SqlManager::appointChatRoom($userInfo);
+        //检测是否有已经预约的或者开始的房间
+        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE creater='%s' AND `work`<>2",
+            $userInfo['creater']);
+        $sqlResult = M()->query($sqlStr);
+        if(!empty($sqlResult)) {
+            //有已经预约的房间，或者进行中的,则直接返回
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_APPOINT_CHATROOM ,
+                'you already have appointed room'));
+            return ;
+        }
         //创建JMMessage 房间
-
+        $roomId = $this->_createJMChat($userInfo);
+        $userInfo['room_id'] = $roomId;
+        //房间创建成功，存入数据库
+        $sqlResult = SqlManager::appointChatRoom($userInfo);
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 
-    private function _createJMChat() {
+    /**
+     * 加入房间，两种情况，1：匹配模式   2：指定房间模式（其中包括参与者和围观者身份）
+     */
+    public function joinChatRoom() {
+        $userInfo['user_name'] = $_GET['userName'];
+        $userInfo['gender'] = $_GET['gender'];
+        $userInfo['level'] = $_GET['level'];
+        $userInfo['room_id'] = $_GET['level'];
+        $userInfo['handleType'] = $_GET['handleType'];
+        $userInfo['room_role_type'] = $_GET['roomRoleType'];
+        if(is_null($userInfo['user_name']) || is_null($userInfo['gender']) || is_null($userInfo['handleType']) || is_null($userInfo['room_role_type'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName，gender,handleType,roomRoleType'));
+            return ;
+        }
 
+        if($userInfo['handleType'] == 1 && $userInfo['room_role_type'] == 2) {
+            //匹配模式并且是围观者
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_ROLETYPE_NOT_MATCH ,
+                'roleType is not match'));
+            return ;
+        }
+
+        if($userInfo['handleType'] == 2 && is_null($userInfo['room_id'])) {
+            //指定模式
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack room_id'));
+            return ;
+        }
+        $sqlResult = SqlManager::joinChatRoom($userInfo);
+        if($sqlResult == -1) {
+            //未找到
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_NOT_FIND_CHATROOM ,
+                'not find the chat room'));
+            return ;
+        }else if($sqlResult == -2) {
+            //房间已满员
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_FULL_CHATROOM ,
+                'people of the room is full'));
+            return ;
+        }else if($sqlResult == -3) {
+            //房间已开始
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_START_CHATROOM ,
+                'the room already start'));
+            return ;
+        }
+
+        //加入到JM chat
+        $userInfo['room_id'] = $sqlResult['room_id'];
+        $this->_joinJMChat($userInfo);
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+    }
+
+    /**
+     * 删除 JM Chat Room
+     * @param $info
+     * @return false
+     */
+    private function _deleteJMChat($info) {
+        $result = $this->JMRoom->delete($info['room_id']);
+        return $result;
+    }
+
+    /**
+     * 创建JM Chat Room
+     * @param $info
+     */
+    private function _createJMChat($info) {
+        $result = $this->JMRoom->create('xq_chartRoom', $info['creater'], array(), 'xq_chartRoom');
+        if($result['body']['error'] !== NULL) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_CREATE_CHARTEOOM
+                , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
+            return;
+        } else {
+            //创建成功
+            $roomId = $info['body']['chatroom_id'];
+            return $roomId;
+        }
+    }
+
+    /**
+     * 加入 JM Chat Room
+     * @param $info
+     * @return false
+     */
+    private function _joinJMChat($info) {
+        //先退出其他的chat Room
+        $result = $this->_exitJMChat(true,$info['room_id'],$info['user_name']);
+        $result = $this->JMRoom->addMembers($info['room_id'], array($info['user_name']));
+        if($result['body']['error'] !== NULL) {
+            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
+                , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
+            return;
+        } else {
+            //创建成功
+            return true;
+        }
+    }
+
+    /**
+     * 退出 JM Chat Room
+     * @param $info
+     * @return false
+     */
+    private function _exitJMChat(bool $isAll,$roomId,array $userName) {
+        $result = false;
+        if($isAll) {
+            //退出所有
+            $result = $this->JMUser->chatrooms($userName);
+            if($result['body']['error'] === NULL) {
+                //有加入过的聊天室
+                foreach ($result['body'] as $value) {
+                    if($value['owner_username'] == $userName) {
+                        $this->JMRoom->delete($value['id']);
+                    }else {
+                        $this->JMRoom->removeMembers($value['id'], array($userName));
+                    }
+                }
+            }
+        }else {
+            $result = $this->JMRoom->removeMembers($roomId, $userName);
+        }
+        return $result;
     }
 
 

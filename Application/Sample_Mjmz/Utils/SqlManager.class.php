@@ -804,6 +804,73 @@ class SqlManager {
      * @return false
      */
     public static function appointChatRoom($sqlData) {
+        //添加到房间表中
+        $result = M(SqlManager::TABLE_CHATROOM)->add($sqlData);
+        //添加到个人房间记录表中
+        $info['room_id'] = $sqlData['room_id'];
+        $info['user_name'] = $sqlData['creater'];
+        $info['enter_time'] = ToolUtil::getCurrentTime();
+        $info['room_role_type'] = 1;  //参与者
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->add($info);
+        return $sqlData;
+    }
+
+    /**
+     * 加入房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function joinChatRoom($sqlData) {
+        $userInfo['user_name'] = $sqlData['user_name'];
+        $userInfo['enter_time'] = ToolUtil::getCurrentTime();
+        $userInfo['room_role_type'] = $sqlData['roomRoleType'];  //身份
+
+        $roomId = '';
+        $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
+        $countStr = $sqlData['gender']==Common::MAN?'count_man':'count_lady';
+        $llimitAppointTime = time();
+        if($sqlData['handleType'] == 1) {
+            //匹配模式
+            $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE `work`=0 AND '%s'<'%s'AND appoint_time>'%s' ORDER BY appoint_time",
+                $countStr,$limitStr,$llimitAppointTime);
+            $result = M()->query($sqlStr)[0];
+            if(!$result) {
+                //未找到则直接返回
+                return -1; //未找到
+            }
+            //找到了则+1
+            $roomId = $result['room_id'];
+        }else if($sqlData['handleType'] == 2) {
+            //指定房间号
+            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+            if($result) {
+                //找到了
+                $roomId = $result['room_id'];
+            }else {
+                if($result[$countStr] < $result[$limitStr]) {
+                    return -2; //房间已满员
+                }else if($result['work'] != 0) {
+                    return -3;//房间已开始
+                }
+                return -1;//未找到
+            }
+        }
+
+        M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1);
+        //添加到个人房间记录中
+        $userInfo['room_id'] = $roomId;
+        M(SqlManager::TABLE_ROOM_RECORD)->add($userInfo);
+        //查找房间成员(参与者)
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and status=-1 and room_role_type=1",$roomId)
+            ->field("user_name,enter_time")
+            ->select();
+        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+        $data['room_id'] = $roomInfo['room_id'];
+        $data['creater'] = $roomInfo['creater'];
+        $data['appoint_time'] = $roomInfo['appoint_time'];
+        $data['isPublic'] = $roomInfo['public'];
+        $data['member'] = $result;
+        return $data;
     }
 
     /**检测房间是否过期
@@ -811,16 +878,16 @@ class SqlManager {
      * @return false
      */
     public static function subCheckExpiryChatRoom() {
-        $createTime_limit = ToolUtil::getTimeStrByTime(time()-2*60*60*1000);//两个小时前
-        $appointTime_limit = ToolUtil::getTimeStrByTime(time()-15*60*1000);//15分钟
+        $createTime_limit = ToolUtil::getTimeStrByTime(time()-2*60*60);//两个小时前
+        $appointTime_limit = ToolUtil::getTimeStrByTime(time()-15*60);//15分钟
         //取出开始并且两小时还没结束获取已经预约大于15分钟才没开始的
-        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE (create_time<='2019-04' AND `work`=1) 
-                  OR (appoint_time<'2019-04' AND `work`=0)",
+        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE (create_time<='%s' AND `work`=1) 
+                  OR (appoint_time<'%s' AND `work`=0)",
             $createTime_limit,$appointTime_limit);
         $sqlResult = M()->query($sqlStr);
         foreach ($sqlResult as $info) {
             //设置结束
-            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$info['room_id'])->setField("work",2);
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$info['room_id'])->setField(array('work'=>2,'status'=>-1));
         }
         return $sqlResult;
     }
