@@ -890,19 +890,19 @@ class SqlManager {
      */
     public static function exitChatRoom($sqlData,bool $isCreator) {
         $newData['delete_time'] = ToolUtil::getCurrentTime();
+        $newData['exit_time'] = $newData['delete_time'];
         $newData['status'] = $sqlData['status'];
         $newData['work'] = 2;
         $result = '';
         if($isCreator) {
             //是创建者
             M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
-            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2 WHERE room_id='%s'",
-                $newData['delete_time'],$sqlData['room_id']);
-            $result = M()->execute($sqlStr);
-        }else {
-            $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name"
-                ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
+//            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2 WHERE room_id='%s'",
+//                $newData['delete_time'],$sqlData['room_id']);
+//            $result = M()->execute($sqlStr);
         }
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s'"
+            ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
         return $result;
     }
 
@@ -911,14 +911,14 @@ class SqlManager {
      * @param $sqlData
      * @return false
      */
-    public static function cancelChatRoom($sqlData,$isCreator) {
+    /*public static function cancelChatRoom($sqlData,$isCreator) {
         $newData['delete_time'] = ToolUtil::getCurrentTime();
         $newData['status'] = -1;
         $newData['work'] = 2;
         $result = '';
         if($isCreator) {
             M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
-            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2,`status`=-1, WHERE room_id='%s'",
+            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2,`status`=-1 WHERE room_id='%s'",
                 $newData['delete_time'],$sqlData['room_id']);
             $result = M()->execute($sqlStr);
         }else {
@@ -926,7 +926,24 @@ class SqlManager {
                 ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
         }
         return $result;
+    }*/
+
+    /**
+     * 根据用户名获取房间
+     * @param $sqlData
+     * @return mixed
+     */
+    public static function getChatRoomByUser($sqlData) {
+        $sqlStr = sprintf("SELECT b.* FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' 
+            AND a.room_id=b.room_id AND a.room_role_type=1 AND a.`work`<>2 ORDER BY a.enter_time DESC"
+            ,$sqlData['user_name']);
+        $result = M()->query($sqlStr);
+        if(empty($result)) {
+            return false;
+        }
+        return $result[0];
     }
+
 
     /**
      * 获取房间的所有参与成员

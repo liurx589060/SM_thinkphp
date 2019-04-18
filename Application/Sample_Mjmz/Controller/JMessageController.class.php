@@ -307,6 +307,18 @@ class JMessageController extends BaseController {
             return ;
         }
 
+        $this->_subCheckExpiryChatRoom();
+        //检测是否有已经加入的房间
+        $sqlStr = sprintf("SELECT * FROM xq_room_record WHERE user_name='%s' AND `work`<>2",
+            $userInfo['user_name']);
+        $sqlResult = M()->query($sqlStr);
+        if(!empty($sqlResult)) {
+            //有已经预约的房间，或者进行中的,则直接返回
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_JOIN_CHATROOM ,
+                'you have already join room'));
+            return ;
+        }
+
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
         $sqlResult = SqlManager::joinChatRoom($userInfo);
@@ -377,7 +389,7 @@ class JMessageController extends BaseController {
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/cancelChatRoom?userName=wys30201&roomId=123456
      * 在预约期间退出房间
      */
-    public function cancelChatRoom() {
+    /*public function cancelChatRoom() {
         $userInfo['user_name'] = $_GET['userName'];
         $userInfo['room_id'] = $_GET['roomId'];
         if(is_null($userInfo['user_name']) || is_null($userInfo['room_id'])) {
@@ -403,7 +415,7 @@ class JMessageController extends BaseController {
         //处理数据
         $sqlResult = SqlManager::cancelChatRoom($userInfo,$isCreator);
         $this->returnData($this->convertReturnJsonSucessed());
-    }
+    }*/
 
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/startChatRoom?roomId=123456
@@ -419,7 +431,7 @@ class JMessageController extends BaseController {
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
         //处理数据库
-        $sqlResult = SqlManager::cancelChatRoom($userInfo);
+        $sqlResult = SqlManager::startChatRoom($userInfo);
         $this->returnData($this->convertReturnJsonSucessed());
     }
 
@@ -451,6 +463,23 @@ class JMessageController extends BaseController {
         $reData['appoint_time'] = $roomInfo['appoint_time'];
         $reData['members'] = $sqlResult;
     }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChatRoomByUser?userName=wys30201
+     * 根据用户名获取房间
+     */
+    public function getChatRoomByUser() {
+        $userInfo['user_name'] = $_GET['userName'];
+        if(is_null($userInfo['user_name'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack userName'));
+            return ;
+        }
+
+        $sqlResult = SqlManager::getChatRoomByUser($userInfo);
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+    }
+
 
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChatRoomMember?roomId=123456&roomRoleType=1
@@ -501,7 +530,7 @@ class JMessageController extends BaseController {
         $result = $this->JMRoom->delete($info['room_id']);
         if($result['body']['error'] !== NULL) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_DELETE_CHARTEOOM
-                , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
+                , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));
             return;
         } else {
             //创建成功
@@ -517,11 +546,11 @@ class JMessageController extends BaseController {
         $result = $this->JMRoom->create('xq_chartRoom', $info['creater'], array(), 'xq_chartRoom');
         if($result['body']['error'] !== NULL) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_CREATE_CHARTEOOM
-                , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
+                , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));
             return;
         } else {
             //创建成功
-            $roomId = $info['body']['chatroom_id'];
+            $roomId = $result['body']['chatroom_id'];
             return $roomId;
         }
     }
@@ -587,7 +616,7 @@ class JMessageController extends BaseController {
     public function deleteJMChatRoomByUser() {
         $userName = $_GET['userName'];
         $result = $this->JMUser->chatrooms($userName);
-        foreach ($result['data']['body'] as $item) {
+        foreach ($result['body'] as $item) {
             $aa['room_id'] = $item['id'];
             $bb = $this->_deleteJMChat($aa);
         }
