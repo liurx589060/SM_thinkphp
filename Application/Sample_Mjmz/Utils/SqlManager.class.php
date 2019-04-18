@@ -812,7 +812,17 @@ class SqlManager {
         $info['enter_time'] = ToolUtil::getCurrentTime();
         $info['room_role_type'] = 1;  //参与者
         $result = M(SqlManager::TABLE_ROOM_RECORD)->add($info);
-        return $sqlData;
+        return true;
+    }
+
+    /**
+     * 删除房间
+     * @param $sqlData
+     * @return false
+     */
+    public static function deleteChatRoom($sqlData) {
+        $sqlData['status'] = 0;  //设置为失败
+        return SqlManager::exitChatRoom($sqlData,true);
     }
 
     /**
@@ -931,12 +941,13 @@ class SqlManager {
             $sqlData['room_id'],$room_role_type);
         $result = M()->query($sqlStr);
 
-        $resultData = [];
+        $reArray = [];
         $index = 0;
         $manIndex = 0;
         $angelIndex = 0;
         $ladyIndex = 0;
         foreach ($result as $item) {
+            $resultData = [];
             $item['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['head_image'];
             if($room_role_type == 1) {
                 //参与者
@@ -963,8 +974,9 @@ class SqlManager {
             }
             $resultData['roomRoleType'] = $room_role_type;
             $resultData['userInfo'] = $item;
+            array_push($reArray,$resultData);
         }
-        return $resultData;
+        return $reArray;
     }
 
     /**
@@ -976,6 +988,27 @@ class SqlManager {
         $newData['work'] = 1;
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=0 and room_role_type=1",
             $sqlData['room_id'])->save($newData);
+        return $result;
+    }
+
+    /**
+     * 获取房间列表
+     * @param $sqlData
+     * @return mixed
+     */
+    public static function getChatRoomList($sqlData) {
+        $strTemp = '';
+        if($sqlData['public'] != -1) {
+            $strTemp .= "public=".$sqlData['public'];
+        }
+        if($sqlData['work'] != -1) {
+            $strTemp .= " and work=".$sqlData['work'];
+        }
+        if($sqlData['status'] != -2) {
+            $strTemp .= " and status=".$sqlData['status'];
+        }
+
+        $result = M(SqlManager::TABLE_CHATROOM)->where($strTemp)->select();
         return $result;
     }
 

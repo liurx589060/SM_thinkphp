@@ -10,6 +10,7 @@ namespace Sample_Mjmz\Controller;
 use Sample_Mjmz\Controller\BaseController;
 use JMessage\JMessage;
 use JMessage\IM\User;
+use JMessage\IM\ChatRoom;
 use Sample_Mjmz\Custom\Jchart\JMChartRoomHandler;
 use Sample_Mjmz\Custom\Joptions\JchartRoomOptions;
 use Sample_Mjmz\Utils\SqlManager;
@@ -203,7 +204,9 @@ class JMessageController extends BaseController {
     public function appointChatRoom() {
         $userInfo['creater'] = $_GET['userName'];
         $userInfo['gender'] = $_GET['gender'];
+        $userInfo['limit_level'] = $_GET['limitLevel'];
         $userInfo['level'] = $_GET['level'];
+        $userInfo['title'] = $_GET['title'];
         $userInfo['describe'] = $_GET['describe'];
         $userInfo['roomId'] = '';
         $userInfo['push_address'] = $_GET['pushAddress'];
@@ -212,10 +215,10 @@ class JMessageController extends BaseController {
         $userInfo['appoint_time'] = $_GET['appointTime'];
         $userInfo['limit_lady'] = $_GET['limitLady'];
         $userInfo['limit_man'] = $_GET['limitMan'];
-        if(is_null($userInfo['userName']) || is_null($userInfo['gender']) || is_null($userInfo['push_address'])
+        if(is_null($userInfo['creater']) || is_null($userInfo['push_address'])
             || is_null($userInfo['play_address']) || is_null($userInfo['appoint_time']) || is_null($userInfo['limit_lady'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack userName，appointTime,public,limitLady,pushAddress,playAddress'));
+                'lack userName,appointTime,public,limitLady,pushAddress,playAddress'));
             return ;
         }
 
@@ -235,10 +238,46 @@ class JMessageController extends BaseController {
         $userInfo['room_id'] = $roomId;
         //房间创建成功，存入数据库
         $sqlResult = SqlManager::appointChatRoom($userInfo);
-        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+//        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+        $this->returnData($this->convertReturnJsonSucessed());
     }
 
     /**
+     * 检测房间是否存在
+     * @param $sqlData
+     * @return bool|void
+     */
+    private function _checkChatRoomExist($sqlData) {
+        $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+        if(!$result) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_NOT_FIND_CHATROOM ,
+                'cannot find the room'));
+            return ;
+        }
+        return true;
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/deleteChatRoom?roomId=123456
+     * 删除房间
+     */
+    public function deleteChatRoom() {
+        $userInfo['room_id'] = $_GET['roomId'];
+        if(is_null($userInfo['room_id'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack roomId'));
+            return ;
+        }
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
+        $this->_deleteJMChat($userInfo);
+        //处理数据库
+        $sqlResult = SqlManager::deleteChatRoom($userInfo);
+        return $sqlResult;
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/joinChatRoom
      * 加入房间，两种情况，1：匹配模式   2：指定房间模式（其中包括参与者和围观者身份）
      */
     public function joinChatRoom() {
@@ -267,13 +306,11 @@ class JMessageController extends BaseController {
                 'lack room_id'));
             return ;
         }
+
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         $sqlResult = SqlManager::joinChatRoom($userInfo);
-        if($sqlResult == -1) {
-            //未找到
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_NOT_FIND_CHATROOM ,
-                'not find the chat room'));
-            return ;
-        }else if($sqlResult == -2) {
+        if($sqlResult == -2) {
             //房间已满员
             $this->returnData($this->convertReturnJsonError(Common::ERROR_FULL_CHATROOM ,
                 'people of the room is full'));
@@ -288,10 +325,12 @@ class JMessageController extends BaseController {
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
         $this->_joinJMChat($userInfo);
-        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+//        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+        $this->returnData($this->convertReturnJsonSucessed());
     }
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/exitChatRoom?userName=wys30201&roomId=123456&status=0
      * 退出房间
      */
     public function exitChatRoom() {
@@ -305,6 +344,8 @@ class JMessageController extends BaseController {
                 'lack userName，roomId,status'));
             return ;
         }
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         if($result['creater'] == $userInfo['user_name']) {
             $isCreator = true;
@@ -333,6 +374,7 @@ class JMessageController extends BaseController {
     }
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/cancelChatRoom?userName=wys30201&roomId=123456
      * 在预约期间退出房间
      */
     public function cancelChatRoom() {
@@ -346,6 +388,8 @@ class JMessageController extends BaseController {
 
         //退出JM ChatRoom
         $isCreator = false;
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         if($result['creater'] == $userInfo['user_name']) {
             //创建者,删除房间
@@ -362,6 +406,7 @@ class JMessageController extends BaseController {
     }
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/startChatRoom?roomId=123456
      * 房间开始
      */
     public function startChatRoom() {
@@ -371,6 +416,8 @@ class JMessageController extends BaseController {
                 'lack roomId'));
             return ;
         }
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         //处理数据库
         $sqlResult = SqlManager::cancelChatRoom($userInfo);
         $this->returnData($this->convertReturnJsonSucessed());
@@ -378,6 +425,7 @@ class JMessageController extends BaseController {
 
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/enterChatRoom?roomId=123456
      * 进入房间
      */
     public function enterChatRoom() {
@@ -388,6 +436,8 @@ class JMessageController extends BaseController {
             return ;
         }
 
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
         $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         $reData['roomId'] = $roomInfo['room_id'];
@@ -403,6 +453,7 @@ class JMessageController extends BaseController {
     }
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChatRoomMember?roomId=123456&roomRoleType=1
      * 获取房间的成员
      */
     public function getChatRoomMember() {
@@ -413,12 +464,15 @@ class JMessageController extends BaseController {
                 'lack roomId,roomRoleType'));
             return ;
         }
+        //检测房间是否存在
+        $this->_checkChatRoomExist($userInfo);
         //处理数据库
         $sqlResult = SqlManager::getChatRoomMember($userInfo,$userInfo['room_role_type']);
-        $this->returnData($this->convertReturnJsonSucessed());
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getChatRoomList?public=1&work=1&status=0
      * 获取房间列表
      */
     public function getChatRoomList() {
@@ -434,8 +488,8 @@ class JMessageController extends BaseController {
         if(is_null($info['status'])) {
             $info['status'] = -2;
         }
-        56666
-        $sqlReslult = SqlManager::
+        $sqlResult = SqlManager::getChatRoomList($info);
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 
     /**
@@ -446,7 +500,7 @@ class JMessageController extends BaseController {
     private function _deleteJMChat($info) {
         $result = $this->JMRoom->delete($info['room_id']);
         if($result['body']['error'] !== NULL) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_DELETE_CHARTEOOM
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_DELETE_CHARTEOOM
                 , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
             return;
         } else {
@@ -462,7 +516,7 @@ class JMessageController extends BaseController {
     private function _createJMChat($info) {
         $result = $this->JMRoom->create('xq_chartRoom', $info['creater'], array(), 'xq_chartRoom');
         if($result['body']['error'] !== NULL) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_CREATE_CHARTEOOM
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_CREATE_CHARTEOOM
                 , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
             return;
         } else {
@@ -482,7 +536,7 @@ class JMessageController extends BaseController {
         $result = $this->_exitJMChat(true,$info['room_id'],$info['user_name']);
         $result = $this->JMRoom->addMembers($info['room_id'], array($info['user_name']));
         if($result['body']['error'] !== NULL) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_JOIN_CHARTEOOM
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_JOIN_CHARTEOOM
                 , $info['body']['error']['code'].'--->>'.$info['body']['error']['message']));
             return;
         } else {
@@ -515,6 +569,29 @@ class JMessageController extends BaseController {
             $result = $this->JMRoom->removeMembers($roomId, array($userName));
         }
         return $result;
+    }
+
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/getJMChatRoomByUser?userName=wys30201
+     */
+    public function getJMChatRoomByUser() {
+        $userName = $_GET['userName'];
+        $result = $this->JMUser->chatrooms($userName);
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/JMessage/deleteJMChatRoomByUser?userName=wys30201
+     */
+    public function deleteJMChatRoomByUser() {
+        $userName = $_GET['userName'];
+        $result = $this->JMUser->chatrooms($userName);
+        foreach ($result['data']['body'] as $item) {
+            $aa['room_id'] = $item['id'];
+            $bb = $this->_deleteJMChat($aa);
+        }
+        $this->returnData($this->convertReturnJsonSucessed());
     }
 
 
