@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : xq
+Source Server         : xq_app
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-19 01:20:30
+Date: 2019-04-19 17:07:49
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,7 +79,7 @@ CREATE TABLE `xq_chat_room` (
   `push_address` varchar(255) DEFAULT NULL,
   `play_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_chat_room
@@ -87,6 +87,7 @@ CREATE TABLE `xq_chat_room` (
 INSERT INTO `xq_chat_room` VALUES ('10', '15749994', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:13:03', '1', '-1', '2019-04-19 01:15:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
 INSERT INTO `xq_chat_room` VALUES ('11', '17859297', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:16:16', '1', '-1', '2019-04-19 01:16:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
 INSERT INTO `xq_chat_room` VALUES ('12', '17859303', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:18:41', '1', '0', '2019-04-19 01:20:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat_room` VALUES ('13', '17863265', '一起来相亲吧', '', 'wys30201', null, null, '1', '0', '2019-04-19 22:47:00', '-1', '1', '2', '1', '0', '2', '1', '0', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n');
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -99,7 +100,7 @@ CREATE TABLE `xq_coin_consume_history` (
   `to_user` varchar(255) DEFAULT NULL COMMENT '赠送对方',
   `create_time` timestamp NULL DEFAULT NULL COMMENT '购买时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=407 DEFAULT CHARSET=utf8 COMMENT='金币消费记录';
+) ENGINE=InnoDB AUTO_INCREMENT=413 DEFAULT CHARSET=utf8 COMMENT='金币消费记录';
 
 -- ----------------------------
 -- Records of xq_coin_consume_history
@@ -183,6 +184,12 @@ INSERT INTO `xq_coin_consume_history` VALUES ('403', '1000', 'wys30201', 'wys302
 INSERT INTO `xq_coin_consume_history` VALUES ('404', '1000', 'wys30201', 'wys30201', '2019-04-18 23:45:10');
 INSERT INTO `xq_coin_consume_history` VALUES ('405', '1000', 'wys30201', 'wys30201', '2019-04-18 23:47:55');
 INSERT INTO `xq_coin_consume_history` VALUES ('406', '6', 'wys30201', 'wys30201', '2019-04-18 23:51:53');
+INSERT INTO `xq_coin_consume_history` VALUES ('407', '1001', 'wys30202', 'wys30202', '2019-04-19 13:20:13');
+INSERT INTO `xq_coin_consume_history` VALUES ('408', '1001', 'wys30202', 'wys30202', '2019-04-19 16:06:33');
+INSERT INTO `xq_coin_consume_history` VALUES ('409', '1001', 'wys30202', 'wys30202', '2019-04-19 16:13:41');
+INSERT INTO `xq_coin_consume_history` VALUES ('410', '1001', 'wys30202', 'wys30202', '2019-04-19 16:18:23');
+INSERT INTO `xq_coin_consume_history` VALUES ('411', '1001', 'wys30202', 'wys30202', '2019-04-19 16:20:53');
+INSERT INTO `xq_coin_consume_history` VALUES ('412', '1001', 'wys30202', 'wys30202', '2019-04-19 16:23:35');
 
 -- ----------------------------
 -- Table structure for `xq_gift_category`
@@ -388,7 +395,7 @@ CREATE TABLE `xq_room_record` (
   `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
   `work` int(11) DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
+) ENGINE=InnoDB AUTO_INCREMENT=159 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
 
 -- ----------------------------
 -- Records of xq_room_record
@@ -396,6 +403,13 @@ CREATE TABLE `xq_room_record` (
 INSERT INTO `xq_room_record` VALUES ('145', '15749994', 'wys30201', '-1', '2019-04-19 01:12:48', null, '1', '2');
 INSERT INTO `xq_room_record` VALUES ('146', '17859297', 'wys30201', '-1', '2019-04-19 01:15:55', null, '1', '2');
 INSERT INTO `xq_room_record` VALUES ('147', '17859303', 'wys30201', '0', '2019-04-19 01:18:09', '2019-04-19 01:18:41', '1', '2');
+INSERT INTO `xq_room_record` VALUES ('148', '17863265', 'wys30201', '0', '2019-04-19 15:44:38', null, '1', '0');
+INSERT INTO `xq_room_record` VALUES ('149', '17863265', 'wys30202', '-1', '2019-04-19 16:23:36', '2019-04-19 16:35:20', '1', '2');
+INSERT INTO `xq_room_record` VALUES ('150', '17863265', 'wys30202', '-1', '2019-04-19 16:28:44', '2019-04-19 16:35:20', '1', '2');
+INSERT INTO `xq_room_record` VALUES ('151', '17863265', 'wys30202', '-1', '2019-04-19 16:33:11', '2019-04-19 16:35:20', '1', '2');
+INSERT INTO `xq_room_record` VALUES ('152', '17863265', 'wys30202', '-1', '2019-04-19 16:33:51', '2019-04-19 16:35:20', '1', '2');
+INSERT INTO `xq_room_record` VALUES ('155', '17863265', 'wys30210', '0', '2019-04-19 16:55:01', null, '2', '0');
+INSERT INTO `xq_room_record` VALUES ('158', '17863265', 'wys30202', '0', '2019-04-19 16:57:30', null, '1', '0');
 
 -- ----------------------------
 -- Table structure for `xq_user`
@@ -473,7 +487,7 @@ CREATE TABLE `xq_user_info` (
 -- Records of xq_user_info
 -- ----------------------------
 INSERT INTO `xq_user_info` VALUES ('1', '1', 'wys30201', '神龙', '男', 'angel', '0', '2486', '26', '172', '博士及以上', 'IT工程师', '湖南', '0', '深圳市南山区', '', '/thinkphp/upload/XQ/IMG_20181120001732_901.jpg', '2019-04-08 21:47:20', '2019-04-08 22:22:40', '我的世界我做主');
-INSERT INTO `xq_user_info` VALUES ('4', '10', 'wys30202', '莹宝', '女', 'guest', '0', '70', '23', '170', '博士及以上', 'IT', '广东', '1', '长沙', '', '/thinkphp/upload/XQ/IMG_20180616164817_283.jpg', '2018-05-16 23:59:15', '2019-04-15 21:54:59', '');
+INSERT INTO `xq_user_info` VALUES ('4', '10', 'wys30202', '莹宝', '女', 'guest', '0', '64', '23', '170', '博士及以上', 'IT', '广东', '1', '长沙', '', '/thinkphp/upload/XQ/IMG_20180616164817_283.jpg', '2018-05-16 23:59:15', '2019-04-15 21:54:59', '');
 INSERT INTO `xq_user_info` VALUES ('5', '12', 'wys30203', '孤星', '女', 'guest', '0', '120', '22', '158', '硕士', '销售', '湖北', '0', '武汉', '', '/thinkphp/upload/XQ/IMG_20190112162444_308.jpg', '2018-05-30 23:31:29', '0000-00-00 00:00:00', '');
 INSERT INTO `xq_user_info` VALUES ('6', '15', 'wys30204', '如风', '男', 'guest', '0', '0', '27', '183', '博士', '工程经理', '湖南', '0', '南山科技园', '', '/thinkphp/upload/XQ/IMG_20180617104128_144.jpg', '2018-05-31 21:37:17', '0000-00-00 00:00:00', '新高浮雕升高个');
 INSERT INTO `xq_user_info` VALUES ('7', '16', 'wys30205', 'wys30205', '男', 'guest', '0', '0', '28', '170', '硕士', '及', '湖南', '0', '上海', '', '/thinkphp/upload/XQ/IMG_20181216140228_600.jpg', '2018-12-16 14:02:16', '0000-00-00 00:00:00', '理想随风');

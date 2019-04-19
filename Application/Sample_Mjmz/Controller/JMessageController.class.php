@@ -222,6 +222,7 @@ class JMessageController extends BaseController {
             return ;
         }
 
+        $this->_checkUserExist($userInfo);
         $this->_subCheckExpiryChatRoom();
         //检测是否有已经预约的或者开始的房间
         $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE creater='%s' AND `work`<>2",
@@ -258,6 +259,21 @@ class JMessageController extends BaseController {
     }
 
     /**
+     * 检测用户是否存在
+     * @param $sqlData
+     * @return mixed|void
+     */
+    private function _checkUserExist($sqlData) {
+        $result = M(SqlManager::TABLE_USER)->where("user_name='%s'",$sqlData['user_name'])->find();
+        if(!$result) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_USER_NOT_EXIST ,
+                'user is not exist'));
+            return ;
+        }
+        return $result;
+    }
+
+    /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/deleteChatRoom?roomId=123456
      * 删除房间
      */
@@ -284,8 +300,8 @@ class JMessageController extends BaseController {
         $userInfo['user_name'] = $_GET['userName'];
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['level'] = $_GET['level'];
-        $userInfo['room_id'] = $_GET['level'];
-        $userInfo['handleType'] = $_GET['handleType'];
+        $userInfo['room_id'] = $_GET['roomId'];
+        $userInfo['handleType'] = $_GET['handleType'];   // 1匹配模式  2：指定房间模式
         $userInfo['room_role_type'] = $_GET['roomRoleType'];
         if(is_null($userInfo['user_name']) || is_null($userInfo['gender']) || is_null($userInfo['handleType']) || is_null($userInfo['room_role_type'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
@@ -307,6 +323,7 @@ class JMessageController extends BaseController {
             return ;
         }
 
+        $this->_checkUserExist($userInfo);
         $this->_subCheckExpiryChatRoom();
         //检测是否有已经加入的房间
         $sqlStr = sprintf("SELECT * FROM xq_room_record WHERE user_name='%s' AND `work`<>2",
@@ -337,7 +354,7 @@ class JMessageController extends BaseController {
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
         $this->_joinJMChat($userInfo);
-//        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+        //$this->returnData($this->convertReturnJsonSucessed($sqlResult));
         $this->returnData($this->convertReturnJsonSucessed());
     }
 
@@ -356,6 +373,7 @@ class JMessageController extends BaseController {
                 'lack userName，roomId,status'));
             return ;
         }
+        $this->_checkUserExist($userInfo);
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
         $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
@@ -618,13 +636,12 @@ class JMessageController extends BaseController {
         $result = $this->JMUser->chatrooms($userName);
         foreach ($result['body'] as $item) {
             $aa['room_id'] = $item['id'];
-            $bb = $this->_deleteJMChat($aa);
         }
         $this->returnData($this->convertReturnJsonSucessed());
     }
 
 
-    
+
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/createChartRoom?userName=sy30201&gender=女&level=12
      * 创建聊天室
@@ -642,9 +659,9 @@ class JMessageController extends BaseController {
         $userInfo['limit_lady'] = $_GET['limitLady'];
         $userInfo['limit_man'] = $_GET['limitMan'];
         $this->_checkUserInfoParams($userInfo);
-        
+
         $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
-        
+
         $option = new JchartRoomOptions();
         $option->jmClient = $this->JMClient;
         if($_GET['limitLevel'] !== NULL) {
@@ -674,7 +691,7 @@ class JMessageController extends BaseController {
         $array['creater'] = $userInfo['userName'];
         //加入创建的handler
         $array['gender'] = $chartHandler->getRestGender();
-        $this->_addWaitChartRoom($array); 
+        $this->_addWaitChartRoom($array);
         S(CACHE_WAIT, $this->_waitChartRoomArray);
         if($array['public'] == 1) {
             //公开的
@@ -690,46 +707,46 @@ class JMessageController extends BaseController {
                 // try something else here
                 print $e;
             }
-        }     
-        
-        //存入数据库 
+        }
+
+        //存入数据库
         $bean['room_id'] = $array['roomId'];
         $bean['create_time'] = ToolUtil::getCurrentTime();
         $bean['creater'] = $userInfo['userName'];
         $bean['describe'] = $array['describe'];
         $bean['public'] = $array['public'];
         $bean['appoint_time'] = $array['appoint_time'];
-        $bean['status'] = 0;   
+        $bean['status'] = 0;
         SqlManager::updateChatRoom($bean, 1);
-        
-        //存入数据库 
+
+        //存入数据库
         $bean['room_id'] = $array['roomId'];
         $bean['user_name'] = $userInfo['userName'];
         $bean['status'] = 0;
         $bean['enter_time'] = ToolUtil::getCurrentTime();
         $bean['room_role_type'] = 1;
         SqlManager::updateRoomRecord($bean, 1);
-        
+
         $this->_returnChatRoomData($array);
     }
-    
+
     public function deleteChartRoom() {
         if(is_null($_GET['userName']) || is_null($_GET['roomId']) || is_null($_GET['status'])) {
             $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,'lack userName,roomId,status'));
         }
-        
+
         //存入数据库
         $result = SqlManager::getChatRoomById($_GET['roomId']);
         $result['delete_time'] = ToolUtil::getCurrentTime();
         $result['status'] = $_GET['status'];
         SqlManager::updateChatRoom($result, 2);
-        
+
         //存入数据库
         $result = SqlManager::getRoomRecordById($_GET['userName'],$_GET['roomId']);
         $result['exit_time'] = ToolUtil::getCurrentTime();
         $result['status'] = 0;
         SqlManager::updateRoomRecord($result, 2);
-        
+
         $this->deleteRoom($_GET['roomId']);
     }
 
@@ -775,7 +792,7 @@ class JMessageController extends BaseController {
             $this->returnData($this->convertReturnJsonSucessed());
         }
     }
-    
+
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/matchChartRoom?gender=男
      * 匹配聊天室
@@ -795,7 +812,7 @@ class JMessageController extends BaseController {
                     return $handler['roomId'];
                 }
             }
-        } 
+        }
         $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'no match chartRoom'));
     }
 
@@ -803,68 +820,68 @@ class JMessageController extends BaseController {
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/joinChartRoom?userName=wys30201&gender=100&level=5
      * 加入聊天室
      */
-    public function joinChartRoom() {
-        if(!isset($_GET['userName'])||!isset($_GET['gender'])||!isset($_GET['level'])||!isset($_GET['roleType'])
-                || !isset($_GET['roomRoleType'])) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
-                    'lack userName,gender,level,roleType,roomRoleType'));
-            return;
-        }
-        
-        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_ONLOOKER) {
-            if($_GET['userName'] == NULL) {
-                $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
-                    'lack roomId'));
-                return;
-            }
-        }
-        
-        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
-            //参与者
-            $this->_joinChatRoomWithParticipants();
-        }else {
-            $this->_joinChartRoomWithOnLooker();
-        }
-    }
-    
-    private function _joinChatRoomWithParticipants() {
-        $roomId = $this->_matchChartRoom();
-        $handler = $this->_waitChartRoomArray[PRE_KEY.$roomId];
-        if($handler === NULL) {
-            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'the roomId is wrong'));
-            return;
-        }
-        $userInfo = array();
-        $userInfo['userName'] = $_GET['userName'];
-        
-        $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
-        
-        $userInfo['gender'] = $_GET['gender'];
-        $userInfo['level'] = $_GET['level'];
-        $userInfo['roleType'] = $_GET['roleType'];
-        $userInfo['roomId'] = $roomId;
-        $userInfo['roomRoleType'] = $_GET['roomRoleType'];
-        $handler['handler']->joinChartRoom($this,$userInfo);
-        $handler['gender'] = $handler['handler']->getRestGender();
-        if($handler['gender'] == JMChartRoomHandler::FULL) {//满员
-            $this->_removeWaitChartRoom($handler);
-            $this->_addStartedChartRoom($handler);
-        } else {
-            $this->_waitChartRoomArray[PRE_KEY.$roomId] = $handler;
-            //修改了数组，缓存
-            S(CACHE_WAIT, $this->_waitChartRoomArray);
-        }
-        
-        //存入数据库 
-        $bean['room_id'] = $userInfo['roomId'];
-        $bean['user_name'] = $userInfo['userName'];
-        $bean['status'] = 0;
-        $bean['enter_time'] = ToolUtil::getCurrentTime();
-        $bean['room_role_type'] = $_GET['roomRoleType'];   
-        SqlManager::updateRoomRecord($bean, 1);
-        
-        $this->_returnChatRoomData($handler);
-    }
+//    public function joinChartRoom() {
+//        if(!isset($_GET['userName'])||!isset($_GET['gender'])||!isset($_GET['level'])||!isset($_GET['roleType'])
+//                || !isset($_GET['roomRoleType'])) {
+//            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
+//                    'lack userName,gender,level,roleType,roomRoleType'));
+//            return;
+//        }
+//
+//        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_ONLOOKER) {
+//            if($_GET['userName'] == NULL) {
+//                $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_LACK_PARAMS,
+//                    'lack roomId'));
+//                return;
+//            }
+//        }
+//
+//        if($_GET['roomRoleType'] == JMessageController::CHAT_ROOM_ROLETYPE_PARTICIPANTS) {
+//            //参与者
+//            $this->_joinChatRoomWithParticipants();
+//        }else {
+//            $this->_joinChartRoomWithOnLooker();
+//        }
+//    }
+//
+//    private function _joinChatRoomWithParticipants() {
+//        $roomId = $this->_matchChartRoom();
+//        $handler = $this->_waitChartRoomArray[PRE_KEY.$roomId];
+//        if($handler === NULL) {
+//            $this->returnData($this->convertReturnJsonError(JMessageController::ERROR_NO_MATCH, 'the roomId is wrong'));
+//            return;
+//        }
+//        $userInfo = array();
+//        $userInfo['userName'] = $_GET['userName'];
+//
+//        $userInfo = $userInfo + SqlManager::getUserInfoBySql($userInfo);
+//
+//        $userInfo['gender'] = $_GET['gender'];
+//        $userInfo['level'] = $_GET['level'];
+//        $userInfo['roleType'] = $_GET['roleType'];
+//        $userInfo['roomId'] = $roomId;
+//        $userInfo['roomRoleType'] = $_GET['roomRoleType'];
+//        $handler['handler']->joinChartRoom($this,$userInfo);
+//        $handler['gender'] = $handler['handler']->getRestGender();
+//        if($handler['gender'] == JMChartRoomHandler::FULL) {//满员
+//            $this->_removeWaitChartRoom($handler);
+//            $this->_addStartedChartRoom($handler);
+//        } else {
+//            $this->_waitChartRoomArray[PRE_KEY.$roomId] = $handler;
+//            //修改了数组，缓存
+//            S(CACHE_WAIT, $this->_waitChartRoomArray);
+//        }
+//
+//        //存入数据库
+//        $bean['room_id'] = $userInfo['roomId'];
+//        $bean['user_name'] = $userInfo['userName'];
+//        $bean['status'] = 0;
+//        $bean['enter_time'] = ToolUtil::getCurrentTime();
+//        $bean['room_role_type'] = $_GET['roomRoleType'];
+//        SqlManager::updateRoomRecord($bean, 1);
+//
+//        $this->_returnChatRoomData($handler);
+//    }
     
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/joinChartRoomWithOnLooker?roomId=1256

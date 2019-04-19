@@ -833,7 +833,7 @@ class SqlManager {
     public static function joinChatRoom($sqlData) {
         $userInfo['user_name'] = $sqlData['user_name'];
         $userInfo['enter_time'] = ToolUtil::getCurrentTime();
-        $userInfo['room_role_type'] = $sqlData['roomRoleType'];  //身份
+        $userInfo['room_role_type'] = $sqlData['room_role_type'];  //身份
 
         $roomId = '';
         $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
@@ -855,18 +855,24 @@ class SqlManager {
             $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
             if($result) {
                 //找到了
+                if($userInfo['room_role_type'] == 1) {
+                    //参与者
+                    if($result[$countStr] >= $result[$limitStr]) {
+                        return -2; //房间已满员
+                    }else if($result['work'] != 0) {
+                        return -3;//房间已开始
+                    }
+                }
                 $roomId = $result['room_id'];
             }else {
-                if($result[$countStr] < $result[$limitStr]) {
-                    return -2; //房间已满员
-                }else if($result['work'] != 0) {
-                    return -3;//房间已开始
-                }
                 return -1;//未找到
             }
         }
 
-        M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1);
+        if($userInfo['room_role_type'] == 1) {
+            //参与者
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
+        }
         //添加到个人房间记录中
         $userInfo['room_id'] = $roomId;
         M(SqlManager::TABLE_ROOM_RECORD)->add($userInfo);
@@ -901,7 +907,7 @@ class SqlManager {
 //                $newData['delete_time'],$sqlData['room_id']);
 //            $result = M()->execute($sqlStr);
         }
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s'"
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s' and `work`<>2"
             ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
         return $result;
     }
