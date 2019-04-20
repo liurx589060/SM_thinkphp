@@ -203,6 +203,7 @@ class JMessageController extends BaseController {
      */
     public function appointChatRoom() {
         $userInfo['creater'] = $_GET['userName'];
+        $userInfo['user_name'] = $userInfo['creater'];
         $userInfo['gender'] = $_GET['gender'];
         $userInfo['limit_level'] = $_GET['limitLevel'];
         $userInfo['level'] = $_GET['level'];
@@ -236,11 +237,28 @@ class JMessageController extends BaseController {
         }
         //创建JMMessage 房间
         $roomId = $this->_createJMChat($userInfo);
+        //发送JPush消息
+        if($userInfo['public'] == 1) {
+            //公开的
+            $pusher = $this->JPushClient->push();
+            $pusher->setPlatform('all');
+            $pusher->addAllAudience();
+            $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_CREATE;
+            $extraArray['data'] = [];
+            $pusher->setMessage(json_encode($extraArray),'create','json',null);
+            try {
+                $pusher->send();
+            } catch (JPushException $e) {
+                // try something else here
+                print $e;
+            }
+        }
+
         $userInfo['room_id'] = $roomId;
         //房间创建成功，存入数据库
         $sqlResult = SqlManager::appointChatRoom($userInfo);
-//        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
-        $this->returnData($this->convertReturnJsonSucessed());
+        $this->returnData($this->convertReturnJsonSucessed($userInfo));
+        //$this->returnData($this->convertReturnJsonSucessed());
     }
 
     /**
@@ -278,18 +296,37 @@ class JMessageController extends BaseController {
      * 删除房间
      */
     public function deleteChatRoom() {
+        $userInfo['user_name'] = $_GET['userName'];
         $userInfo['room_id'] = $_GET['roomId'];
-        if(is_null($userInfo['room_id'])) {
+        $userInfo['status'] = $_GET['status'];
+
+        if(is_null($userInfo['user_name']) || is_null($userInfo['room_id']) || is_null($userInfo['status'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack roomId'));
+                'lack userName，roomId,status'));
             return ;
         }
+        $this->_checkUserExist($userInfo);
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
-        $this->_deleteJMChat($userInfo);
+        $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         //处理数据库
+        //删除聊天室
+        $this->_deleteJMChat($result);
+        $pusher = $this->JPushClient->push();
+        $pusher->setPlatform('all');
+        $pusher->addAllAudience();
+        $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_DELETE;
+        $extraArray['data'] = [];
+        $pusher->setMessage(json_encode($extraArray),'delete','json',null);
+        try {
+            $pusher->send();
+        } catch (JPushException $e) {
+            // try something else here
+            print $e;
+        }
+
         $sqlResult = SqlManager::deleteChatRoom($userInfo);
-        return $sqlResult;
+        $this->returnData($this->convertReturnJsonSucessed($result));
     }
 
     /**
@@ -337,7 +374,11 @@ class JMessageController extends BaseController {
         }
 
         //检测房间是否存在
-        $this->_checkChatRoomExist($userInfo);
+        if($userInfo['handleType'] == 2) {
+            //指定模式
+            $this->_checkChatRoomExist($userInfo);
+        }
+
         $sqlResult = SqlManager::joinChatRoom($userInfo);
         if($sqlResult == -2) {
             //房间已满员
@@ -353,10 +394,12 @@ class JMessageController extends BaseController {
 
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
+        //去客户端加入
         $this->_joinJMChat($userInfo);
-        //$this->returnData($this->convertReturnJsonSucessed($sqlResult));
-        $this->returnData($this->convertReturnJsonSucessed());
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
+        //$this->returnData($this->convertReturnJsonSucessed());
     }
+
 
     /**
      * http://localhost/thinkphp/Sample_Mjmz/JMessage/exitChatRoom?userName=wys30201&roomId=123456&status=0
@@ -367,7 +410,6 @@ class JMessageController extends BaseController {
         $userInfo['room_id'] = $_GET['roomId'];
         $userInfo['status'] = $_GET['status'];
 
-        $isCreator = false;
         if(is_null($userInfo['user_name']) || is_null($userInfo['room_id']) || is_null($userInfo['status'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
                 'lack userName，roomId,status'));
@@ -394,13 +436,10 @@ class JMessageController extends BaseController {
                 // try something else here
                 print $e;
             }
-        }else {
-            $isCreator = false;
-            $this->_exitJMChat(false,$userInfo['room_id'],$userInfo['user_name']);
         }
         //处理数据库
-        $sqlResult = SqlManager::exitChatRoom($userInfo,$isCreator);
-        $this->returnData($this->convertReturnJsonSucessed());
+        $sqlResult = SqlManager::exitChatRoom($userInfo,false);
+        $this->returnData($this->convertReturnJsonSucessed($result));
     }
 
     /**
@@ -470,16 +509,8 @@ class JMessageController extends BaseController {
         $this->_checkChatRoomExist($userInfo);
         $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
         $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
-        $reData['roomId'] = $roomInfo['room_id'];
-        $reData['limitLevel'] = $roomInfo['limit_level'];
-        $reData['limitLady'] = $roomInfo['limit_lady'];
-        $reData['limitMan'] = $roomInfo['limit_man'];
-        $reData['limitAngel'] = $roomInfo['limit_angel'];
-        $reData['pushAddress'] = $roomInfo['push_address'];
-        $reData['playAddress'] = $roomInfo['play_address'];
-        $reData['creater'] = $roomInfo['creater'];
-        $reData['appoint_time'] = $roomInfo['appoint_time'];
-        $reData['members'] = $sqlResult;
+        $roomInfo['members'] = $sqlResult;
+        $this->returnData($this->convertReturnJsonSucessed($roomInfo));
     }
 
     /**
@@ -523,6 +554,7 @@ class JMessageController extends BaseController {
      * 获取房间列表
      */
     public function getChatRoomList() {
+        $this->_subCheckExpiryChatRoom();
         $info['public'] = $_GET['public'];  //0：私密  1;公开   -1：所有
         $info['work'] = $_GET['work'];  //0：初始化   1：进行中    2：已结束  -1:所有
         $info['status'] = $_GET['status']; //0：未匹配成功  1：匹配成功  -1：取消  -2:所有
@@ -547,9 +579,12 @@ class JMessageController extends BaseController {
     private function _deleteJMChat($info) {
         $result = $this->JMRoom->delete($info['room_id']);
         if($result['body']['error'] !== NULL) {
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_DELETE_CHARTEOOM
-                , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));
-            return;
+            if(!$result['body']['error']['code'] == 899081) {
+                //房间已被删除
+                $this->returnData($this->convertReturnJsonError(Common::ERROR_DELETE_CHARTEOOM
+                    , $result['body']['error']['code'].'--->>'.$result['body']['error']['message']));
+                return;
+            }
         } else {
             //创建成功
             return true;

@@ -354,10 +354,11 @@ class SqlManager {
         $sqlResult[0]['head_image'] ='http://'.$_SERVER['SERVER_NAME'].$sqlResult[0]['head_image'];
         return $sqlResult[0];
     }
-    
-     /**
+
+    /**
      * 获取用户好友列表
      * @param type $sqlData
+     * @return mixed
      */
     public static function getFriendListByUser($sqlData) {
         $sqlStr = sprintf("SELECT b.* FROM xq_user_friend a,xq_user_info b WHERE 
@@ -805,7 +806,9 @@ class SqlManager {
      */
     public static function appointChatRoom($sqlData) {
         //添加到房间表中
-        $result = M(SqlManager::TABLE_CHATROOM)->add($sqlData);
+        $newData = $sqlData;
+        $newData['count_angel'] = 1;
+        $result = M(SqlManager::TABLE_CHATROOM)->add($newData);
         //添加到个人房间记录表中
         $info['room_id'] = $sqlData['room_id'];
         $info['user_name'] = $sqlData['creater'];
@@ -880,7 +883,7 @@ class SqlManager {
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and status=-1 and room_role_type=1",$roomId)
             ->field("user_name,enter_time")
             ->select();
-        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         $data['room_id'] = $roomInfo['room_id'];
         $data['creater'] = $roomInfo['creater'];
         $data['appoint_time'] = $roomInfo['appoint_time'];
@@ -899,7 +902,17 @@ class SqlManager {
         $newData['exit_time'] = $newData['delete_time'];
         $newData['status'] = $sqlData['status'];
         $newData['work'] = 2;
-        $result = '';
+
+        $sqlStr = sprintf("SELECT a.user_name,a.room_id,a.room_role_type,b.gender FROM xq_room_record a,xq_user_info b 
+            WHERE a.room_id='%s' AND a.user_name='%s' AND a.user_name=b.user_name AND a.`work`<>2",
+            $sqlData['room_id'],$sqlData['user_name']);
+        $result = M()->query($sqlStr)[0];
+        if($result && $result['room_role_type'] == 1) {
+            //参与者
+            $countStr = $result['gender']==Common::MAN?'count_man':'count_lady';
+            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$result['room_id'])->setDec($countStr,1); //人员数+1
+        }
+
         if($isCreator) {
             //是创建者
             M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
@@ -940,12 +953,12 @@ class SqlManager {
      * @return mixed
      */
     public static function getChatRoomByUser($sqlData) {
-        $sqlStr = sprintf("SELECT b.* FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' 
-            AND a.room_id=b.room_id AND a.room_role_type=1 AND a.`work`<>2 ORDER BY a.enter_time DESC"
+        $sqlStr = sprintf("SELECT b.*,a.room_role_type FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' 
+            AND a.room_id=b.room_id  AND a.`work`<>2 ORDER BY a.enter_time DESC"
             ,$sqlData['user_name']);
         $result = M()->query($sqlStr);
         if(empty($result)) {
-            return false;
+            return null;
         }
         return $result[0];
     }
@@ -960,7 +973,7 @@ class SqlManager {
         $sqlStr = sprintf("SELECT b.user_name,b.nick_name,b.gender,b.role_type,b.`level`,b.age,b.tall,
                   b.scholling,b.professional,b.native_place,b.marrige,b.job_address,b.head_image,b.special_info 
                   FROM xq_room_record a,xq_user_info b WHERE a.user_name = b.user_name AND a.room_id='%s' 
-                  AND a.room_role_type='%s'",
+                  AND a.room_role_type='%s' AND a.`work`<>2 ",
             $sqlData['room_id'],$room_role_type);
         $result = M()->query($sqlStr);
 

@@ -60,9 +60,10 @@ class Common {
     const CHAT_ROOM_ROLETYPE_PARTICIPANTS = 1; //参与者
     const CHAT_ROOM_ROLETYPE_ONLOOKER = 2; //围观者
     
-    const ROLRTYPE_ANGEL = 'angel';
-    const ROLETYPE_GUEST = 'guest';
-    
+    const ROLRTYPE_ANGEL = 'angel';   //爱心大使
+    const ROLETYPE_GUEST = 'guest';    //嘉宾
+    const ROLETYPE_LOOKER = 'looker';   //观众
+
     const BLACK_BAN_BASE_TIME = 6; //6小时
     
     const REPORT_ITEMS = array('故意长时间挂机或离线','注册信息违规','言语或视频违背伦理');

@@ -318,11 +318,7 @@ class UserController extends BaseController {
         
         $sqlData['userName'] = $userName;
         $result = SqlManager::getFriendListByUser($sqlData);
-        if($result) {
-            $this->returnData($this->convertReturnJsonSucessed($result));
-        }else {
-            $this->returnData($this->convertReturnJsonError(Common::ERROR , '查询失败'));
-        }
+        $this->returnData($this->convertReturnJsonSucessed($result));
     }
 }
 

@@ -53,7 +53,11 @@ class BaseController extends Controller {
 //        if(!empty($array)) {
 //            $callback['data'] = $array;
 //        }
-        $callback['data'] = $array;
+        if(is_array($array) && empty($array)) {
+            $callback['data'] = null;
+        }else {
+            $callback['data'] = $array;
+        }
         return $callback;
     }
     
