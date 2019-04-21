@@ -970,7 +970,7 @@ class SqlManager {
      * @return array
      */
     public static function getChatRoomMember($sqlData,$room_role_type) {
-        $sqlStr = sprintf("SELECT b.user_name,b.nick_name,b.gender,b.role_type,b.`level`,b.age,b.tall,
+        $sqlStr = sprintf("SELECT a.in_room,b.user_name,b.nick_name,b.gender,b.role_type,b.`level`,b.age,b.tall,
                   b.scholling,b.professional,b.native_place,b.marrige,b.job_address,b.head_image,b.special_info 
                   FROM xq_room_record a,xq_user_info b WHERE a.user_name = b.user_name AND a.room_id='%s' 
                   AND a.room_role_type='%s' AND a.`work`<>2 ",
@@ -1009,6 +1009,7 @@ class SqlManager {
                 $index++;
             }
             $resultData['roomRoleType'] = $room_role_type;
+            $resultData['inRoom'] = $item['in_room'];
             $resultData['userInfo'] = $item;
             array_push($reArray,$resultData);
         }
@@ -1022,6 +1023,8 @@ class SqlManager {
      */
     public static function startChatRoom($sqlData) {
         $newData['work'] = 1;
+        $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s' and work=0",
+            $sqlData['room_id'])->save($newData);
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=0 and room_role_type=1",
             $sqlData['room_id'])->save($newData);
         return $result;
