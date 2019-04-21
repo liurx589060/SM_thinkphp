@@ -987,7 +987,7 @@ class SqlManager {
             $item['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['head_image'];
             if($room_role_type == 1) {
                 //参与者
-                if($item['role_type'] == Common::ANGEL) {
+                if($item['role_type'] == Common::ROLRTYPE_ANGEL) {
                     //爱心大使
                     $index = $angelIndex;
                     $angelIndex++;

@@ -18,9 +18,6 @@ class JMChartRoomHandler {
     const LADY = '女'; //女生
     const ANGEL = '天使'; //天使
     const FULL = ''; //满员
-    
-    const ROLRTYPE_ANGEL = 'angel';
-    const ROLETYPE_GUEST = 'guest';
 
     private $_JMClient;
     private $_JMUser;
