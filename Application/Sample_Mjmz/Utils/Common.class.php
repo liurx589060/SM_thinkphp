@@ -34,6 +34,7 @@ class Common {
     const ERROR_ALREADY_START_CHATROOM = 7009; //房间已开始
     const ERROR_ROLETYPE_NOT_MATCH = 7010; //角色身份不对
     const ERROR_ALREADY_JOIN_CHATROOM = 7011;//已经加入过房间
+    const ERROR_ALREADY_DELETE_CHATROOM = 7012;//聊天室已解散
     
     const ERROR_USER_REGIST = 7100;//注册失败
     const ERROR_USER_REGIST_EXIST = 7101;//已经存在账户

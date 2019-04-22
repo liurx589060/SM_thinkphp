@@ -226,8 +226,7 @@ class JMessageController extends BaseController {
         $this->_checkUserExist($userInfo);
         $this->_subCheckExpiryChatRoom();
         //检测是否有已经预约的或者开始的房间
-        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE creater='%s' AND `work`<>2",
-            $userInfo['creater']);
+        $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE creater='%s' AND `work`<>2", $userInfo['creater']);
         $sqlResult = M()->query($sqlStr);
         if(!empty($sqlResult)) {
             //有已经预约的房间，或者进行中的,则直接返回
@@ -382,10 +381,14 @@ class JMessageController extends BaseController {
         }
 
         $sqlResult = SqlManager::joinChatRoom($userInfo);
+        if(!$sqlResult) {
+            $this->returnData($this->convertReturnJsonError());
+        }
 
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
         //去客户端加入
+        //数据库操作成功了
         $this->_joinJMChat($userInfo);
         $this->returnData($this->convertReturnJsonSucessed($sqlResult));
         //$this->returnData($this->convertReturnJsonSucessed());
@@ -480,7 +483,7 @@ class JMessageController extends BaseController {
         $this->_checkChatRoomExist($userInfo);
         //处理数据库
         $sqlResult = SqlManager::startChatRoom($userInfo);
-        $this->returnData($this->convertReturnJsonSucessed());
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 
 
@@ -499,24 +502,39 @@ class JMessageController extends BaseController {
 
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
-        //标记为在房间内
+        $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
+        if(!$sqlResult) goto error;
+        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
+        if($roomInfo['work'] == 2) {
+            //则房间已经解散
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_DELETE_CHATROOM,
+                "the chat room is deleted"));
+        }
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s' and work<>2"
             ,$userInfo['room_id'],$userInfo['user_name'])
             ->setField("in_room",1);
-        $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
-        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
+        if(!$result) goto error;
         $roomInfo['members'] = $sqlResult;
-        //获取房间的inner_id;
-        $result = M(SqlManager::TABLE_ROOM_RESULT)->where("room_id='%s'",$userInfo['room_id'],$userInfo['user_name'])
-            ->order('enter_time DESC')->select();
-        $roomInfo['inner_id'] = null;
-        if(count($result) > 0) {
-            $roomInfo['inner_id'] = $result['inner_id'];
-        }else {
-            //不存在则添加
-            5666
+        if($roomInfo['work'] == 1) {
+            //判断xq_room_result是否有记录
+            $result = M(SqlManager::TABLE_ROOM_RESULT)->where("room_id='%s' and user_name='%s' and inner_id='%s'",
+                $userInfo['room_id'],$userInfo['user_name'],$roomInfo['inner_id'])
+                ->select();
+            if(empty($result)) {
+                //进行中，不存在记录,则添加到xq_room_result的记录中
+                $info = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s' and work<>2"
+                    ,$userInfo['room_id'],$userInfo['user_name']);
+                $info['status'] = 0;
+                $info['enter_time'] = ToolUtil::getCurrentTime();
+                $insertData['inner_id'] = $userInfo['inner_id'];
+                M(SqlManager::TABLE_ROOM_RESULT)->add($info);
+            }
         }
         $this->returnData($this->convertReturnJsonSucessed($roomInfo));
+
+        //goto,返回错误
+        error:
+            $this->returnData($this->convertReturnJsonError());
     }
 
     /**
@@ -605,16 +623,33 @@ class JMessageController extends BaseController {
     public function commitChatRoomResult() {
         $userInfo['room_id'] = $_GET['roomId'];
         $userInfo['status'] = $_GET['status'];
-        if(is_null($userInfo['room_id']) || is_null($userInfo['status'])) {
+        $userInfo['inner_id'] = $_GET['innerId'];
+        if(is_null($userInfo['room_id']) || is_null($userInfo['status']) || is_null($userInfo['inner_id'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack roomId,status'));
+                'lack roomId,status,innerId'));
             return ;
         }
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
         //处理数据库
-        $sqlResult = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])
-            ->setField("status",$userInfo['status']);
+        $Model = M();
+        $Model->startTrans();
+        try{
+            $sqlResult = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s' and inner_id='%s'",
+                $userInfo['room_id'],$userInfo['inner_id'])
+                ->setField("work",0);
+            //更新xq_room_record
+            M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=1",$userInfo['room_id'])->setField('work',0);
+            //更新xq_room_result,标识为结束
+            $newData['work'] = 0;//结束
+            $newData['exit_time'] = ToolUtil::getCurrentTime();
+            M(SqlManager::TABLE_ROOM_RESULT)->where("room_id='%s' and inner_id='%s'",
+                $userInfo['room_id'],$userInfo['inner_id'])
+                ->setField('work,exit_time',2,ToolUtil::getCurrentTime());
+        }catch (\Exception $e) {
+            $Model->rollback();
+            return $this->returnData($this->convertReturnJsonError());
+        }
         $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 

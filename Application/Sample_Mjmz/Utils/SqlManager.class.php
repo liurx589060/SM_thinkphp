@@ -809,13 +809,20 @@ class SqlManager {
         //添加到房间表中
         $newData = $sqlData;
         $newData['count_angel'] = 1;
-        $result = M(SqlManager::TABLE_CHATROOM)->add($newData);
-        //添加到个人房间记录表中
-        $info['room_id'] = $sqlData['room_id'];
-        $info['user_name'] = $sqlData['creater'];
-        $info['enter_time'] = ToolUtil::getCurrentTime();
-        $info['room_role_type'] = 1;  //参与者
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->add($info);
+        $Model = M();
+        $Model->startTrans();
+        try{
+            $result = M(SqlManager::TABLE_CHATROOM)->add($newData);
+            //添加到个人房间记录表中
+            $info['room_id'] = $sqlData['room_id'];
+            $info['user_name'] = $sqlData['creater'];
+            $info['enter_time'] = ToolUtil::getCurrentTime();
+            $info['room_role_type'] = 1;  //参与者
+            $result = M(SqlManager::TABLE_ROOM_RECORD)->add($info);
+        }catch (\Exception $e) {
+            $Model->rollback();
+            return false;
+        }
         return true;
     }
 
@@ -911,8 +918,8 @@ class SqlManager {
             //找到了则+1
             $roomId = $result['room_id'];
         }else if($sqlData['handleType'] == 2) {
-            //指定房间号
-            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+            //指定房间号,并且未结束的
+            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s' and work<>2",$sqlData['room_id'])->find();
             if($result) {
                 //找到了
                 $roomId = $result['room_id'];
@@ -921,17 +928,27 @@ class SqlManager {
             }
         }
 
-        if($userInfo['room_role_type'] == 1 && $userInfo['joinType'] == 1) {
-            //参与者并且参与模式，而不是排队
-            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
+        $Model = M();
+        $Model->startTrans();
+        try{
+            if($userInfo['room_role_type'] == 1 && $userInfo['joinType'] == 1) {
+                //参与者并且参与模式，而不是排队
+                M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
+            }
+            //添加到个人房间记录中
+            $userInfo['room_id'] = $roomId;
+            M(SqlManager::TABLE_ROOM_RECORD)->add($userInfo);
+            $Model->commit();
+        }catch (\Exception $e) {
+            $Model->rollback();
+            return false;
         }
-        //添加到个人房间记录中
-        $userInfo['room_id'] = $roomId;
-        M(SqlManager::TABLE_ROOM_RECORD)->add($userInfo);
         //查找房间成员(参与者)
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and status=-1 and room_role_type=1",$roomId)
-            ->field("user_name,enter_time")
-            ->select();
+        $result = [];
+//        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and status=-1 and room_role_type=1",$roomId)
+//            ->field("user_name,enter_time")
+//            ->order("enter_time DESC")
+//            ->select();
         $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         $data['room_id'] = $roomInfo['room_id'];
         $data['creater'] = $roomInfo['creater'];
@@ -1028,6 +1045,7 @@ class SqlManager {
         $manIndex = 0;
         $angelIndex = 0;
         $ladyIndex = 0;
+        $chatInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id']);
         foreach ($result as $item) {
             $resultData = [];
             $item['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['head_image'];
@@ -1035,15 +1053,27 @@ class SqlManager {
                 //参与者
                 if($item['role_type'] == Common::ROLRTYPE_ANGEL) {
                     //爱心大使
+                    if($angelIndex >= $chatInfo['limit_angel']) {
+                        //超过爱心大使的人数限制
+                        continue;
+                    }
                     $index = $angelIndex;
                     $angelIndex++;
                 }else {
                     if($item['gender'] == Common::LADY) {
                         //女嘉宾
+                        if($ladyIndex >= $chatInfo['limit_lady']) {
+                            //超过爱心大使的人数限制
+                            continue;
+                        }
                         $index = $ladyIndex;
                         $ladyIndex++;
                     }else {
                         //男嘉宾
+                        if($manIndex >= $chatInfo['limit_man']) {
+                            //超过爱心大使的人数限制
+                            continue;
+                        }
                         $index = $manIndex;
                         $manIndex++;
                     }
@@ -1069,19 +1099,41 @@ class SqlManager {
      */
     public static function startChatRoom($sqlData) {
         $newData['work'] = 1;
-        $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s' and work=0",
-            $sqlData['room_id'])->save($newData);
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=0 and room_role_type=1",
-            $sqlData['room_id'])->save($newData);
+        $Model = M();
+        $Model->startTrans();
+        try{
+            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s' and work<>2",
+                $sqlData['room_id'])->save($newData);
+            $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work<>2 and in_room=1",
+                $sqlData['room_id'])->save($newData);
+            $Model->commit();
+        }catch (\Exception $e) {
+            LogUtil::writeAppLog("Fail--startChatRoom:".json_encode($e));
+            $Model->rollback();
+            return false;
+        }
 
         //将房间的所有人添加到表xq_room_result中，并给这次匹配添加一个id
         $inner_id = 'R'.ToolUtil::createUniqueNumber();
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=1",$sqlData['room_id'])->select();
+        //在房间内的
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work<>2 and in_room=1",
+            $sqlData['room_id'])->select();
         foreach ($result as $item) {
             $item['inner_id'] = $inner_id;
             $item['enter_time'] = ToolUtil::getCurrentTime();
         }
-        $result = M(SqlManager::TABLE_ROOM_RESULT)->filter('id')->addAll($result);
+
+        $Model->startTrans();
+        try{
+            $result = M(SqlManager::TABLE_ROOM_RESULT)->filter('id')->addAll($result);
+            //设置房间的inner_id
+            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->setField('inner_id',$inner_id);
+            $Model->commit();
+        }catch (\Exception $e) {
+            LogUtil::writeAppLog("Fail--startChatRoom:".json_encode($e));
+            $Model->rollback();
+            return false;
+        }
         return $result;
     }
 

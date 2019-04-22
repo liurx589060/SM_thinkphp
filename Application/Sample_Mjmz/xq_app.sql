@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : xq_app
+Source Server         : xq
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-22 18:30:19
+Date: 2019-04-23 01:14:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -78,30 +78,31 @@ CREATE TABLE `xq_chat_room` (
   `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
   `push_address` varchar(255) DEFAULT NULL,
   `play_address` varchar(255) DEFAULT NULL,
+  `inner_id` varchar(255) DEFAULT NULL COMMENT '子id',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of xq_chat_room
 -- ----------------------------
-INSERT INTO `xq_chat_room` VALUES ('10', '15749994', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:13:03', '1', '-1', '2019-04-19 01:15:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('11', '17859297', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:16:16', '1', '-1', '2019-04-19 01:16:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('12', '17859303', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:18:41', '1', '0', '2019-04-19 01:20:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('13', '17863265', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 12:54:36', '1', '-1', '2019-04-20 03:47:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n');
-INSERT INTO `xq_chat_room` VALUES ('15', '15759390', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 14:49:53', '1', '0', '2019-04-20 23:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('16', '17869119', '灌灌灌灌', '', 'wys30201', null, '2019-04-20 14:57:12', '1', '0', '2019-04-20 23:54:00', '-1', '1', '10', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('17', '17869145', '点十分惹人', '', 'wys30201', null, '2019-04-20 15:04:31', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('18', '15759916', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:33:06', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('19', '15759932', '善良的非凡哥', '', 'wys30201', null, '2019-04-20 15:44:36', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('20', '15759946', '啊啊啊啊啊啊啊啊啊啊啊啊', '', 'wys30201', null, '2019-04-20 15:51:06', '1', '0', '2019-04-20 22:50:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('22', '17869251', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:56:46', '1', '0', '2019-04-20 23:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('23', '17869261', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:58:56', '1', '0', '2019-04-20 22:58:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('24', '15759974', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 16:14:16', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('25', '15760024', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 12:30:26', '1', '0', '2019-04-21 08:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
-INSERT INTO `xq_chat_room` VALUES ('26', '15764624', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 19:20:12', '1', '0', '2019-04-21 19:20:00', '-1', '1', '2', '1', '1', '0', '-2', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
-INSERT INTO `xq_chat_room` VALUES ('27', '15765868', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:33:53', '1', '0', '2019-04-21 20:35:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
-INSERT INTO `xq_chat_room` VALUES ('28', '15766132', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:49:09', '1', '0', '2019-04-21 20:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
-INSERT INTO `xq_chat_room` VALUES ('29', '17875491', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:57:15', '1', '0', '2019-04-21 20:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+INSERT INTO `xq_chat_room` VALUES ('10', '15749994', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:13:03', '1', '-1', '2019-04-19 01:15:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('11', '17859297', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:16:16', '1', '-1', '2019-04-19 01:16:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('12', '17859303', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:18:41', '1', '0', '2019-04-19 01:20:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('13', '17863265', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 12:54:36', '1', '-1', '2019-04-20 03:47:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', null);
+INSERT INTO `xq_chat_room` VALUES ('15', '15759390', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 14:49:53', '1', '0', '2019-04-20 23:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('16', '17869119', '灌灌灌灌', '', 'wys30201', null, '2019-04-20 14:57:12', '1', '0', '2019-04-20 23:54:00', '-1', '1', '10', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('17', '17869145', '点十分惹人', '', 'wys30201', null, '2019-04-20 15:04:31', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('18', '15759916', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:33:06', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('19', '15759932', '善良的非凡哥', '', 'wys30201', null, '2019-04-20 15:44:36', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('20', '15759946', '啊啊啊啊啊啊啊啊啊啊啊啊', '', 'wys30201', null, '2019-04-20 15:51:06', '1', '0', '2019-04-20 22:50:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('22', '17869251', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:56:46', '1', '0', '2019-04-20 23:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('23', '17869261', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:58:56', '1', '0', '2019-04-20 22:58:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('24', '15759974', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 16:14:16', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('25', '15760024', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 12:30:26', '1', '0', '2019-04-21 08:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
+INSERT INTO `xq_chat_room` VALUES ('26', '15764624', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 19:20:12', '1', '0', '2019-04-21 19:20:00', '-1', '1', '2', '1', '1', '0', '-2', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
+INSERT INTO `xq_chat_room` VALUES ('27', '15765868', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:33:53', '1', '0', '2019-04-21 20:35:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
+INSERT INTO `xq_chat_room` VALUES ('28', '15766132', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:49:09', '1', '0', '2019-04-21 20:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
+INSERT INTO `xq_chat_room` VALUES ('29', '17875491', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:57:15', '1', '0', '2019-04-21 20:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
