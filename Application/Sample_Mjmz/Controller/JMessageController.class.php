@@ -340,9 +340,11 @@ class JMessageController extends BaseController {
         $userInfo['room_id'] = $_GET['roomId'];
         $userInfo['handleType'] = $_GET['handleType'];   // 1匹配模式  2：指定房间模式
         $userInfo['room_role_type'] = $_GET['roomRoleType'];
-        if(is_null($userInfo['user_name']) || is_null($userInfo['gender']) || is_null($userInfo['handleType']) || is_null($userInfo['room_role_type'])) {
+        $userInfo['joinType'] = $_GET['joinType'];   //进入方式   1：参与   2：排队
+        if(is_null($userInfo['user_name']) || is_null($userInfo['gender']) || is_null($userInfo['handleType'])
+            || is_null($userInfo['room_role_type']) || is_null($userInfo['joinType'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack userName，gender,handleType,roomRoleType'));
+                'lack userName，gender,handleType,roomRoleType,joinType'));
             return ;
         }
 
@@ -380,17 +382,6 @@ class JMessageController extends BaseController {
         }
 
         $sqlResult = SqlManager::joinChatRoom($userInfo);
-        if($sqlResult == -2) {
-            //房间已满员
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_FULL_CHATROOM ,
-                'people of the room is full'));
-            return ;
-        }else if($sqlResult == -3) {
-            //房间已开始
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_START_CHATROOM ,
-                'the room already start'));
-            return ;
-        }
 
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
@@ -515,6 +506,16 @@ class JMessageController extends BaseController {
         $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
         $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
         $roomInfo['members'] = $sqlResult;
+        //获取房间的inner_id;
+        $result = M(SqlManager::TABLE_ROOM_RESULT)->where("room_id='%s'",$userInfo['room_id'],$userInfo['user_name'])
+            ->order('enter_time DESC')->select();
+        $roomInfo['inner_id'] = null;
+        if(count($result) > 0) {
+            $roomInfo['inner_id'] = $result['inner_id'];
+        }else {
+            //不存在则添加
+            5666
+        }
         $this->returnData($this->convertReturnJsonSucessed($roomInfo));
     }
 
@@ -582,9 +583,9 @@ class JMessageController extends BaseController {
      */
     public function getChatRoomList() {
         $this->_subCheckExpiryChatRoom();
-        $info['public'] = $_GET['public'];  //0：私密  1;公开   -1：所有
-        $info['work'] = $_GET['work'];  //0：初始化   1：进行中    2：已结束  -1:所有
-        $info['status'] = $_GET['status']; //0：未匹配成功  1：匹配成功  -1：取消  -2:所有
+        $info['public'] = $_GET['public'];  //0：私密  1;公开   -1：所有 (可多选，比如public=0,1)
+        $info['work'] = $_GET['work'];  //0：初始化   1：进行中    2：已结束  -1:所有  (可多选，work=0,1,2)
+        $info['status'] = $_GET['status']; //0：未匹配成功  1：匹配成功  -1：取消  -2:所有  (可多选，status=0,1,-1)
         if(is_null($info['public'])) {
             $info['public'] = -1;
         }

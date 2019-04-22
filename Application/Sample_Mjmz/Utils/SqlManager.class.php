@@ -33,6 +33,7 @@ class SqlManager {
     const TABLE_ROOM_RECORD = 'room_record';
     const TABLE_VERSION = 'version';
     const TABLE_BANNER = 'banner';
+    const TABLE_ROOM_RESULT = 'room_result';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -834,6 +835,64 @@ class SqlManager {
      * @return false
      */
     public static function joinChatRoom($sqlData) {
+//        $userInfo['user_name'] = $sqlData['user_name'];
+//        $userInfo['enter_time'] = ToolUtil::getCurrentTime();
+//        $userInfo['room_role_type'] = $sqlData['room_role_type'];  //身份
+//
+//        $roomId = '';
+//        $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
+//        $countStr = $sqlData['gender']==Common::MAN?'count_man':'count_lady';
+//        $llimitAppointTime = time();
+//        if($sqlData['handleType'] == 1) {
+//            //匹配模式
+//            $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE `work`=0 AND '%s'<'%s'AND appoint_time>'%s' ORDER BY appoint_time",
+//                $countStr,$limitStr,$llimitAppointTime);
+//            $result = M()->query($sqlStr)[0];
+//            if(!$result) {
+//                //未找到则直接返回
+//                return -1; //未找到
+//            }
+//            //找到了则+1
+//            $roomId = $result['room_id'];
+//        }else if($sqlData['handleType'] == 2) {
+//            //指定房间号
+//            $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
+//            if($result) {
+//                //找到了
+//                if($userInfo['room_role_type'] == 1) {
+//                    //参与者
+//                    if($result[$countStr] >= $result[$limitStr]) {
+//                        return -2; //房间已满员
+//                    }else if($result['work'] != 0) {
+//                        return -3;//房间已开始
+//                    }
+//                }
+//                $roomId = $result['room_id'];
+//            }else {
+//                return -1;//未找到
+//            }
+//        }
+//
+//        if($userInfo['room_role_type'] == 1) {
+//            //参与者
+//            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
+//        }
+//        //添加到个人房间记录中
+//        $userInfo['room_id'] = $roomId;
+//        M(SqlManager::TABLE_ROOM_RECORD)->add($userInfo);
+//        //查找房间成员(参与者)
+//        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and status=-1 and room_role_type=1",$roomId)
+//            ->field("user_name,enter_time")
+//            ->select();
+//        $roomInfo = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$userInfo['room_id'])->find();
+//        $data['room_id'] = $roomInfo['room_id'];
+//        $data['creater'] = $roomInfo['creater'];
+//        $data['appoint_time'] = $roomInfo['appoint_time'];
+//        $data['isPublic'] = $roomInfo['public'];
+//        $data['member'] = $result;
+//        return $data;
+
+
         $userInfo['user_name'] = $sqlData['user_name'];
         $userInfo['enter_time'] = ToolUtil::getCurrentTime();
         $userInfo['room_role_type'] = $sqlData['room_role_type'];  //身份
@@ -841,11 +900,9 @@ class SqlManager {
         $roomId = '';
         $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
         $countStr = $sqlData['gender']==Common::MAN?'count_man':'count_lady';
-        $llimitAppointTime = time();
         if($sqlData['handleType'] == 1) {
             //匹配模式
-            $sqlStr = sprintf("SELECT * FROM xq_chat_room WHERE `work`=0 AND '%s'<'%s'AND appoint_time>'%s' ORDER BY appoint_time",
-                $countStr,$limitStr,$llimitAppointTime);
+            $sqlStr = sprintf("SELECT * FROM xq_chat_room AND `work`<>2"); //还在没删除的
             $result = M()->query($sqlStr)[0];
             if(!$result) {
                 //未找到则直接返回
@@ -858,22 +915,14 @@ class SqlManager {
             $result = M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->find();
             if($result) {
                 //找到了
-                if($userInfo['room_role_type'] == 1) {
-                    //参与者
-                    if($result[$countStr] >= $result[$limitStr]) {
-                        return -2; //房间已满员
-                    }else if($result['work'] != 0) {
-                        return -3;//房间已开始
-                    }
-                }
                 $roomId = $result['room_id'];
             }else {
                 return -1;//未找到
             }
         }
 
-        if($userInfo['room_role_type'] == 1) {
-            //参与者
+        if($userInfo['room_role_type'] == 1 && $userInfo['joinType'] == 1) {
+            //参与者并且参与模式，而不是排队
             M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
         }
         //添加到个人房间记录中
@@ -916,9 +965,6 @@ class SqlManager {
         if($isCreator) {
             //是创建者
             M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
-//            $sqlStr = sprintf("UPDATE xq_room_record SET exit_time='%s', `work`=2 WHERE room_id='%s'",
-//                $newData['delete_time'],$sqlData['room_id']);
-//            $result = M()->execute($sqlStr);
         }
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and user_name='%s' and `work`<>2"
             ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
@@ -1027,6 +1073,15 @@ class SqlManager {
             $sqlData['room_id'])->save($newData);
         $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=0 and room_role_type=1",
             $sqlData['room_id'])->save($newData);
+
+        //将房间的所有人添加到表xq_room_result中，并给这次匹配添加一个id
+        $inner_id = 'R'.ToolUtil::createUniqueNumber();
+        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work=1",$sqlData['room_id'])->select();
+        foreach ($result as $item) {
+            $item['inner_id'] = $inner_id;
+            $item['enter_time'] = ToolUtil::getCurrentTime();
+        }
+        $result = M(SqlManager::TABLE_ROOM_RESULT)->filter('id')->addAll($result);
         return $result;
     }
 
@@ -1036,18 +1091,21 @@ class SqlManager {
      * @return mixed
      */
     public static function getChatRoomList($sqlData) {
-        $strTemp = '';
+        $where = [];
         if($sqlData['public'] != -1) {
-            $strTemp .= "public=".$sqlData['public'];
+            $strArray = explode(',',$sqlData['public']);
+            $where['public'] = array('in',$strArray);
         }
         if($sqlData['work'] != -1) {
-            $strTemp .= " and work=".$sqlData['work'];
+            $strArray = explode(',',$sqlData['work']);
+            $where['work'] = array('in',$strArray);
         }
         if($sqlData['status'] != -2) {
-            $strTemp .= " and status=".$sqlData['status'];
+            $strArray = explode(',',$sqlData['status']);
+            $where['status'] = array('in',$strArray);
         }
 
-        $result = M(SqlManager::TABLE_CHATROOM)->where($strTemp)->select();
+        $result = M(SqlManager::TABLE_CHATROOM)->where($where)->select();
         return $result;
     }
 

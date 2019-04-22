@@ -112,7 +112,12 @@ class Mysql extends Driver{
     public function insertAll($dataSet,$options=array(),$replace=false) {
         $values  =  array();
         $this->model  =   $options['model'];
-        if(!is_array($dataSet[0])) return false;
+        ///////////////////////////////////////////
+        $firstRow = array_shift($dataSet);    //取出传入数组的第一条数据
+        if(!is_array($firstRow)) return false;   //根据框架的思想进行简单的数组判断
+        $dataSet[] = $firstRow;     //重新赋值到待写入数组的元素中
+        //////////////////////////////////////////////////////
+//        if(!is_array($dataSet[0])) return false;
         $this->parseBind(!empty($options['bind'])?$options['bind']:array());
         $fields =   array_map(array($this,'parseKey'),array_keys($dataSet[0]));
         foreach ($dataSet as $data){
