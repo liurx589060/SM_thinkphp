@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : xq
+Source Server         : xq_app
 Source Server Version : 50505
 Source Host           : localhost:3306
 Source Database       : xq_app
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-23 01:14:36
+Date: 2019-04-23 18:38:56
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -54,17 +54,17 @@ CREATE TABLE `xq_black_user` (
 INSERT INTO `xq_black_user` VALUES ('9', 'wys30201', '言语或视频违背伦理;', '2019-04-09 01:01:50', '2019-04-11 01:01:54', '15378694', '0');
 
 -- ----------------------------
--- Table structure for `xq_chat_room`
+-- Table structure for `xq_chat`
 -- ----------------------------
-DROP TABLE IF EXISTS `xq_chat_room`;
-CREATE TABLE `xq_chat_room` (
+DROP TABLE IF EXISTS `xq_chat`;
+CREATE TABLE `xq_chat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `room_id` int(255) NOT NULL COMMENT '房间Id',
   `title` varchar(255) DEFAULT NULL COMMENT '主题',
   `describe` varchar(255) NOT NULL COMMENT '房间描述',
-  `creater` varchar(255) NOT NULL COMMENT '创建者',
-  `create_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
-  `delete_time` timestamp NULL DEFAULT NULL COMMENT '解散时间',
+  `user_name` varchar(255) NOT NULL COMMENT '创建者',
+  `start_time` timestamp NULL DEFAULT NULL COMMENT '创建时间',
+  `end_time` timestamp NULL DEFAULT NULL COMMENT '解散时间',
   `public` int(11) NOT NULL DEFAULT '1' COMMENT '是否公开（0：私密   1：公开）',
   `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功  -1：取消）',
   `appoint_time` timestamp NULL DEFAULT NULL COMMENT '预约的时间',
@@ -78,31 +78,170 @@ CREATE TABLE `xq_chat_room` (
   `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
   `push_address` varchar(255) DEFAULT NULL,
   `play_address` varchar(255) DEFAULT NULL,
-  `inner_id` varchar(255) DEFAULT NULL COMMENT '子id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COMMENT='聊天室创建和删除记录表';
+
+-- ----------------------------
+-- Records of xq_chat
+-- ----------------------------
+INSERT INTO `xq_chat` VALUES ('10', '15749994', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:13:03', '1', '-1', '2019-04-19 01:15:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('11', '17859297', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:16:16', '1', '-1', '2019-04-19 01:16:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('12', '17859303', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:18:41', '1', '0', '2019-04-19 01:20:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('13', '17863265', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 12:54:36', '1', '-1', '2019-04-20 03:47:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n');
+INSERT INTO `xq_chat` VALUES ('15', '15759390', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 14:49:53', '1', '0', '2019-04-20 23:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('16', '17869119', '灌灌灌灌', '', 'wys30201', null, '2019-04-20 14:57:12', '1', '0', '2019-04-20 23:54:00', '-1', '1', '10', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('17', '17869145', '点十分惹人', '', 'wys30201', null, '2019-04-20 15:04:31', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('18', '15759916', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:33:06', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('19', '15759932', '善良的非凡哥', '', 'wys30201', null, '2019-04-20 15:44:36', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('20', '15759946', '啊啊啊啊啊啊啊啊啊啊啊啊', '', 'wys30201', null, '2019-04-20 15:51:06', '1', '0', '2019-04-20 22:50:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('22', '17869251', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:56:46', '1', '0', '2019-04-20 23:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('23', '17869261', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:58:56', '1', '0', '2019-04-20 22:58:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('24', '15759974', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 16:14:16', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('25', '15760024', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 12:30:26', '1', '0', '2019-04-21 08:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n');
+INSERT INTO `xq_chat` VALUES ('26', '15764624', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 19:20:12', '1', '0', '2019-04-21 19:20:00', '-1', '1', '2', '1', '1', '0', '-2', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+INSERT INTO `xq_chat` VALUES ('27', '15765868', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:33:53', '1', '0', '2019-04-21 20:35:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+INSERT INTO `xq_chat` VALUES ('28', '15766132', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:49:09', '1', '0', '2019-04-21 20:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+INSERT INTO `xq_chat` VALUES ('29', '17875491', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:57:15', '1', '0', '2019-04-21 20:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+
+-- ----------------------------
+-- Table structure for `xq_chat_room`
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_chat_room`;
+CREATE TABLE `xq_chat_room` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `room_id` int(11) NOT NULL,
+  `start_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `inner_id` varchar(255) DEFAULT NULL COMMENT '匹配房间id',
+  `status` int(11) NOT NULL DEFAULT '0' COMMENT '匹配结果（0：失败    1：成功）',
+  `man_user` varchar(255) DEFAULT NULL COMMENT '匹配成功的男嘉宾',
+  `lady_user` varchar(255) DEFAULT NULL COMMENT '匹配成功女嘉宾',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基于聊天室创建的匹配房间';
 
 -- ----------------------------
 -- Records of xq_chat_room
 -- ----------------------------
-INSERT INTO `xq_chat_room` VALUES ('10', '15749994', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:13:03', '1', '-1', '2019-04-19 01:15:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('11', '17859297', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:16:16', '1', '-1', '2019-04-19 01:16:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('12', '17859303', '一起来相亲吧', '', 'wys30201', null, '2019-04-19 01:18:41', '1', '0', '2019-04-19 01:20:00', '-1', '1', '2', '1', '0', '0', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('13', '17863265', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 12:54:36', '1', '-1', '2019-04-20 03:47:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', 'cnRtcDovLzE5Mi4xNjguMzIuMTMyL2xpdmUvc3RyZWFtMQ==\n', null);
-INSERT INTO `xq_chat_room` VALUES ('15', '15759390', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 14:49:53', '1', '0', '2019-04-20 23:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('16', '17869119', '灌灌灌灌', '', 'wys30201', null, '2019-04-20 14:57:12', '1', '0', '2019-04-20 23:54:00', '-1', '1', '10', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('17', '17869145', '点十分惹人', '', 'wys30201', null, '2019-04-20 15:04:31', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('18', '15759916', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:33:06', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('19', '15759932', '善良的非凡哥', '', 'wys30201', null, '2019-04-20 15:44:36', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('20', '15759946', '啊啊啊啊啊啊啊啊啊啊啊啊', '', 'wys30201', null, '2019-04-20 15:51:06', '1', '0', '2019-04-20 22:50:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('22', '17869251', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:56:46', '1', '0', '2019-04-20 23:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('23', '17869261', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 15:58:56', '1', '0', '2019-04-20 22:58:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('24', '15759974', '一起来相亲吧', '', 'wys30201', null, '2019-04-20 16:14:16', '1', '0', '2019-04-20 23:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('25', '15760024', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 12:30:26', '1', '0', '2019-04-21 08:59:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0x\n', null);
-INSERT INTO `xq_chat_room` VALUES ('26', '15764624', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 19:20:12', '1', '0', '2019-04-21 19:20:00', '-1', '1', '2', '1', '1', '0', '-2', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
-INSERT INTO `xq_chat_room` VALUES ('27', '15765868', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:33:53', '1', '0', '2019-04-21 20:35:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
-INSERT INTO `xq_chat_room` VALUES ('28', '15766132', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:49:09', '1', '0', '2019-04-21 20:55:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
-INSERT INTO `xq_chat_room` VALUES ('29', '17875491', '一起来相亲吧', '', 'wys30201', null, '2019-04-21 20:57:15', '1', '0', '2019-04-21 20:56:00', '-1', '1', '2', '1', '1', '0', '-1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDIvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', null);
+
+-- ----------------------------
+-- Table structure for `xq_chat_room_user`
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_chat_room_user`;
+CREATE TABLE `xq_chat_room_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `room_id` int(11) NOT NULL,
+  `start_time` datetime DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
+  `inner_id` varchar(255) DEFAULT NULL COMMENT '匹配房间id',
+  `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='基于聊天室创建的匹配房间';
+
+-- ----------------------------
+-- Records of xq_chat_room_user
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `xq_chat_user`
+-- ----------------------------
+DROP TABLE IF EXISTS `xq_chat_user`;
+CREATE TABLE `xq_chat_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `room_id` int(11) NOT NULL COMMENT '房间Id',
+  `user_name` varchar(255) NOT NULL COMMENT '用户名',
+  `start_time` datetime NOT NULL COMMENT '进入时间',
+  `end_time` datetime DEFAULT NULL COMMENT '退出时间',
+  `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
+  `in_room` int(11) NOT NULL DEFAULT '0' COMMENT '是否在房间内（0：不在     1：在）',
+  `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8 COMMENT='用户进出聊天室表';
+
+-- ----------------------------
+-- Records of xq_chat_user
+-- ----------------------------
+INSERT INTO `xq_chat_user` VALUES ('145', '15749994', 'wys30201', '2019-04-19 01:12:48', null, '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('146', '17859297', 'wys30201', '2019-04-19 01:15:55', null, '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('147', '17859303', 'wys30201', '2019-04-19 01:18:09', '2019-04-19 01:18:41', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('148', '17863265', 'wys30201', '2019-04-19 15:44:38', '2019-04-20 12:54:36', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('149', '17863265', 'wys30202', '2019-04-19 16:23:36', '2019-04-19 16:35:20', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('150', '17863265', 'wys30202', '2019-04-19 16:28:44', '2019-04-19 16:35:20', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('151', '17863265', 'wys30202', '2019-04-19 16:33:11', '2019-04-19 16:35:20', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('152', '17863265', 'wys30202', '2019-04-19 16:33:51', '2019-04-19 16:35:20', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('158', '17863265', 'wys30202', '2019-04-19 16:57:30', '2019-04-19 23:27:39', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('160', '17863265', 'wys30202', '2019-04-19 23:29:03', '2019-04-19 23:53:54', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('161', '17863265', 'wys30202', '2019-04-19 23:58:34', '2019-04-19 23:59:12', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('162', '17863265', 'wys30202', '2019-04-19 23:59:41', '2019-04-19 23:59:56', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('163', '17863265', 'wys30202', '2019-04-20 00:07:38', '2019-04-20 00:08:19', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('164', '17863265', 'wys30202', '2019-04-20 00:08:25', '2019-04-20 00:08:32', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('167', '17863265', 'wys30202', '2019-04-20 00:18:00', '2019-04-20 00:20:31', '2', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('168', '17863265', 'wys30202', '2019-04-20 00:20:35', '2019-04-20 00:22:21', '2', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('175', '17863265', 'wys30202', '2019-04-20 00:37:46', '2019-04-20 00:38:41', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('176', '17863265', 'wys30202', '2019-04-20 00:38:47', '2019-04-20 00:39:16', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('177', '17863265', 'wys30202', '2019-04-20 00:39:31', '2019-04-20 00:39:41', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('178', '17863265', 'wys30202', '2019-04-20 00:39:45', '2019-04-20 00:40:00', '2', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('179', '17863265', 'wys30202', '2019-04-20 00:40:06', '2019-04-20 00:40:25', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('180', '17863265', 'wys30202', '2019-04-20 00:40:37', '2019-04-20 00:40:41', '2', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('181', '17863265', 'wys30202', '2019-04-20 00:40:47', '2019-04-20 02:29:02', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('182', '17863265', 'wys30202', '2019-04-20 02:56:52', '2019-04-20 02:58:27', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('183', '17863265', 'wys30202', '2019-04-20 03:02:32', '2019-04-20 03:06:15', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('184', '17863265', 'wys30202', '2019-04-20 03:06:45', '2019-04-20 03:06:50', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('185', '17863265', 'wys30202', '2019-04-20 03:08:40', '2019-04-20 03:09:35', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('186', '17863265', 'wys30202', '2019-04-20 03:10:18', '2019-04-20 03:12:59', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('187', '17863265', 'wys30202', '2019-04-20 03:13:15', '2019-04-20 03:13:41', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('188', '17863265', 'wys30202', '2019-04-20 03:15:00', '2019-04-20 03:15:08', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('189', '17863265', 'wys30202', '2019-04-20 03:18:20', '2019-04-20 03:18:30', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('190', '17863265', 'wys30202', '2019-04-20 03:18:38', '2019-04-20 03:18:45', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('191', '17863265', 'wys30202', '2019-04-20 03:18:53', '2019-04-20 03:18:58', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('192', '15759384', 'wys30201', '2019-04-20 12:55:55', null, '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('193', '15759390', 'wys30201', '2019-04-20 12:58:31', '2019-04-20 14:49:53', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('194', '15759390', 'wys30202', '2019-04-20 12:59:38', '2019-04-20 13:09:25', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('195', '15759390', 'wys30202', '2019-04-20 13:09:57', '2019-04-20 13:27:08', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('196', '15759390', 'wys30202', '2019-04-20 13:27:47', '2019-04-20 13:30:40', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('197', '15759390', 'wys30202', '2019-04-20 13:30:46', '2019-04-20 13:30:53', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('198', '15759390', 'wys30202', '2019-04-20 13:31:40', '2019-04-20 13:34:27', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('199', '15759390', 'wys30202', '2019-04-20 13:35:46', '2019-04-20 13:38:38', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('200', '15759390', 'wys30202', '2019-04-20 13:38:50', '2019-04-20 13:38:56', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('201', '15759390', 'wys30202', '2019-04-20 13:39:10', '2019-04-20 13:39:19', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('202', '15759390', 'wys30202', '2019-04-20 13:39:31', '2019-04-20 13:39:38', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('203', '15759390', 'wys30202', '2019-04-20 14:48:42', '2019-04-20 14:48:57', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('204', '15759390', 'wys30202', '2019-04-20 14:49:06', '2019-04-20 14:49:16', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('205', '17869119', 'wys30201', '2019-04-20 14:54:20', '2019-04-20 14:57:12', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('206', '17869119', 'wys30202', '2019-04-20 14:55:30', '2019-04-20 14:55:50', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('207', '17869119', 'wys30202', '2019-04-20 14:56:03', '2019-04-20 14:57:30', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('208', '17869145', 'wys30201', '2019-04-20 15:03:49', '2019-04-20 15:04:31', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('209', '17869145', 'wys30202', '2019-04-20 15:04:18', '2019-04-20 15:05:12', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('210', '15759916', 'wys30201', '2019-04-20 15:32:39', '2019-04-20 15:33:06', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('211', '15759916', 'wys30202', '2019-04-20 15:32:48', '2019-04-20 15:32:53', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('212', '15759916', 'wys30202', '2019-04-20 15:32:58', '2019-04-20 15:33:34', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('213', '15759932', 'wys30201', '2019-04-20 15:42:47', '2019-04-20 15:44:36', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('214', '15759932', 'wys30202', '2019-04-20 15:42:59', '2019-04-20 15:43:11', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('215', '15759932', 'wys30202', '2019-04-20 15:43:19', '2019-04-20 15:43:42', '2', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('216', '15759932', 'wys30202', '2019-04-20 15:43:47', '2019-04-20 15:49:02', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('217', '15759946', 'wys30201', '2019-04-20 15:50:09', '2019-04-20 15:51:06', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('218', '15759946', 'wys30202', '2019-04-20 15:50:53', '2019-04-20 15:54:03', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('220', '15759952', 'wys30202', '2019-04-20 15:54:28', '2019-04-20 15:54:59', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('221', '17869251', 'wys30201', '2019-04-20 15:56:25', '2019-04-20 15:56:46', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('222', '17869251', 'wys30202', '2019-04-20 15:56:29', '2019-04-20 15:58:12', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('223', '17869261', 'wys30201', '2019-04-20 15:58:32', '2019-04-20 15:58:56', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('224', '17869261', 'wys30202', '2019-04-20 15:58:36', '2019-04-20 15:58:43', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('225', '17869261', 'wys30202', '2019-04-20 15:58:51', '2019-04-20 15:59:02', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('226', '15759974', 'wys30201', '2019-04-20 15:59:10', '2019-04-20 16:14:16', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('227', '15759974', 'wys30202', '2019-04-20 15:59:14', '2019-04-20 16:01:35', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('228', '15759974', 'wys30202', '2019-04-20 16:02:49', '2019-04-20 16:04:02', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('229', '15759974', 'wys30202', '2019-04-20 16:04:13', '2019-04-20 16:14:32', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('230', '15760024', 'wys30201', '2019-04-20 16:15:41', '2019-04-21 12:30:26', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('231', '15760024', 'wys30202', '2019-04-20 16:15:45', '2019-04-20 23:48:43', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('232', '15760024', 'wys30202', '2019-04-20 23:49:02', '2019-04-20 23:55:49', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('233', '15760024', 'wys30202', '2019-04-20 23:55:53', '2019-04-21 12:30:24', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('234', '15764624', 'wys30201', '2019-04-21 12:30:46', '2019-04-21 19:20:10', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('235', '15764624', 'wys30202', '2019-04-21 12:30:51', '2019-04-21 19:20:20', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('236', '15765868', 'wys30201', '2019-04-21 19:27:24', '2019-04-21 20:33:47', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('237', '15765868', 'wys30202', '2019-04-21 19:27:31', '2019-04-21 20:33:22', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('238', '15766132', 'wys30201', '2019-04-21 20:34:17', '2019-04-21 20:49:09', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('239', '15766132', 'wys30202', '2019-04-21 20:34:20', '2019-04-21 20:50:11', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('240', '17875491', 'wys30201', '2019-04-21 20:52:30', '2019-04-21 20:57:15', '1', '0', '0');
+INSERT INTO `xq_chat_user` VALUES ('241', '17875491', 'wys30202', '2019-04-21 20:52:40', '2019-04-21 20:57:18', '1', '0', '0');
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -443,211 +582,6 @@ INSERT INTO `xq_pay_order` VALUES ('69', 'O2019041450995599', null, '1', 'wys302
 INSERT INTO `xq_pay_order` VALUES ('70', 'O2019041449100975', null, '1', 'wys30201', '60', '60', '0', '2019-04-14 19:15:13', null, null);
 INSERT INTO `xq_pay_order` VALUES ('71', 'O2019041953979855', null, '1', 'wys30205', '100', '100', '0', '2019-04-19 22:57:41', null, null);
 INSERT INTO `xq_pay_order` VALUES ('72', 'O2019042049101101', null, '1', 'wys30202', '100', '100', '0', '2019-04-20 03:19:45', null, null);
-
--- ----------------------------
--- Table structure for `xq_room_record`
--- ----------------------------
-DROP TABLE IF EXISTS `xq_room_record`;
-CREATE TABLE `xq_room_record` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `room_id` int(11) NOT NULL COMMENT '房间Id',
-  `user_name` varchar(255) NOT NULL COMMENT '用户名',
-  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功  -1:没进房间（取消） ）',
-  `enter_time` datetime NOT NULL COMMENT '进入时间',
-  `exit_time` datetime DEFAULT NULL COMMENT '退出时间',
-  `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
-  `work` int(11) DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
-  `in_room` int(11) NOT NULL DEFAULT '0' COMMENT '是否在房间内（0：不在     1：在）',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8 COMMENT='用户进出房间表';
-
--- ----------------------------
--- Records of xq_room_record
--- ----------------------------
-INSERT INTO `xq_room_record` VALUES ('145', '15749994', 'wys30201', '-1', '2019-04-19 01:12:48', null, '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('146', '17859297', 'wys30201', '-1', '2019-04-19 01:15:55', null, '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('147', '17859303', 'wys30201', '0', '2019-04-19 01:18:09', '2019-04-19 01:18:41', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('148', '17863265', 'wys30201', '-1', '2019-04-19 15:44:38', '2019-04-20 12:54:36', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('149', '17863265', 'wys30202', '-1', '2019-04-19 16:23:36', '2019-04-19 16:35:20', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('150', '17863265', 'wys30202', '-1', '2019-04-19 16:28:44', '2019-04-19 16:35:20', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('151', '17863265', 'wys30202', '-1', '2019-04-19 16:33:11', '2019-04-19 16:35:20', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('152', '17863265', 'wys30202', '-1', '2019-04-19 16:33:51', '2019-04-19 16:35:20', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('158', '17863265', 'wys30202', '-1', '2019-04-19 16:57:30', '2019-04-19 23:27:39', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('160', '17863265', 'wys30202', '-1', '2019-04-19 23:29:03', '2019-04-19 23:53:54', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('161', '17863265', 'wys30202', '-1', '2019-04-19 23:58:34', '2019-04-19 23:59:12', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('162', '17863265', 'wys30202', '-1', '2019-04-19 23:59:41', '2019-04-19 23:59:56', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('163', '17863265', 'wys30202', '-1', '2019-04-20 00:07:38', '2019-04-20 00:08:19', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('164', '17863265', 'wys30202', '-1', '2019-04-20 00:08:25', '2019-04-20 00:08:32', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('167', '17863265', 'wys30202', '-1', '2019-04-20 00:18:00', '2019-04-20 00:20:31', '2', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('168', '17863265', 'wys30202', '-1', '2019-04-20 00:20:35', '2019-04-20 00:22:21', '2', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('175', '17863265', 'wys30202', '-1', '2019-04-20 00:37:46', '2019-04-20 00:38:41', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('176', '17863265', 'wys30202', '-1', '2019-04-20 00:38:47', '2019-04-20 00:39:16', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('177', '17863265', 'wys30202', '-1', '2019-04-20 00:39:31', '2019-04-20 00:39:41', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('178', '17863265', 'wys30202', '-1', '2019-04-20 00:39:45', '2019-04-20 00:40:00', '2', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('179', '17863265', 'wys30202', '-1', '2019-04-20 00:40:06', '2019-04-20 00:40:25', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('180', '17863265', 'wys30202', '-1', '2019-04-20 00:40:37', '2019-04-20 00:40:41', '2', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('181', '17863265', 'wys30202', '0', '2019-04-20 00:40:47', '2019-04-20 02:29:02', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('182', '17863265', 'wys30202', '-1', '2019-04-20 02:56:52', '2019-04-20 02:58:27', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('183', '17863265', 'wys30202', '-1', '2019-04-20 03:02:32', '2019-04-20 03:06:15', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('184', '17863265', 'wys30202', '-1', '2019-04-20 03:06:45', '2019-04-20 03:06:50', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('185', '17863265', 'wys30202', '-1', '2019-04-20 03:08:40', '2019-04-20 03:09:35', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('186', '17863265', 'wys30202', '-1', '2019-04-20 03:10:18', '2019-04-20 03:12:59', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('187', '17863265', 'wys30202', '-1', '2019-04-20 03:13:15', '2019-04-20 03:13:41', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('188', '17863265', 'wys30202', '-1', '2019-04-20 03:15:00', '2019-04-20 03:15:08', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('189', '17863265', 'wys30202', '-1', '2019-04-20 03:18:20', '2019-04-20 03:18:30', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('190', '17863265', 'wys30202', '-1', '2019-04-20 03:18:38', '2019-04-20 03:18:45', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('191', '17863265', 'wys30202', '-1', '2019-04-20 03:18:53', '2019-04-20 03:18:58', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('192', '15759384', 'wys30201', '0', '2019-04-20 12:55:55', null, '1', '0', '0');
-INSERT INTO `xq_room_record` VALUES ('193', '15759390', 'wys30201', '0', '2019-04-20 12:58:31', '2019-04-20 14:49:53', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('194', '15759390', 'wys30202', '-1', '2019-04-20 12:59:38', '2019-04-20 13:09:25', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('195', '15759390', 'wys30202', '-1', '2019-04-20 13:09:57', '2019-04-20 13:27:08', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('196', '15759390', 'wys30202', '-1', '2019-04-20 13:27:47', '2019-04-20 13:30:40', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('197', '15759390', 'wys30202', '-1', '2019-04-20 13:30:46', '2019-04-20 13:30:53', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('198', '15759390', 'wys30202', '-1', '2019-04-20 13:31:40', '2019-04-20 13:34:27', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('199', '15759390', 'wys30202', '-1', '2019-04-20 13:35:46', '2019-04-20 13:38:38', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('200', '15759390', 'wys30202', '-1', '2019-04-20 13:38:50', '2019-04-20 13:38:56', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('201', '15759390', 'wys30202', '-1', '2019-04-20 13:39:10', '2019-04-20 13:39:19', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('202', '15759390', 'wys30202', '-1', '2019-04-20 13:39:31', '2019-04-20 13:39:38', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('203', '15759390', 'wys30202', '-1', '2019-04-20 14:48:42', '2019-04-20 14:48:57', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('204', '15759390', 'wys30202', '-1', '2019-04-20 14:49:06', '2019-04-20 14:49:16', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('205', '17869119', 'wys30201', '0', '2019-04-20 14:54:20', '2019-04-20 14:57:12', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('206', '17869119', 'wys30202', '-1', '2019-04-20 14:55:30', '2019-04-20 14:55:50', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('207', '17869119', 'wys30202', '-1', '2019-04-20 14:56:03', '2019-04-20 14:57:30', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('208', '17869145', 'wys30201', '0', '2019-04-20 15:03:49', '2019-04-20 15:04:31', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('209', '17869145', 'wys30202', '-1', '2019-04-20 15:04:18', '2019-04-20 15:05:12', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('210', '15759916', 'wys30201', '0', '2019-04-20 15:32:39', '2019-04-20 15:33:06', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('211', '15759916', 'wys30202', '-1', '2019-04-20 15:32:48', '2019-04-20 15:32:53', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('212', '15759916', 'wys30202', '-1', '2019-04-20 15:32:58', '2019-04-20 15:33:34', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('213', '15759932', 'wys30201', '0', '2019-04-20 15:42:47', '2019-04-20 15:44:36', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('214', '15759932', 'wys30202', '-1', '2019-04-20 15:42:59', '2019-04-20 15:43:11', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('215', '15759932', 'wys30202', '-1', '2019-04-20 15:43:19', '2019-04-20 15:43:42', '2', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('216', '15759932', 'wys30202', '-1', '2019-04-20 15:43:47', '2019-04-20 15:49:02', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('217', '15759946', 'wys30201', '0', '2019-04-20 15:50:09', '2019-04-20 15:51:06', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('218', '15759946', 'wys30202', '-1', '2019-04-20 15:50:53', '2019-04-20 15:54:03', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('220', '15759952', 'wys30202', '-1', '2019-04-20 15:54:28', '2019-04-20 15:54:59', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('221', '17869251', 'wys30201', '0', '2019-04-20 15:56:25', '2019-04-20 15:56:46', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('222', '17869251', 'wys30202', '-1', '2019-04-20 15:56:29', '2019-04-20 15:58:12', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('223', '17869261', 'wys30201', '0', '2019-04-20 15:58:32', '2019-04-20 15:58:56', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('224', '17869261', 'wys30202', '-1', '2019-04-20 15:58:36', '2019-04-20 15:58:43', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('225', '17869261', 'wys30202', '-1', '2019-04-20 15:58:51', '2019-04-20 15:59:02', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('226', '15759974', 'wys30201', '0', '2019-04-20 15:59:10', '2019-04-20 16:14:16', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('227', '15759974', 'wys30202', '0', '2019-04-20 15:59:14', '2019-04-20 16:01:35', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('228', '15759974', 'wys30202', '-1', '2019-04-20 16:02:49', '2019-04-20 16:04:02', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('229', '15759974', 'wys30202', '-1', '2019-04-20 16:04:13', '2019-04-20 16:14:32', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('230', '15760024', 'wys30201', '0', '2019-04-20 16:15:41', '2019-04-21 12:30:26', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('231', '15760024', 'wys30202', '-1', '2019-04-20 16:15:45', '2019-04-20 23:48:43', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('232', '15760024', 'wys30202', '-1', '2019-04-20 23:49:02', '2019-04-20 23:55:49', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('233', '15760024', 'wys30202', '-1', '2019-04-20 23:55:53', '2019-04-21 12:30:24', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('234', '15764624', 'wys30201', '0', '2019-04-21 12:30:46', '2019-04-21 19:20:10', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('235', '15764624', 'wys30202', '-1', '2019-04-21 12:30:51', '2019-04-21 19:20:20', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('236', '15765868', 'wys30201', '0', '2019-04-21 19:27:24', '2019-04-21 20:33:47', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('237', '15765868', 'wys30202', '-1', '2019-04-21 19:27:31', '2019-04-21 20:33:22', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('238', '15766132', 'wys30201', '0', '2019-04-21 20:34:17', '2019-04-21 20:49:09', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('239', '15766132', 'wys30202', '-1', '2019-04-21 20:34:20', '2019-04-21 20:50:11', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('240', '17875491', 'wys30201', '0', '2019-04-21 20:52:30', '2019-04-21 20:57:15', '1', '2', '0');
-INSERT INTO `xq_room_record` VALUES ('241', '17875491', 'wys30202', '-1', '2019-04-21 20:52:40', '2019-04-21 20:57:18', '1', '2', '0');
-
--- ----------------------------
--- Table structure for `xq_room_result`
--- ----------------------------
-DROP TABLE IF EXISTS `xq_room_result`;
-CREATE TABLE `xq_room_result` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `room_id` int(11) NOT NULL COMMENT '房间Id',
-  `user_name` varchar(255) NOT NULL COMMENT '用户名',
-  `status` int(11) NOT NULL DEFAULT '0' COMMENT '房间状态（0：未匹配成功  1：匹配成功 ）',
-  `enter_time` datetime NOT NULL COMMENT '进入时间',
-  `exit_time` datetime DEFAULT NULL COMMENT '退出时间',
-  `room_role_type` int(11) NOT NULL DEFAULT '0' COMMENT '进入房间的角色（2：围观者   1：参与者）',
-  `inner_id` varchar(255) NOT NULL DEFAULT '' COMMENT '内部ID（房间开始则分配一个id,往后拼接）',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=242 DEFAULT CHARSET=utf8 COMMENT='房间以及用户的结果记录';
-
--- ----------------------------
--- Records of xq_room_result
--- ----------------------------
-INSERT INTO `xq_room_result` VALUES ('145', '15749994', 'wys30201', '-1', '2019-04-19 01:12:48', null, '1', '');
-INSERT INTO `xq_room_result` VALUES ('146', '17859297', 'wys30201', '-1', '2019-04-19 01:15:55', null, '1', '');
-INSERT INTO `xq_room_result` VALUES ('147', '17859303', 'wys30201', '0', '2019-04-19 01:18:09', '2019-04-19 01:18:41', '1', '');
-INSERT INTO `xq_room_result` VALUES ('148', '17863265', 'wys30201', '-1', '2019-04-19 15:44:38', '2019-04-20 12:54:36', '1', '');
-INSERT INTO `xq_room_result` VALUES ('149', '17863265', 'wys30202', '-1', '2019-04-19 16:23:36', '2019-04-19 16:35:20', '1', '');
-INSERT INTO `xq_room_result` VALUES ('150', '17863265', 'wys30202', '-1', '2019-04-19 16:28:44', '2019-04-19 16:35:20', '1', '');
-INSERT INTO `xq_room_result` VALUES ('151', '17863265', 'wys30202', '-1', '2019-04-19 16:33:11', '2019-04-19 16:35:20', '1', '');
-INSERT INTO `xq_room_result` VALUES ('152', '17863265', 'wys30202', '-1', '2019-04-19 16:33:51', '2019-04-19 16:35:20', '1', '');
-INSERT INTO `xq_room_result` VALUES ('158', '17863265', 'wys30202', '-1', '2019-04-19 16:57:30', '2019-04-19 23:27:39', '1', '');
-INSERT INTO `xq_room_result` VALUES ('160', '17863265', 'wys30202', '-1', '2019-04-19 23:29:03', '2019-04-19 23:53:54', '1', '');
-INSERT INTO `xq_room_result` VALUES ('161', '17863265', 'wys30202', '-1', '2019-04-19 23:58:34', '2019-04-19 23:59:12', '1', '');
-INSERT INTO `xq_room_result` VALUES ('162', '17863265', 'wys30202', '-1', '2019-04-19 23:59:41', '2019-04-19 23:59:56', '1', '');
-INSERT INTO `xq_room_result` VALUES ('163', '17863265', 'wys30202', '-1', '2019-04-20 00:07:38', '2019-04-20 00:08:19', '1', '');
-INSERT INTO `xq_room_result` VALUES ('164', '17863265', 'wys30202', '-1', '2019-04-20 00:08:25', '2019-04-20 00:08:32', '1', '');
-INSERT INTO `xq_room_result` VALUES ('167', '17863265', 'wys30202', '-1', '2019-04-20 00:18:00', '2019-04-20 00:20:31', '2', '');
-INSERT INTO `xq_room_result` VALUES ('168', '17863265', 'wys30202', '-1', '2019-04-20 00:20:35', '2019-04-20 00:22:21', '2', '');
-INSERT INTO `xq_room_result` VALUES ('175', '17863265', 'wys30202', '-1', '2019-04-20 00:37:46', '2019-04-20 00:38:41', '1', '');
-INSERT INTO `xq_room_result` VALUES ('176', '17863265', 'wys30202', '-1', '2019-04-20 00:38:47', '2019-04-20 00:39:16', '1', '');
-INSERT INTO `xq_room_result` VALUES ('177', '17863265', 'wys30202', '-1', '2019-04-20 00:39:31', '2019-04-20 00:39:41', '1', '');
-INSERT INTO `xq_room_result` VALUES ('178', '17863265', 'wys30202', '-1', '2019-04-20 00:39:45', '2019-04-20 00:40:00', '2', '');
-INSERT INTO `xq_room_result` VALUES ('179', '17863265', 'wys30202', '-1', '2019-04-20 00:40:06', '2019-04-20 00:40:25', '1', '');
-INSERT INTO `xq_room_result` VALUES ('180', '17863265', 'wys30202', '-1', '2019-04-20 00:40:37', '2019-04-20 00:40:41', '2', '');
-INSERT INTO `xq_room_result` VALUES ('181', '17863265', 'wys30202', '0', '2019-04-20 00:40:47', '2019-04-20 02:29:02', '1', '');
-INSERT INTO `xq_room_result` VALUES ('182', '17863265', 'wys30202', '-1', '2019-04-20 02:56:52', '2019-04-20 02:58:27', '1', '');
-INSERT INTO `xq_room_result` VALUES ('183', '17863265', 'wys30202', '-1', '2019-04-20 03:02:32', '2019-04-20 03:06:15', '1', '');
-INSERT INTO `xq_room_result` VALUES ('184', '17863265', 'wys30202', '-1', '2019-04-20 03:06:45', '2019-04-20 03:06:50', '1', '');
-INSERT INTO `xq_room_result` VALUES ('185', '17863265', 'wys30202', '-1', '2019-04-20 03:08:40', '2019-04-20 03:09:35', '1', '');
-INSERT INTO `xq_room_result` VALUES ('186', '17863265', 'wys30202', '-1', '2019-04-20 03:10:18', '2019-04-20 03:12:59', '1', '');
-INSERT INTO `xq_room_result` VALUES ('187', '17863265', 'wys30202', '-1', '2019-04-20 03:13:15', '2019-04-20 03:13:41', '1', '');
-INSERT INTO `xq_room_result` VALUES ('188', '17863265', 'wys30202', '-1', '2019-04-20 03:15:00', '2019-04-20 03:15:08', '1', '');
-INSERT INTO `xq_room_result` VALUES ('189', '17863265', 'wys30202', '-1', '2019-04-20 03:18:20', '2019-04-20 03:18:30', '1', '');
-INSERT INTO `xq_room_result` VALUES ('190', '17863265', 'wys30202', '-1', '2019-04-20 03:18:38', '2019-04-20 03:18:45', '1', '');
-INSERT INTO `xq_room_result` VALUES ('191', '17863265', 'wys30202', '-1', '2019-04-20 03:18:53', '2019-04-20 03:18:58', '1', '');
-INSERT INTO `xq_room_result` VALUES ('192', '15759384', 'wys30201', '0', '2019-04-20 12:55:55', null, '1', '');
-INSERT INTO `xq_room_result` VALUES ('193', '15759390', 'wys30201', '0', '2019-04-20 12:58:31', '2019-04-20 14:49:53', '1', '');
-INSERT INTO `xq_room_result` VALUES ('194', '15759390', 'wys30202', '-1', '2019-04-20 12:59:38', '2019-04-20 13:09:25', '1', '');
-INSERT INTO `xq_room_result` VALUES ('195', '15759390', 'wys30202', '-1', '2019-04-20 13:09:57', '2019-04-20 13:27:08', '1', '');
-INSERT INTO `xq_room_result` VALUES ('196', '15759390', 'wys30202', '-1', '2019-04-20 13:27:47', '2019-04-20 13:30:40', '1', '');
-INSERT INTO `xq_room_result` VALUES ('197', '15759390', 'wys30202', '-1', '2019-04-20 13:30:46', '2019-04-20 13:30:53', '1', '');
-INSERT INTO `xq_room_result` VALUES ('198', '15759390', 'wys30202', '-1', '2019-04-20 13:31:40', '2019-04-20 13:34:27', '1', '');
-INSERT INTO `xq_room_result` VALUES ('199', '15759390', 'wys30202', '-1', '2019-04-20 13:35:46', '2019-04-20 13:38:38', '1', '');
-INSERT INTO `xq_room_result` VALUES ('200', '15759390', 'wys30202', '-1', '2019-04-20 13:38:50', '2019-04-20 13:38:56', '1', '');
-INSERT INTO `xq_room_result` VALUES ('201', '15759390', 'wys30202', '-1', '2019-04-20 13:39:10', '2019-04-20 13:39:19', '1', '');
-INSERT INTO `xq_room_result` VALUES ('202', '15759390', 'wys30202', '-1', '2019-04-20 13:39:31', '2019-04-20 13:39:38', '1', '');
-INSERT INTO `xq_room_result` VALUES ('203', '15759390', 'wys30202', '-1', '2019-04-20 14:48:42', '2019-04-20 14:48:57', '1', '');
-INSERT INTO `xq_room_result` VALUES ('204', '15759390', 'wys30202', '-1', '2019-04-20 14:49:06', '2019-04-20 14:49:16', '1', '');
-INSERT INTO `xq_room_result` VALUES ('205', '17869119', 'wys30201', '0', '2019-04-20 14:54:20', '2019-04-20 14:57:12', '1', '');
-INSERT INTO `xq_room_result` VALUES ('206', '17869119', 'wys30202', '-1', '2019-04-20 14:55:30', '2019-04-20 14:55:50', '1', '');
-INSERT INTO `xq_room_result` VALUES ('207', '17869119', 'wys30202', '-1', '2019-04-20 14:56:03', '2019-04-20 14:57:30', '1', '');
-INSERT INTO `xq_room_result` VALUES ('208', '17869145', 'wys30201', '0', '2019-04-20 15:03:49', '2019-04-20 15:04:31', '1', '');
-INSERT INTO `xq_room_result` VALUES ('209', '17869145', 'wys30202', '-1', '2019-04-20 15:04:18', '2019-04-20 15:05:12', '1', '');
-INSERT INTO `xq_room_result` VALUES ('210', '15759916', 'wys30201', '0', '2019-04-20 15:32:39', '2019-04-20 15:33:06', '1', '');
-INSERT INTO `xq_room_result` VALUES ('211', '15759916', 'wys30202', '-1', '2019-04-20 15:32:48', '2019-04-20 15:32:53', '1', '');
-INSERT INTO `xq_room_result` VALUES ('212', '15759916', 'wys30202', '-1', '2019-04-20 15:32:58', '2019-04-20 15:33:34', '1', '');
-INSERT INTO `xq_room_result` VALUES ('213', '15759932', 'wys30201', '0', '2019-04-20 15:42:47', '2019-04-20 15:44:36', '1', '');
-INSERT INTO `xq_room_result` VALUES ('214', '15759932', 'wys30202', '-1', '2019-04-20 15:42:59', '2019-04-20 15:43:11', '1', '');
-INSERT INTO `xq_room_result` VALUES ('215', '15759932', 'wys30202', '-1', '2019-04-20 15:43:19', '2019-04-20 15:43:42', '2', '');
-INSERT INTO `xq_room_result` VALUES ('216', '15759932', 'wys30202', '-1', '2019-04-20 15:43:47', '2019-04-20 15:49:02', '1', '');
-INSERT INTO `xq_room_result` VALUES ('217', '15759946', 'wys30201', '0', '2019-04-20 15:50:09', '2019-04-20 15:51:06', '1', '');
-INSERT INTO `xq_room_result` VALUES ('218', '15759946', 'wys30202', '-1', '2019-04-20 15:50:53', '2019-04-20 15:54:03', '1', '');
-INSERT INTO `xq_room_result` VALUES ('220', '15759952', 'wys30202', '-1', '2019-04-20 15:54:28', '2019-04-20 15:54:59', '1', '');
-INSERT INTO `xq_room_result` VALUES ('221', '17869251', 'wys30201', '0', '2019-04-20 15:56:25', '2019-04-20 15:56:46', '1', '');
-INSERT INTO `xq_room_result` VALUES ('222', '17869251', 'wys30202', '-1', '2019-04-20 15:56:29', '2019-04-20 15:58:12', '1', '');
-INSERT INTO `xq_room_result` VALUES ('223', '17869261', 'wys30201', '0', '2019-04-20 15:58:32', '2019-04-20 15:58:56', '1', '');
-INSERT INTO `xq_room_result` VALUES ('224', '17869261', 'wys30202', '-1', '2019-04-20 15:58:36', '2019-04-20 15:58:43', '1', '');
-INSERT INTO `xq_room_result` VALUES ('225', '17869261', 'wys30202', '-1', '2019-04-20 15:58:51', '2019-04-20 15:59:02', '1', '');
-INSERT INTO `xq_room_result` VALUES ('226', '15759974', 'wys30201', '0', '2019-04-20 15:59:10', '2019-04-20 16:14:16', '1', '');
-INSERT INTO `xq_room_result` VALUES ('227', '15759974', 'wys30202', '0', '2019-04-20 15:59:14', '2019-04-20 16:01:35', '1', '');
-INSERT INTO `xq_room_result` VALUES ('228', '15759974', 'wys30202', '-1', '2019-04-20 16:02:49', '2019-04-20 16:04:02', '1', '');
-INSERT INTO `xq_room_result` VALUES ('229', '15759974', 'wys30202', '-1', '2019-04-20 16:04:13', '2019-04-20 16:14:32', '1', '');
-INSERT INTO `xq_room_result` VALUES ('230', '15760024', 'wys30201', '0', '2019-04-20 16:15:41', '2019-04-21 12:30:26', '1', '');
-INSERT INTO `xq_room_result` VALUES ('231', '15760024', 'wys30202', '-1', '2019-04-20 16:15:45', '2019-04-20 23:48:43', '1', 'aaa,bbb,ccc');
-INSERT INTO `xq_room_result` VALUES ('232', '15760024', 'wys30202', '-1', '2019-04-20 23:49:02', '2019-04-20 23:55:49', '1', '');
-INSERT INTO `xq_room_result` VALUES ('233', '15760024', 'wys30202', '-1', '2019-04-20 23:55:53', '2019-04-21 12:30:24', '1', '');
-INSERT INTO `xq_room_result` VALUES ('234', '15764624', 'wys30201', '0', '2019-04-21 12:30:46', '2019-04-21 19:20:10', '1', '');
-INSERT INTO `xq_room_result` VALUES ('235', '15764624', 'wys30202', '-1', '2019-04-21 12:30:51', '2019-04-21 19:20:20', '1', '');
-INSERT INTO `xq_room_result` VALUES ('236', '15765868', 'wys30201', '0', '2019-04-21 19:27:24', '2019-04-21 20:33:47', '1', '');
-INSERT INTO `xq_room_result` VALUES ('237', '15765868', 'wys30202', '-1', '2019-04-21 19:27:31', '2019-04-21 20:33:22', '1', '');
-INSERT INTO `xq_room_result` VALUES ('238', '15766132', 'wys30201', '0', '2019-04-21 20:34:17', '2019-04-21 20:49:09', '1', '');
-INSERT INTO `xq_room_result` VALUES ('239', '15766132', 'wys30202', '-1', '2019-04-21 20:34:20', '2019-04-21 20:50:11', '1', '');
-INSERT INTO `xq_room_result` VALUES ('240', '17875491', 'wys30201', '0', '2019-04-21 20:52:30', '2019-04-21 20:57:15', '1', '');
-INSERT INTO `xq_room_result` VALUES ('241', '17875491', 'wys30202', '-1', '2019-04-21 20:52:40', '2019-04-21 20:57:18', '1', '');
 
 -- ----------------------------
 -- Table structure for `xq_user`
