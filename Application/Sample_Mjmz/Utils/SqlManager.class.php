@@ -809,16 +809,19 @@ class SqlManager {
         //添加到房间表中
         $newData = $sqlData;
         $newData['count_angel'] = 1;
+        $newData['start_time'] = ToolUtil::getCurrentTime();
         $Model = M();
         $Model->startTrans();
         try{
-            M(SqlManager::TABLE_CHATROOM)->add($newData);
+            M(SqlManager::TABLE_CHAT)->add($newData);
             //添加到个人房间记录表中
             $info['room_id'] = $sqlData['room_id'];
             $info['user_name'] = $sqlData['user_name'];
-            $info['start_time'] = ToolUtil::getCurrentTime();
+            $info['start_time'] = $newData['start_time'];
             $info['room_role_type'] = 1;  //参与者
             M(SqlManager::TABLE_CHAT_USER)->add($info);
+
+            $Model->commit();
         }catch (\Exception $e) {
             $Model->rollback();
             return false;
@@ -847,11 +850,12 @@ class SqlManager {
         $userInfo['room_role_type'] = $sqlData['room_role_type'];  //身份
 
         $roomId = '';
+        $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
         $countStr = $sqlData['gender']==Common::MAN?'count_man':'count_lady';
         if($sqlData['handleType'] == 1) {
-            //匹配模式
-            $sqlStr = sprintf("SELECT * FROM xq_chat AND `work`<>2"); //还在没删除的
+            $sqlStr = sprintf("SELECT * FROM xq_chat where `work`<>2"); //还在没删除的
             $result = M()->query($sqlStr)[0];
+            //匹配模式
             if(!$result) {
                 //未找到则直接返回
                 return -1; //未找到
@@ -872,9 +876,15 @@ class SqlManager {
         $Model = M();
         $Model->startTrans();
         try{
-            if($userInfo['room_role_type'] == 1 && $userInfo['joinType'] == 1) {
-                //参与者并且参与模式，而不是排队
-                M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$roomId)->setInc($countStr,1); //人员数+1
+            $isQueue = false;   //是否排队
+            $sqlStr = sprintf("SELECT * FROM xq_chat where room_id='%s' and `work`<>2",$roomId); //还在没删除的
+            $result = M()->query($sqlStr)[0];
+            if($result[$countStr] >= $result[$limitStr]) {
+                $isQueue = true;
+            }
+            if($userInfo['room_role_type'] == 1 && !$isQueue) {
+                //参与者并且参与模式，而不是排队，且只有等待的房间
+                M(SqlManager::TABLE_CHAT)->where("room_id='%s' and work=0",$roomId)->setInc($countStr,1); //人员数+1
             }
             //添加到个人房间记录中
             $userInfo['room_id'] = $roomId;
@@ -891,6 +901,7 @@ class SqlManager {
         $data['creater'] = $roomInfo['creater'];
         $data['appoint_time'] = $roomInfo['appoint_time'];
         $data['isPublic'] = $roomInfo['public'];
+        $data['isQueue'] = $isQueue?2:1;
         $data['member'] = $result;
         return $data;
     }
@@ -947,14 +958,15 @@ class SqlManager {
             WHERE a.room_id='%s' AND a.user_name='%s' AND a.user_name=b.user_name AND a.`work`<>2",
             $sqlData['room_id'],$sqlData['user_name']);
         $result = M()->query($sqlStr)[0];
+        $countStr = $result['gender']==Common::MAN?'count_man':'count_lady';
         $Model = M();
         $Model->startTrans();
         try{
             if($isCreator) {
                 //是创建者，标识为停止
                 M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])->save($newData);
-                $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and work<>2"
-                    ,$sqlData['room_id'])->save($newData);
+                M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
+                    ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
                 M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and inner_id='%s'",
                     $sqlData['room_id'],$sqlData['inner_id'])
                     ->save($newData);
@@ -963,14 +975,19 @@ class SqlManager {
                     ->save($newData);
             }else {
                 //不是创建者
-                $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
+                M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
                     ,$sqlData['room_id'],$sqlData['user_name'])->save($newData);
-                M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and user_name='%s' and inner_id='%s'",
-                    $sqlData['room_id'],$sqlData['user_name'],$sqlData['inner_id'])
+                M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and inner_id='%s'",
+                    $sqlData['room_id'],$sqlData['inner_id'])
                     ->save($newData);
                 M(SqlManager::TABLE_CHAT_ROOM_USER)->where("room_id='%s' and user_name='%s' and inner_id='%s'",
                     $sqlData['room_id'],$sqlData['user_name'],$sqlData['inner_id'])
                     ->save($newData);
+                //是参与者并且是参与模式（而不是排队模式）则-1
+                if($sqlData['joinType'] == 1 && $result['room_role_type'] == 1) {
+                    M(SqlManager::TABLE_CHAT)->where("room_id='%s' and work=0",$sqlData['room_id'])
+                        ->setDec($countStr,1); //人员数+1
+                }
             }
 
             $Model->commit();
@@ -978,6 +995,7 @@ class SqlManager {
             $Model->rollback();
             return false;
         }
+        $result = M()->query($sqlStr)[0];
         return $result;
     }
 
@@ -1009,14 +1027,22 @@ class SqlManager {
      * @return mixed
      */
     public static function getChatRoomByUser($sqlData) {
-        $sqlStr = sprintf("SELECT b.*,a.room_role_type FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' 
-            AND a.room_id=b.room_id  AND a.`work`<>2 ORDER BY a.enter_time DESC"
+        $sqlStr = sprintf("SELECT b.*,a.room_role_type FROM xq_chat_user a,xq_chat b WHERE a.user_name='%s' 
+            AND a.room_id=b.room_id  AND a.`work`<>2 ORDER BY a.start_time DESC"
             ,$sqlData['user_name']);
-        $result = M()->query($sqlStr);
-        if(empty($result)) {
+        $result = M()->query($sqlStr)[0];
+        if(!$result) {
             return null;
         }
-        return $result[0];
+
+        $limitStr = $sqlData['gender']==Common::MAN?'limit_man':'limit_lady';
+        $countStr = $sqlData['gender']==Common::MAN?'count_man':'count_lady';
+        $isQueue = false;   //是否排队
+        if($result[$countStr] >= $result[$limitStr]) {
+            $isQueue = true;
+        }
+        $result['isQueue'] = $isQueue?2:1;
+        return $result;
     }
 
 
@@ -1038,7 +1064,7 @@ class SqlManager {
         $manIndex = 0;
         $angelIndex = 0;
         $ladyIndex = 0;
-        $chatInfo = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id']);
+        $chatInfo = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])->find();
         foreach ($result as $item) {
             $resultData = [];
             $item['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['head_image'];
@@ -1131,7 +1157,9 @@ class SqlManager {
             $Model->rollback();
             return false;
         }
-        return $result;
+
+        $returnData['inner_id'] = $inner_id;
+        return $returnData;
     }
 
     /**
@@ -1154,7 +1182,7 @@ class SqlManager {
             $where['status'] = array('in',$strArray);
         }
 
-        $result = M(SqlManager::TABLE_CHATROOM)->where($where)->select();
+        $result = M(SqlManager::TABLE_CHAT)->where($where)->select();
         return $result;
     }
 
@@ -1172,7 +1200,7 @@ class SqlManager {
         $sqlResult = M()->query($sqlStr);
         foreach ($sqlResult as $info) {
             //设置结束
-            M(SqlManager::TABLE_CHATROOM)->where("room_id='%s'",$info['room_id'])->setField(array('work'=>2,'status'=>-1));
+            M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$info['room_id'])->setField(array('work'=>2,'status'=>-1));
         }
         return $sqlResult;
     }
