@@ -909,6 +909,7 @@ class SqlManager {
     /**
      * 上报房间结果
      * @param $sqlData
+     * @return bool
      */
     public static function commitChatRoomResult($sqlData) {
         //处理数据库
@@ -916,8 +917,7 @@ class SqlManager {
         $Model->startTrans();
         try{
             //更新xq_chat_user
-            M(SqlManager::TABLE_CHAT)->where("room_id='%s' and inner_id='%s'",
-                $sqlData['room_id'],$sqlData['inner_id'])
+            M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])
                 ->setField("work",0);
             //更新xq_chat_user
             M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and work=1",$sqlData['room_id'])->setField('work',0);
@@ -942,6 +942,7 @@ class SqlManager {
             $Model->rollback();
             return false;
         }
+        return true;
     }
 
     /**
@@ -958,6 +959,9 @@ class SqlManager {
             WHERE a.room_id='%s' AND a.user_name='%s' AND a.user_name=b.user_name AND a.`work`<>2",
             $sqlData['room_id'],$sqlData['user_name']);
         $result = M()->query($sqlStr)[0];
+//        if(!$result) {
+//            return false;
+//        }
         $countStr = $result['gender']==Common::MAN?'count_man':'count_lady';
         $Model = M();
         $Model->startTrans();
@@ -1124,13 +1128,13 @@ class SqlManager {
         $Model->startTrans();
         try{
             //添加一个记录到xq_chat_room种，用来记录本次匹配
-            $result = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])->find();
+            $result = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])->field("id",true)->find();
             M(SqlManager::TABLE_CHAT)->where("room_id='%s' and work<>2",
                 $sqlData['room_id'])->save($newData);
             $result['status'] = 0;
             $result['start_time'] = ToolUtil::getCurrentTime();
             $result['inner_id'] = $inner_id;
-            M(SqlManager::TABLE_CHAT_ROOM)->filter('id')->add($result);
+            M(SqlManager::TABLE_CHAT_ROOM)->add($result);
             M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and work<>2 and in_room=1",
                 $sqlData['room_id'])->save($newData);
             $Model->commit();
@@ -1140,17 +1144,17 @@ class SqlManager {
             return false;
         }
 
-        //在房间内的,则将人员添加到xq_chat_room_user表中
-        $result = M(SqlManager::TABLE_ROOM_RECORD)->where("room_id='%s' and work<>2 and in_room=1",
-            $sqlData['room_id'])->select();
+        //在房间内的,则将人员添加到xq_chat_user表中
+        $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and work<>2 and in_room=1",
+            $sqlData['room_id'])->field("id",true)->select();
         for($i = 0 ; $i < count($result) ; $i++) {
-            $result[i]['inner_id'] = $inner_id;
-            $result[i]['start_time'] = ToolUtil::getCurrentTime();
+            $result[$i]['inner_id'] = $inner_id;
+            $result[$i]['start_time'] = ToolUtil::getCurrentTime();
         }
 
         $Model->startTrans();
         try{
-            M(SqlManager::TABLE_CHAT_ROOM_USER)->filter('id')->addAll($result);
+            M(SqlManager::TABLE_CHAT_ROOM_USER)->addAll($result);
             $Model->commit();
         }catch (\Exception $e) {
             LogUtil::writeAppLog("Fail--startChatRoom:".json_encode($e));

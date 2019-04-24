@@ -255,7 +255,7 @@ class JMessageController extends BaseController {
         $userInfo['room_id'] = $roomId;
         //房间创建成功，存入数据库
         $sqlResult = SqlManager::appointChatRoom($userInfo);
-        if(!$sqlResult) goto error;
+        if($sqlResult === false) goto error;
         $this->returnData($this->convertReturnJsonSucessed($userInfo));
 
         error:
@@ -386,7 +386,7 @@ class JMessageController extends BaseController {
         }
 
         $sqlResult = SqlManager::joinChatRoom($userInfo);
-        if(!$sqlResult) goto error;
+        if($sqlResult === false) goto error;
 
         //加入到JM chat
         $userInfo['room_id'] = $sqlResult['room_id'];
@@ -475,10 +475,10 @@ class JMessageController extends BaseController {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_ALREADY_DELETE_CHATROOM,
                 "the chat room is deleted"));
         }
-        $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and end_time is null"
+        $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
             ,$userInfo['room_id'],$userInfo['user_name'])
             ->setField("in_room",1);
-        if(!$result) goto error;
+        if($result === false) goto error;
         $sqlResult = SqlManager::getChatRoomMember($userInfo,1);
         $roomInfo['members'] = $sqlResult;
         $roomInfo['inner_id'] = '';
@@ -525,7 +525,7 @@ class JMessageController extends BaseController {
         $result = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
             ,$userInfo['room_id'],$userInfo['user_name'])
             ->setField("in_room",0);
-        if($result == false) {
+        if($result === false) {
             $this->returnData($this->convertReturnJsonError());
         }
         $this->returnData($this->convertReturnJsonSucessed());
@@ -604,10 +604,12 @@ class JMessageController extends BaseController {
             return ;
         }
 
-        if($userInfo['status'] == 1 && !is_null($userInfo['man_user']) && !is_null($userInfo['lady_user'])) {//成功
-            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
-                'lack manUser,ladyUser'));
-            return ;
+        if($userInfo['status'] == 1) {
+            if(is_null($userInfo['man_user']) || is_null($userInfo['lady_user'])) {
+                $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                    'lack manUser,ladyUser'));
+                return ;
+            }
         }
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
