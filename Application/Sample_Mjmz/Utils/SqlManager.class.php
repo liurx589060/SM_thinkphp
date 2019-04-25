@@ -975,7 +975,7 @@ class SqlManager {
                     $sqlData['room_id'],$sqlData['inner_id'])
                     ->save($newData);
                 M(SqlManager::TABLE_CHAT_ROOM_USER)->where("room_id='%s' and inner_id='%s'",
-                    $sqlData['room_id'],$sqlData['user_name'],$sqlData['inner_id'])
+                    $sqlData['room_id'],$sqlData['inner_id'])
                     ->save($newData);
             }else {
                 //不是创建者

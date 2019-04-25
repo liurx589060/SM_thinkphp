@@ -484,14 +484,14 @@ class JMessageController extends BaseController {
         $roomInfo['inner_id'] = '';
         if($roomInfo['work'] == 1) {
             //判断xq_chat_room_user是否有记录
+            $roomChat = M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and end_time is null",$userInfo['room_id'])->find();
             $result = M(SqlManager::TABLE_CHAT_ROOM_USER)->where("room_id='%s' and user_name='%s' and inner_id='%s'",
-                $userInfo['room_id'],$userInfo['user_name'],$roomInfo['inner_id'])
+                $userInfo['room_id'],$userInfo['user_name'],$roomChat['inner_id'])
                 ->select();
             if(empty($result)) {
                 //进行中，不存在记录,则添加到xq_chat_room_user的记录中(主要是围观者中途进入)
-                $roomChat = M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and end_time is null")->find();
                 $info = M(SqlManager::TABLE_CHAT_USER)->where("room_id='%s' and user_name='%s' and work<>2"
-                    ,$userInfo['room_id'],$userInfo['user_name']);
+                    ,$userInfo['room_id'],$userInfo['user_name'])->find();
                 $info['status'] = 0;
                 $info['start_time'] = ToolUtil::getCurrentTime();
                 $insertData['inner_id'] = $roomChat['inner_id'];
