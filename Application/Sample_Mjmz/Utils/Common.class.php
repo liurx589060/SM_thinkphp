@@ -61,9 +61,9 @@ class Common {
     const CHAT_ROOM_ROLETYPE_PARTICIPANTS = 1; //参与者
     const CHAT_ROOM_ROLETYPE_ONLOOKER = 2; //围观者
     
-    const ROLRTYPE_ANGEL = 'angel';   //爱心大使
-    const ROLETYPE_GUEST = 'guest';    //嘉宾
-    const ROLETYPE_LOOKER = 'looker';   //观众
+    const ROLRTYPE_ANGEL = '爱心大使';   //爱心大使
+    const ROLETYPE_GUEST = '嘉宾';    //嘉宾
+    const ROLETYPE_AUDIENCE = '观众';   //观众
 
     const BLACK_BAN_BASE_TIME = 6; //6小时
     

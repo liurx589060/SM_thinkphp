@@ -775,8 +775,9 @@ class SqlManager {
      * @return false
      */
     public static function getChatRoomListByUser($sqlData) {
-        $sqlStr = sprintf("SELECT a.room_id,a.enter_time,a.exit_time,a.room_role_type,a.`status`,b.creater,b.`describe`,
-                      b.public AS isPublic FROM xq_room_record a,xq_chat_room b WHERE a.user_name='%s' AND a.room_id = b.room_id",
+        $sqlStr = sprintf("SELECT a.inner_id,a.room_id,a.room_role_type,a.start_time,a.end_time,a.user_name,
+            a.`status`,b.`status` as room_status,c.user_name as creater,c.title FROM xq_chat_room_user a,xq_chat_room b,
+            xq_chat c WHERE a.user_name='%s' AND a.room_id=c.room_id ORDER BY a.start_time DESC",
             $sqlData['user_name']);
         $result = M()->query($sqlStr);
         return $result;
