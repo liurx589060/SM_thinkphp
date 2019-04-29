@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2019-04-29 02:13:35
+Date: 2019-04-29 23:43:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -79,7 +79,7 @@ CREATE TABLE `xq_chat` (
   `push_address` varchar(255) DEFAULT NULL,
   `play_address` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COMMENT='聊天室创建和删除记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COMMENT='聊天室创建和删除记录表';
 
 -- ----------------------------
 -- Records of xq_chat
@@ -88,6 +88,7 @@ INSERT INTO `xq_chat` VALUES ('52', '17944471', '一起来相亲吧', '', 'wys30
 INSERT INTO `xq_chat` VALUES ('53', '15837894', '一起来相亲吧', '', 'wys30201', '2019-04-29 01:27:42', '2019-04-29 01:31:56', '1', '0', '2019-04-30 09:00:00', '-1', '1', '2', '1', '1', '2', '1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
 INSERT INTO `xq_chat` VALUES ('54', '17947209', '一起来相亲吧', '', 'wys30201', '2019-04-29 01:33:18', '2019-04-29 01:40:56', '1', '0', '2019-04-29 11:00:00', '-1', '1', '2', '1', '1', '1', '1', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
 INSERT INTO `xq_chat` VALUES ('55', '17947239', '一起来相亲吧', '', 'wys30201', '2019-04-29 01:44:08', '2019-04-29 01:59:19', '1', '0', '2019-04-29 11:23:00', '-1', '1', '2', '1', '1', '2', '0', '2', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
+INSERT INTO `xq_chat` VALUES ('56', '15839052', '一起来相亲吧', '', 'wys30201', '2019-04-29 02:18:33', null, '1', '0', '2019-04-30 00:00:00', '-1', '1', '2', '1', '1', '0', '0', '0', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n', 'cnRtcDovLzE5Mi4xNjguMS4xMDMvbGl2ZS9zdHJlYW0xX3d5czMwMjAx\n');
 
 -- ----------------------------
 -- Table structure for `xq_chat_room`
@@ -163,7 +164,7 @@ CREATE TABLE `xq_chat_user` (
   `in_room` int(11) NOT NULL DEFAULT '0' COMMENT '是否在房间内（0：不在     1：在）',
   `work` int(11) NOT NULL DEFAULT '0' COMMENT '工作状态（0：初始化   1：进行中    2：已结束）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=248 DEFAULT CHARSET=utf8 COMMENT='用户进出聊天室表';
+) ENGINE=InnoDB AUTO_INCREMENT=249 DEFAULT CHARSET=utf8 COMMENT='用户进出聊天室表';
 
 -- ----------------------------
 -- Records of xq_chat_user
@@ -185,6 +186,7 @@ INSERT INTO `xq_chat_user` VALUES ('244', '17947239', 'wys30203', '2019-04-29 01
 INSERT INTO `xq_chat_user` VALUES ('245', '17947239', 'wys30202', '2019-04-29 01:44:47', '2019-04-29 01:59:21', '1', '0', '2');
 INSERT INTO `xq_chat_user` VALUES ('246', '17947239', 'wys30204', '2019-04-29 01:45:00', '2019-04-29 01:46:49', '1', '1', '2');
 INSERT INTO `xq_chat_user` VALUES ('247', '17947239', 'wys30204', '2019-04-29 01:48:47', '2019-04-29 01:49:43', '1', '1', '2');
+INSERT INTO `xq_chat_user` VALUES ('248', '15839052', 'wys30201', '2019-04-29 02:18:33', null, '1', '0', '0');
 
 -- ----------------------------
 -- Table structure for `xq_coin_consume_history`
@@ -485,7 +487,7 @@ INSERT INTO `xq_gift_user` VALUES ('45', 'wys30203', '4', '2', '0', null, null, 
 INSERT INTO `xq_gift_user` VALUES ('46', 'wys30202', '4', '2', '0', null, null, '2');
 INSERT INTO `xq_gift_user` VALUES ('47', 'wys30203', '4', '1', '3', null, null, '1');
 INSERT INTO `xq_gift_user` VALUES ('48', 'wys30204', '4', '2', '0', null, null, '2');
-INSERT INTO `xq_gift_user` VALUES ('49', 'wys30201', '6', '1', '-1', '2019-04-28 22:19:41', '2019-04-29 22:19:41', '1');
+INSERT INTO `xq_gift_user` VALUES ('49', 'wys30201', '6', '1', '-1', '2019-04-28 22:19:41', '2019-04-29 22:19:41', '2');
 INSERT INTO `xq_gift_user` VALUES ('50', 'wys30202', '4', '1', '20', null, null, '1');
 INSERT INTO `xq_gift_user` VALUES ('51', 'wys30204', '4', '1', '19', null, null, '1');
 
@@ -586,7 +588,7 @@ CREATE TABLE `xq_user` (
 -- ----------------------------
 -- Records of xq_user
 -- ----------------------------
-INSERT INTO `xq_user` VALUES ('1', 'wys30201', 'a3104028f10587ab4891049563ddddb9', '2018-05-14 19:36:04', '2019-01-14 22:05:13');
+INSERT INTO `xq_user` VALUES ('1', 'wys30201', 'aa7ca9532f6b0d5bfb87370e7392ee0d', '2019-04-29 21:31:33', '2019-04-29 21:31:33');
 INSERT INTO `xq_user` VALUES ('2', 'aaa', 'a3104028f10587ab4891049563ddddb9', '2018-05-14 22:24:02', '2019-01-15 00:21:07');
 INSERT INTO `xq_user` VALUES ('10', 'wys30202', 'a3104028f10587ab4891049563ddddb9', '2018-05-16 23:58:46', '2019-01-13 12:46:30');
 INSERT INTO `xq_user` VALUES ('12', 'wys30203', 'a3104028f10587ab4891049563ddddb9', '2018-05-30 23:31:16', '2019-01-13 12:46:27');
@@ -646,10 +648,10 @@ CREATE TABLE `xq_user_info` (
 -- ----------------------------
 -- Records of xq_user_info
 -- ----------------------------
-INSERT INTO `xq_user_info` VALUES ('1', '1', 'wys30201', 'wys30201', '男', '爱心大使', '0', '1918', '26', '175', '博士及以上', 'IT工程师', '湖南', '1', '深圳市南山区', '', '/thinkphp/upload/XQ/IMG_20181120001732_901.jpg', '2019-04-08 21:47:20', '2019-04-27 21:57:04', '我的世界我做主');
+INSERT INTO `xq_user_info` VALUES ('1', '1', 'wys30201', 'wys30201', '男', '爱心大使', '0', '1918', '26', '175', '博士及以上', 'IT工程师', '湖南', '1', '深圳市南山区', '13609613560', '/thinkphp/upload/XQ/IMG_20181120001732_901.jpg', '2019-04-08 21:47:20', '2019-04-27 21:57:04', '我的世界我做主');
 INSERT INTO `xq_user_info` VALUES ('4', '10', 'wys30202', '莹宝', '女', '嘉宾', '0', '290', '23', '170', '博士及以上', 'IT', '广东', '1', '长沙', '', '/thinkphp/upload/XQ/IMG_20180616164817_283.jpg', '2018-05-16 23:59:15', '2019-04-15 21:54:59', '');
 INSERT INTO `xq_user_info` VALUES ('5', '12', 'wys30203', 'wys30203', '女', '嘉宾', '0', '96', '22', '158', '硕士', '销售', '湖北', '1', '武汉', '', '/thinkphp/upload/XQ/IMG_20190112162444_308.jpg', '2018-05-30 23:31:29', '2019-04-24 20:47:08', '');
-INSERT INTO `xq_user_info` VALUES ('6', '15', 'wys30204', 'wys30204', '男', '嘉宾', '0', '400', '27', '183', '博士', '工程经理', '湖南', '1', '南山科技园', '', '/thinkphp/upload/XQ/IMG_20180617104128_144.jpg', '2018-05-31 21:37:17', '2019-04-24 21:03:38', '新高浮雕升高个');
+INSERT INTO `xq_user_info` VALUES ('6', '15', 'wys30204', 'wys30204', '男', '嘉宾', '0', '400', '27', '183', '本科', '工程经理', '湖南', '1', '南山科技园', '', '/thinkphp/upload/XQ/IMG_20190429234015_411.jpg', '2018-05-31 21:37:17', '2019-04-29 23:40:15', '新高浮雕升高个');
 INSERT INTO `xq_user_info` VALUES ('7', '16', 'wys30205', 'wys30205', '男', '观众', '0', '96', '28', '170', '硕士', '及', '湖南', '1', '上海', '', '/thinkphp/upload/XQ/IMG_20190419225458_846.jpg', '2018-12-16 14:02:16', '2019-04-19 22:57:08', '理想随风');
 INSERT INTO `xq_user_info` VALUES ('8', '17', 'wys30210', '心莹', '女', '嘉宾', '0', '100', '33', '162', '硕士', '教师', '广东', '2', '深圳', '', '/thinkphp/upload/XQ/IMG_20190419223229_752.jpg', '2019-04-19 22:23:30', '2019-04-19 22:32:32', '我的阅历足够美');
 
@@ -693,4 +695,4 @@ CREATE TABLE `xq_version` (
 -- ----------------------------
 -- Records of xq_version
 -- ----------------------------
-INSERT INTO `xq_version` VALUES ('1', '2', 'V1.0.2', '1.V2版震撼来袭，功能强大，链式编程，调用简单，集成轻松，扩展性强大\\n2.老规矩先看V2效果，这个版本最大的特点就是使用非常简单，相对于1.+版本\\n3.更强大的自定义界面支持\\n4.compile \'com.allenliu.versionchecklib:library:2.0.0\'\\n5.该模式最简单的使用', 'http://test-1251233192.coscd.myqcloud.com/1_1.apk', '2019-04-29 02:11:39', '0');
+INSERT INTO `xq_version` VALUES ('1', '1', 'V1.0.2', '1.V2版震撼来袭，功能强大，链式编程，调用简单，集成轻松，扩展性强大\\n2.老规矩先看V2效果，这个版本最大的特点就是使用非常简单，相对于1.+版本\\n3.更强大的自定义界面支持\\n4.compile \'com.allenliu.versionchecklib:library:2.0.0\'\\n5.该模式最简单的使用', 'http://test-1251233192.coscd.myqcloud.com/1_1.apk', '2019-04-29 21:29:50', '0');

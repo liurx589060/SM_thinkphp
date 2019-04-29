@@ -344,15 +344,20 @@ class SqlManager {
         }
         return TRUE;
     }
-    
-     /**
+
+    /**
      * 获取用户信息
      * @param type $sqlData
+     * @return
      */
     public static function getUserInfo($sqlData) {
         $sql = M(SqlManager::TABLE_USERINFO);
         $sqlResult = $sql->where("user_name='%s'",$sqlData['user_name'])->select();
-        $sqlResult[0]['head_image'] ='http://'.$_SERVER['SERVER_NAME'].$sqlResult[0]['head_image'];
+        if(count($sqlResult) > 0) {
+            $sqlResult[0]['head_image'] ='http://'.$_SERVER['SERVER_NAME'].$sqlResult[0]['head_image'];
+        }else {
+            return false;
+        }
         return $sqlResult[0];
     }
 
