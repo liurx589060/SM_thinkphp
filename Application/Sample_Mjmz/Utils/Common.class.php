@@ -68,5 +68,7 @@ class Common {
     const BLACK_BAN_BASE_TIME = 6; //6小时
     
     const REPORT_ITEMS = array('故意长时间挂机或离线','注册信息违规','言语或视频违背伦理');
+
+    const BONUS_ID_REGISTER = 1;//注册
     
 }

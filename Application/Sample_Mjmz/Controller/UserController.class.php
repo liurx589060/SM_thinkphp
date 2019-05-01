@@ -122,6 +122,9 @@ class UserController extends BaseController {
                     , 'lack userName'));
         }
         $sqlResult = SqlManager::updateUserInfo($userInfo);
+        if($sqlResult === false) {
+            $this->returnData($this->convertReturnJsonError());
+        }
         if($sqlResult[SqlManager::RESULT_ERRORCODE] == SqlManager::SQL_SUCCESS) {
             $this->returnData($this->convertReturnJsonSucessed($sqlResult[SqlManager::RESULT_ERRORMSG]));
         } else {
@@ -318,6 +321,41 @@ class UserController extends BaseController {
         
         $sqlData['userName'] = $userName;
         $result = SqlManager::getFriendListByUser($sqlData);
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
+    /**
+     * 获取赠送的礼物
+     * http://localhost/thinkphp/Sample_Mjmz/user/getBonusByUser?userName=wys30201&status=0
+     */
+    public function getBonusByUser() {
+        $userInfo['user_name'] = $_GET['userName'];
+        $userInfo['status'] = $_GET['status'];    // 0:未领取    1;已领取
+        if(is_null($userInfo['user_name']) || is_null($userInfo['status'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
+                , 'lack userName，status'));
+        }
+
+        $result = SqlManager::getBonusByUser($userInfo);
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
+    /**
+     * 领取礼品奖励
+     * http://localhost/thinkphp/Sample_Mjmz/user/receiveBonus?userName=wys30201&bonusId=1
+     */
+    public function receiveBonus() {
+        $userInfo['user_name'] = $_GET['userName'];
+        $userInfo['bonus_id'] = $_GET['bonusId'];
+        if(is_null($userInfo['user_name']) || is_null($userInfo['bonus_id'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
+                , 'lack userName，bonus_id'));
+        }
+
+        $result = SqlManager::receiveBonus($userInfo);
+        if($result === false) {
+            $this->returnData($this->convertReturnJsonError());
+        }
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
 }

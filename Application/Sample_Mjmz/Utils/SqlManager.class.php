@@ -34,6 +34,8 @@ class SqlManager {
     const TABLE_COIN_CONSUME_HISTORY = 'coin_consume_history';
     const TABLE_VERSION = 'version';
     const TABLE_BANNER = 'banner';
+    const TABLE_BONUS_ITEM = 'bonus_item';
+    const TABLE_BONUS_USER = 'bonus_user';
     
     const SQL_SUCCESS_STR = 'sql_success';
     const SQL_SUCCESS = 200;
@@ -110,22 +112,66 @@ class SqlManager {
         if(isset($userInfo['nickName'])) {
             $ex['nick_name'] = $userInfo['nickName'];
         }
-        $fianlArray = $userInfo + $ex;    
-        $sql = M(SqlManager::TABLE_USERINFO);
-        //检测是否存在该用户
-        $result = SqlManager::checkUserExist(SqlManager::TABLE_USER,$fianlArray);
-        if(!$result) {
-            return SqlManager::_createResultError(Common::ERROR_USER_NOT_EXIST
+        $fianlArray = $userInfo + $ex;
+        $Model = M();
+        $Model->startTrans();
+        try{
+            $sql = M(SqlManager::TABLE_USERINFO);
+            //检测是否存在该用户
+            $result = SqlManager::checkUserExist(SqlManager::TABLE_USER,$fianlArray);
+            if(!$result) {
+                return SqlManager::_createResultError(Common::ERROR_USER_NOT_EXIST
                     , 'the user is not exist');
-        }
-        $fianlArray['user_id'] = $result['user_id'];
-        //进行更新或者插入
-        if(empty($sql->where("user_name='%s'",$fianlArray['user_name'])->select())) {
-            $fianlArray['create_time'] = ToolUtil::getCurrentTime();
-            $sql->add($fianlArray);
-        }else {
-            $fianlArray['modify_time'] = ToolUtil::getCurrentTime();
-            $sql->where("user_name='%s'",$fianlArray['user_name'])->save($fianlArray);
+            }
+            $fianlArray['user_id'] = $result['user_id'];
+            //进行更新或者插入
+            if(empty($sql->where("user_name='%s'",$fianlArray['user_name'])->select())) {
+                $fianlArray['create_time'] = ToolUtil::getCurrentTime();
+                $sql->add($fianlArray);
+            }else {
+                $fianlArray['modify_time'] = ToolUtil::getCurrentTime();
+                $sql->where("user_name='%s'",$fianlArray['user_name'])->save($fianlArray);
+            }
+            //添加注册的优惠
+            $tableBonusUser = M(SqlManager::TABLE_BONUS_USER);
+            $bonusData['user_name'] = $fianlArray['user_name'];
+            $bonusData['create_time'] = ToolUtil::getCurrentTime();
+            $bonusData['bonus_id'] = Common::BONUS_ID_REGISTER;  //注册事件
+            if($userInfo['role_type'] == Common::ROLRTYPE_ANGEL) {
+                //爱心大使
+                $bonusData['gift_id'] = 8; //长期建房卡
+                $bonusData['num'] = 1;
+                $tableBonusUser->add($bonusData);
+
+                $bonusData['gift_id'] = 6; //临时建房卡
+                $bonusData['num'] = 5;
+                $tableBonusUser->add($bonusData);
+            }else if($userInfo['role_type'] == Common::ROLETYPE_AUDIENCE) {
+                //观众
+
+            }else if($userInfo['role_type'] == Common::ROLETYPE_GUEST) {
+                //嘉宾
+                if($userInfo['gender'] == Common::MAN) {
+                    //男
+                    $bonusData['gift_id'] = 4; //券
+                    $bonusData['num'] = 1;
+                    $tableBonusUser->add($bonusData);
+
+                    $bonusData['gift_id'] = 7; //延时卡
+                    $bonusData['num'] = 2;
+                    $tableBonusUser->add($bonusData);
+                }else if($userInfo['gender'] == Common::LADY) {
+                    //女
+                    $bonusData['gift_id'] = 7; //延时卡
+                    $bonusData['num'] = 2;
+                    $tableBonusUser->add($bonusData);
+                }
+            }
+
+            $Model->commit();
+        }catch (\Exception $e) {
+            $Model->rollback();
+            return false;
         }
         //获取用户信息
         $sqlInfo = SqlManager::getUserInfoBySql($fianlArray);
@@ -309,10 +355,11 @@ class SqlManager {
                 break;
         }
     }
-    
+
     /**
      * 获取用户名是否被禁
      * @param type $sqlData
+     * @return
      */
     public static function getBlackUserByName($sqlData) {
         $sql = M(SqlManager::TABLE_BLACK_USER);
@@ -470,10 +517,10 @@ class SqlManager {
             $sqlResult = $sqlUser->where("user_name='%s'",$sqlData['user_name'])->setDec('balance',$sqlData['coin']);
             if(!$sqlResult) return $sqlResult;
             $sql = M(SqlManager::TABLE_GIFT_USER);
-            $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",
+            $sqlResult = $sql->where("user_name='%s' and gift_id='%d' and status=0",
                 $sqlData['user_name'],$sqlData['gift_id'])->find();
             if($sqlResult) {
-                $sqlResult = $sql->where("user_name='%s' and gift_id='%d'",$sqlData['user_name'],$sqlData['gift_id'])
+                $sqlResult = $sql->where("user_name='%s' and gift_id='%d' and status=0",$sqlData['user_name'],$sqlData['gift_id'])
                     ->setInc('num',1);
             }else {
                 $sqlData['num'] = 1;
@@ -1213,5 +1260,83 @@ class SqlManager {
             M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$info['room_id'])->setField(array('work'=>2,'status'=>-1));
         }
         return $sqlResult;
+    }
+
+    /**
+     * 获取赠送的礼物
+     * @param $sqlData
+     * @return array
+     */
+    public static function getBonusByUser($sqlData) {
+        $sqlStr = sprintf("SELECT a.*,b.`name`,c.`name` as gift_name,c.image FROM xq_bonus_user a,
+            xq_bonus_item b,xq_gift_item c WHERE a.bonus_id=b.id AND a.user_name='%s' AND a.gift_id=c.gift_id 
+            AND a.`status`='%s' ORDER BY create_time",
+            $sqlData['user_name'],$sqlData['status']);
+        $sqlResult = M()->query($sqlStr);
+        //分批次
+        $mapBonus = [];
+        foreach ($sqlResult as $item) {
+            $key = $item['bonus_id'];
+            $info = [];
+            if(!is_null($mapBonus[$key]) && $mapBonus[$key]['create_time'] == $item['create_time']) {
+                $info = $mapBonus[$key];
+            }else {
+                $mapBonus[$key] = $info;
+            }
+            $info['bonus_id'] = $key;
+            $info['bonus_name'] = $item['name'];
+            $info['create_time'] = $item['create_time'];
+            if(is_null($info['gift'])) {
+                $info['gift'] = [];
+            }
+            $gift_info = [];
+            $gift_info['gift_id'] = $item['gift_id'];
+            $gift_info['name'] = $item['gift_name'];
+            $gift_info['num'] = $item['num'];
+            $gift_info['create_time'] = $item['create_time'];
+            $gift_info['modify_time'] = $item['modify_time'];
+            $gift_info['image'] = 'http://'.$_SERVER['SERVER_NAME'].$item['image'];
+            array_push($info['gift'],$gift_info);
+            $mapBonus[$key] = $info;
+        }
+
+        $reArray = [];
+        foreach ($mapBonus as $item) {
+            array_push($reArray,$item);
+        }
+        return $reArray[0];
+    }
+
+    public static function receiveBonus($sqlData) {
+        $newData['status'] = 1;
+        $newData['modify_time'] = ToolUtil::getCurrentTime();
+        $Model = M();
+        $Model->startTrans();
+        try{
+           M(SqlManager::TABLE_BONUS_USER)->where("user_name='%s' and bonus_id='%s' and status=0",
+                $sqlData['user_name'],$sqlData['bonus_id'])->save($newData);
+           $infoArray = M(SqlManager::TABLE_BONUS_USER)->where("user_name='%s' and bonus_id='%s' and status=1",
+               $sqlData['user_name'],$sqlData['bonus_id'])->field('gift_id,user_name,num')->select();
+           foreach ($infoArray as $item) {
+               //添加到个人的礼物中
+               $sql = M(SqlManager::TABLE_GIFT_USER);
+               $sqlResult = $sql->where("user_name='%s' and gift_id='%d' and status=0",
+                   $item['user_name'],$item['gift_id'])->find();
+               if($sqlResult) {
+                   $sql->where("user_name='%s' and gift_id='%d' and status=0",$item['user_name'],$item['gift_id'])
+                       ->setInc('num',$item['num']);
+               }else {
+                   $insertData['gift_id'] = $item['gift_id'];
+                   $insertData['user_name'] = $item['user_name'];
+                   $insertData['num'] = $item['num'];
+                   $sql->add($insertData);
+               }
+           }
+           $Model->commit();
+        }catch (\Exception $e) {
+            $Model->rollback();
+            return false;
+        }
+        return true;
     }
 }
