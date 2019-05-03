@@ -117,9 +117,12 @@ class UserController extends BaseController {
         $userInfo['role_type'] = isset($userInfo['role_type'])?$userInfo['role_type']:$_GET['role_type'];
 //        $userInfo['head_image'] = isset($userInfo['head_image'])?$userInfo['head_image']:$_GET['head_image'];
         $userInfo['special_info'] = isset($userInfo['special_info'])?$userInfo['special_info']:$_GET['special_info'];
-        if(is_null($userInfo['userName'])) {
+        $userInfo['real_name'] = isset($userInfo['real_name'])?$userInfo['real_name']:$_GET['real_name'];
+        $userInfo['id_card'] = isset($userInfo['id_card'])?$userInfo['id_card']:$_GET['id_card'];
+        $userInfo['handleType'] = isset($userInfo['handleType'])?$userInfo['handleType']:$_GET['handleType'];
+        if(is_null($userInfo['userName']) || is_null($userInfo['handleType'])) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
-                    , 'lack userName'));
+                    , 'lack userName,handleType'));
         }
         $sqlResult = SqlManager::updateUserInfo($userInfo);
         if($sqlResult === false) {
@@ -130,6 +133,32 @@ class UserController extends BaseController {
         } else {
             $this->_returnError($sqlResult);
         }
+    }
+
+    /**
+     * http://localhost/thinkphp/Sample_Mjmz/Api/checkIDCard
+     * 检查是否需要更新
+     */
+    public function checkIDCard() {
+        $userInfo['real_name'] = $_GET['name'];
+        $userInfo['user_name'] = $_GET['userName'];
+        $userInfo['id_card'] = $_GET['idCard'];
+        $userInfo['handleType'] = $_GET['handleType'];  //1:注册过来   2：补齐过来
+        if(is_null($userInfo['real_name']) || is_null($userInfo['id_card']) || is_null($userInfo['user_name'])
+            || is_null($userInfo['handleType'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS ,
+                'lack name,idCard,userName,handleType'));
+            return;
+        }
+        $result = true;
+        if($userInfo['handleType'] == 2) {
+            $newData['card_valid'] = 1;
+            $newData['id_card'] = $userInfo['id_card'];
+            $newData['real_name'] = $userInfo['real_name'];
+            $result = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'",$userInfo['user_name'])
+                ->save($newData);
+        }
+        $this->returnData($this->convertReturnJsonSucessed($result));
     }
     
     /**
@@ -156,9 +185,11 @@ class UserController extends BaseController {
         $reportType = $_GET['reportType'];
         $reportMsg = $_GET['reportMsg'];
         $roomId = $_GET['roomId'];
-        if(is_null($userName) || is_null($reportType) || is_null($reportMsg) || is_null($roomId)) {
+        $inner_id = $_GET['innerId'];
+        if(is_null($userName) || is_null($reportType) || is_null($reportMsg) || is_null($roomId)
+            || is_null($inner_id)) {
             $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
-                    , 'lack userName,reportType,reportMsg,roomId'));
+                    , 'lack userName,reportType,reportMsg,roomId,inner_id'));
             return ;
         }
         
@@ -169,6 +200,7 @@ class UserController extends BaseController {
             $sqlData['report_type'] = $reportType;
             $sqlData['report_msg'] = $reportMsg;
             $sqlData['room_id'] = $roomId;
+            $sqlData['inner_id'] = $inner_id;
             $sqlData['time'] = ToolUtil::getCurrentTime();
             
             if(SqlManager::reportUser($sqlData)) {
@@ -356,6 +388,21 @@ class UserController extends BaseController {
         if($result === false) {
             $this->returnData($this->convertReturnJsonError());
         }
+        $this->returnData($this->convertReturnJsonSucessed($result));
+    }
+
+    /**
+     * 获取我的收益r
+     * http://localhost/thinkphp/Sample_Mjmz/user/getProfitByUser?userName=wys30201&bonusId=1
+     */
+    public function getProfitByUser() {
+        $userInfo['user_name'] = $_GET['userName'];
+        if(is_null($userInfo['user_name'])) {
+            $this->returnData($this->convertReturnJsonError(Common::ERROR_LACK_PARAMS
+                , 'lack userName'));
+        }
+
+        $result = SqlManager::getProfitByUser($userInfo);
         $this->returnData($this->convertReturnJsonSucessed($result));
     }
 }

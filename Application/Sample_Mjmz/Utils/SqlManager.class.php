@@ -9,6 +9,7 @@
 namespace Sample_Mjmz\Utils;
 use Sample_Mjmz\Beans\BeanChatRoom;
 use Sample_Mjmz\Utils\Common;
+use JPush;
 
 /**
  * Description of SqlManager
@@ -17,6 +18,7 @@ use Sample_Mjmz\Utils\Common;
  */
 class SqlManager {
     const SQL_NAME = 'xq_app';
+    const TABLE_APP_SETTINGS = 'app_settings';
     const TABLE_USER = 'user';
     const TABLE_USERINFO = 'user_info';
     const TABLE_CHAT = 'chat';
@@ -133,38 +135,41 @@ class SqlManager {
                 $sql->where("user_name='%s'",$fianlArray['user_name'])->save($fianlArray);
             }
             //添加注册的优惠
-            $tableBonusUser = M(SqlManager::TABLE_BONUS_USER);
-            $bonusData['user_name'] = $fianlArray['user_name'];
-            $bonusData['create_time'] = ToolUtil::getCurrentTime();
-            $bonusData['bonus_id'] = Common::BONUS_ID_REGISTER;  //注册事件
-            if($userInfo['role_type'] == Common::ROLRTYPE_ANGEL) {
-                //爱心大使
-                $bonusData['gift_id'] = 8; //长期建房卡
-                $bonusData['num'] = 1;
-                $tableBonusUser->add($bonusData);
-
-                $bonusData['gift_id'] = 6; //临时建房卡
-                $bonusData['num'] = 5;
-                $tableBonusUser->add($bonusData);
-            }else if($userInfo['role_type'] == Common::ROLETYPE_AUDIENCE) {
-                //观众
-
-            }else if($userInfo['role_type'] == Common::ROLETYPE_GUEST) {
-                //嘉宾
-                if($userInfo['gender'] == Common::MAN) {
-                    //男
-                    $bonusData['gift_id'] = 4; //券
+            if($fianlArray['handleType'] == 1) {
+                //注册过来的
+                $tableBonusUser = M(SqlManager::TABLE_BONUS_USER);
+                $bonusData['user_name'] = $fianlArray['user_name'];
+                $bonusData['create_time'] = ToolUtil::getCurrentTime();
+                $bonusData['bonus_id'] = Common::BONUS_ID_REGISTER;  //注册事件
+                if($userInfo['role_type'] == Common::ROLRTYPE_ANGEL) {
+                    //爱心大使
+                    $bonusData['gift_id'] = 8; //长期建房卡
                     $bonusData['num'] = 1;
                     $tableBonusUser->add($bonusData);
 
-                    $bonusData['gift_id'] = 7; //延时卡
-                    $bonusData['num'] = 2;
+                    $bonusData['gift_id'] = 6; //临时建房卡
+                    $bonusData['num'] = 5;
                     $tableBonusUser->add($bonusData);
-                }else if($userInfo['gender'] == Common::LADY) {
-                    //女
-                    $bonusData['gift_id'] = 7; //延时卡
-                    $bonusData['num'] = 2;
-                    $tableBonusUser->add($bonusData);
+                }else if($userInfo['role_type'] == Common::ROLETYPE_AUDIENCE) {
+                    //观众
+
+                }else if($userInfo['role_type'] == Common::ROLETYPE_GUEST) {
+                    //嘉宾
+                    if($userInfo['gender'] == Common::MAN) {
+                        //男
+                        $bonusData['gift_id'] = 4; //券
+                        $bonusData['num'] = 1;
+                        $tableBonusUser->add($bonusData);
+
+                        $bonusData['gift_id'] = 7; //延时卡
+                        $bonusData['num'] = 2;
+                        $tableBonusUser->add($bonusData);
+                    }else if($userInfo['gender'] == Common::LADY) {
+                        //女
+                        $bonusData['gift_id'] = 7; //延时卡
+                        $bonusData['num'] = 2;
+                        $tableBonusUser->add($bonusData);
+                    }
                 }
             }
 
@@ -205,7 +210,7 @@ class SqlManager {
         $user_name = isset($userInfo['user_name'])?$userInfo['user_name']:$userInfo['userName'];
         $sql = M(SqlManager::TABLE_USERINFO);   
         $sqlInfo = $sql->where("user_name='%s'",$user_name)
-                ->field('id',true)->find();
+                ->field('id,real_name,id_card',true)->find();
         $sqlInfo['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlInfo['head_image'];
         return $sqlInfo;
     }
@@ -300,11 +305,11 @@ class SqlManager {
     public static function reportUser($sqlData) {
         $sql = M(SqlManager::TABLE_USER_REPORT);
         $returnReslut = $sql->add($sqlData);
-        $sqlReslult = $sql->where("room_id='%d'",$sqlData['room_id'])->select();
+        $sqlReslult = $sql->where("room_id='%d' and inner_id='%s'",$sqlData['room_id'],$sqlData['inner_id'])->select();
         $count = count($sqlReslult);
         $banTime = 0;
         $reports = array();
-        if($count >= 3) {
+        if($count >= Common::REPORT_VALID_COUNT) {
             $reportMsg = '';
             for($index = 0 ; $index < $count ; $index++) {
                 $reportType = $sqlReslult[$index]['report_type'];
@@ -990,12 +995,60 @@ class SqlManager {
                 $sqlData['room_id'],$sqlData['inner_id'])
                 ->save($newData);
 
+            $charInfo = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$sqlData['room_id'])->find();
+            //给奖励
+            $tableBonusUser = M(SqlManager::TABLE_BONUS_USER);
+            $bonusData['user_name'] = $charInfo['user_name'];
+            $bonusData['create_time'] = ToolUtil::getCurrentTime();
+            $bonusData['bonus_id'] = Common::BONUS_ID_CHAT_SUCCESS;  //房间匹配成功
+            if($newData['status'] == 1) {
+                $sqlStr = sprintf("SELECT a.inner_id,b.user_name FROM xq_chat_room a,xq_chat b 
+                  WHERE a.`status`=1 AND a.room_id=b.room_id");
+                $roomArray = M()->query($sqlStr);
+                $bonusData['num'] = 1;
+                if(count($roomArray)%10 == 0 && count($roomArray) > 0) {
+                    //累计10对
+                    $bonusData['gift_id'] = 8; //长期建房卡
+                    $tableBonusUser->add($bonusData);
+                }else if(count($roomArray) > 0){
+                    $bonusData['gift_id'] = 6; //临时建房卡
+                    //判断当天是否获取过
+                    $sqlStr = sprintf("SELECT * FROM xq_bonus_user WHERE TO_DAYS(create_time) = TO_DAYS(now())");
+                    $result = M()->query($sqlStr);
+                    if(count($result) == 0) {
+                        //说明没有获取过
+                        $tableBonusUser->add($bonusData);
+                    }
+                }
+            }
+
+            //给爱心大使加砖石,若此次被举报了则不奖励
+            $report = M(SqlManager::TABLE_USER_REPORT)
+                ->where("room_id='%d' and inner_id='%s'",$sqlData['room_id'],$sqlData['inner_id'])
+                ->select();
+            if(count($report) == 0) {
+                //没被举报
+                //获取男嘉宾进入房间所需的钻石
+                $giftItem = M(SqlManager::TABLE_GIFT_ITEM)->where("gift_id=1001")->find();
+                $num = $giftItem['coin']*$charInfo['count_man'];
+                //房间记录奖励
+                M(SqlManager::TABLE_CHAT_ROOM)->where("room_id='%s' and inner_id='%s'",
+                    $sqlData['room_id'],$sqlData['inner_id'])
+                    ->setInc('bonus',$num);
+                //用户余额加入奖励
+                M(SqlManager::TABLE_USERINFO)->where("user_name='%s'", $charInfo['user_name'])
+                    ->setInc('balance',$num);
+            }
+
             $Model->commit();
         }catch (\Exception $e) {
             $Model->rollback();
             return false;
         }
-        return true;
+
+        $userInfo = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'", $charInfo['user_name'])
+            ->find();
+        return $userInfo;
     }
 
     /**
@@ -1338,5 +1391,75 @@ class SqlManager {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 获取我的收益
+     * @param $sqlData
+     * @return mixed
+     */
+    public static function getProfitByUser($sqlData) {
+        $sqlStr = sprintf("SELECT a.*,b.user_name FROM xq_chat_room a,xq_chat b WHERE a.room_id=b.room_id 
+            AND b.user_name='%s'",$sqlData['user_name']);
+        $roomArray = M()->query($sqlStr);
+        $allCount = 20;
+        $successCount = 10;
+        $reportRate = 0.05;
+        $isCanExchange = true;
+
+        $self_successCount = 0;
+        $self_allCount = 0;
+        $self_reportCount = 0;
+        $self_rate = 0;
+
+        $reData['allCount'] = $allCount;
+        $reData['successCount'] = $successCount;
+        $reData['reportRate'] = $reportRate;
+        $self_allCount = count($roomArray);
+        if(count($roomArray) < $allCount) {
+            $isCanExchange = false;
+        }else {
+            $success = 0;
+            foreach ($roomArray as $item) {
+                if($item['status'] == 1) {
+                    //成功
+                    $success ++;
+                }
+            }
+            $self_successCount = $success;
+            if($success < $successCount) {
+                $isCanExchange = false;
+            }
+        }
+        if(!$isCanExchange) goto result;
+
+        //判断被举报的次数
+        $sqlStr = sprintf("SELECT *,COUNT(inner_id) as count FROM xq_user_report GROUP BY inner_id");
+        $roomArray = M()->query($sqlStr);
+        $reportCunt = 0;
+        foreach ($roomArray as $item) {
+            if($item['count'] >= Common::REPORT_VALID_COUNT) {
+                $reportCunt ++;
+            }
+        }
+        $self_reportCount = $reportCunt;
+        $rate = (float)$reportCunt/count($roomArray);
+        $self_rate = $rate;
+        if($rate >= $reportRate) {
+            $isCanExchange = false;
+        }
+        goto result;
+
+        result:
+            $reData['is_exchange'] = $isCanExchange?1:0;
+            $userInfo = M(SqlManager::TABLE_USERINFO)->where("user_name='%s'",$sqlData['user_name'])->field('balance')
+                ->find();
+            $reData['balance'] = $userInfo['balance'];
+            $reData['allCount'] = $allCount;
+            $reData['self_successCount'] = $self_successCount;
+            $reData['self_allCount'] = $self_allCount;
+            $reData['self_reportCount'] = $self_reportCount;
+            $reData['self_rate'] = $self_rate;
+            return $reData;
     }
 }

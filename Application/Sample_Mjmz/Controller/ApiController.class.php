@@ -14,6 +14,15 @@ use Sample_Mjmz\Utils\SqlManager;
 class ApiController extends BaseController
 {
     /**
+     * http://localhost/thinkphp/Sample_Mjmz/Api/getAppSettings
+     * 检查是否需要更新
+     */
+    public function getAppSettings() {
+        $result = M(SqlManager::TABLE_APP_SETTINGS)->select();
+        $this->returnData($this->convertReturnJsonSucessed($result[0]));
+    }
+
+    /**
      * http://localhost/thinkphp/Sample_Mjmz/Api/checkUpdate?versionCode=1
      * 检查是否需要更新
      */

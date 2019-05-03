@@ -52,6 +52,8 @@ class Common {
 
     const JPUSH_TYPE_PAY_SUCCESS = 100;      //支付成功
 
+    const JPUSH_TYPE_BONUS = 200;      //奖励通知
+
 
     const MAN = '男';  //男士
     const LADY = '女'; //女生
@@ -70,5 +72,7 @@ class Common {
     const REPORT_ITEMS = array('故意长时间挂机或离线','注册信息违规','言语或视频违背伦理');
 
     const BONUS_ID_REGISTER = 1;//注册
+    const BONUS_ID_CHAT_SUCCESS = 2;//房间匹配成功
+    const REPORT_VALID_COUNT = 3;   //有效的被举报次数
     
 }

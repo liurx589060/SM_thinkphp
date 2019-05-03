@@ -614,11 +614,11 @@ class JMessageController extends BaseController {
         //检测房间是否存在
         $this->_checkChatRoomExist($userInfo);
         $sqlResult = SqlManager::commitChatRoomResult($userInfo);
-        if(!$sqlResult) {
+        if($sqlResult === false) {
             $this->returnData($this->convertReturnJsonError());
             return;
         }
-        $this->returnData($this->convertReturnJsonSucessed());
+        $this->returnData($this->convertReturnJsonSucessed($sqlResult));
     }
 
     /**
