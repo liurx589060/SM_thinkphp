@@ -49,6 +49,8 @@ class Common {
     const JPUSH_TAG_CHAT = 'tag_chat_room';  //标签
     const JPUSH_TYPE_CHAT_ROOM_CREATE = 1;   //创建房间
     const JPUSH_TYPE_CHAT_ROOM_DELETE = 2;   //删除房间
+    const JPUSH_TYPE_CHAT_ROOM_JOIN = 3;   //加入房间
+    const JPUSH_TYPE_CHAT_ROOM_EXIT = 4;   //退出房间
 
     const JPUSH_TYPE_PAY_SUCCESS = 100;      //支付成功
 

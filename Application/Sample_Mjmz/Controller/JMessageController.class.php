@@ -235,6 +235,11 @@ class JMessageController extends BaseController {
         }
         //创建JMMessage 房间
         $roomId = $this->_createJMChat($userInfo);
+
+        $userInfo['room_id'] = $roomId;
+        //房间创建成功，存入数据库
+        $sqlResult = SqlManager::appointChatRoom($userInfo);
+        if($sqlResult === false) goto error;
         //发送JPush消息
         if($userInfo['public'] == 1) {
             //公开的
@@ -242,7 +247,9 @@ class JMessageController extends BaseController {
             $pusher->setPlatform('all');
             $pusher->addAllAudience();
             $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_CREATE;
-            $extraArray['data'] = [];
+            $info['user_name'] = $userInfo['user_name'];
+            $info['room_id'] = $userInfo['room_id'];
+            $extraArray['data'] = $info;
             $pusher->setMessage(json_encode($extraArray),'create','json',null);
             try {
                 $pusher->send();
@@ -251,11 +258,6 @@ class JMessageController extends BaseController {
                 print $e;
             }
         }
-
-        $userInfo['room_id'] = $roomId;
-        //房间创建成功，存入数据库
-        $sqlResult = SqlManager::appointChatRoom($userInfo);
-        if($sqlResult === false) goto error;
         $this->returnData($this->convertReturnJsonSucessed($userInfo));
 
         error:
@@ -317,7 +319,9 @@ class JMessageController extends BaseController {
         $pusher->setPlatform('all');
         $pusher->addAllAudience();
         $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_DELETE;
-        $extraArray['data'] = [];
+        $info['user_name'] = $userInfo['user_name'];
+        $info['room_id'] = $userInfo['room_id'];
+        $extraArray['data'] = $info;
         $pusher->setMessage(json_encode($extraArray),'delete','json',null);
         try {
             $pusher->send();
@@ -393,6 +397,24 @@ class JMessageController extends BaseController {
         //去客户端加入
         //数据库操作成功了
         $this->_joinJMChat($userInfo);
+        if($userInfo['room_role_type'] == 1) {
+            //参与者
+            //推送
+            $pusher = $this->JPushClient->push();
+            $pusher->setPlatform('all');
+            $pusher->addTag(Common::JPUSH_TAG_CHAT);
+            $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_JOIN;
+            $info['user_name'] = $userInfo['user_name'];
+            $info['room_id'] = $userInfo['room_id'];
+            $extraArray['data'] = $info;
+            $pusher->setMessage(json_encode($extraArray),'join','json',null);
+            try {
+                $pusher->send();
+            } catch (JPushException $e) {
+                // try something else here
+                print $e;
+            }
+        }
         $this->returnData($this->convertReturnJsonSucessed($sqlResult));
         //$this->returnData($this->convertReturnJsonSucessed());
 
@@ -424,6 +446,24 @@ class JMessageController extends BaseController {
         $result = M(SqlManager::TABLE_CHAT)->where("room_id='%s'",$userInfo['room_id'])->find();
         //处理数据库
         $sqlResult = SqlManager::exitChatRoom($userInfo,false);
+        if($userInfo['joinType'] == 1) {
+            //参与者
+            //推送
+            $pusher = $this->JPushClient->push();
+            $pusher->setPlatform('all');
+            $pusher->addTag(Common::JPUSH_TAG_CHAT);
+            $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_EXIT;
+            $info['user_name'] = $userInfo['user_name'];
+            $info['room_id'] = $userInfo['room_id'];
+            $extraArray['data'] = $info;
+            $pusher->setMessage(json_encode($extraArray),'exit','json',null);
+            try {
+                $pusher->send();
+            } catch (JPushException $e) {
+                // try something else here
+                print $e;
+            }
+        }
         if($sqlResult === false) {
             $this->returnData($this->convertReturnJsonError());
             return;
@@ -785,7 +825,9 @@ class JMessageController extends BaseController {
             $pusher->setPlatform('all');
             $pusher->addTag(Common::JPUSH_TAG_CHAT);
             $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_CREATE;
-            $extraArray['data'] = [];
+            $info['user_name'] = $userInfo['user_name'];
+            $info['room_id'] = $userInfo['room_id'];
+            $extraArray['data'] = $info;
             $pusher->setMessage(json_encode($extraArray),'create','json',null);
             try {
                 $pusher->send();
@@ -864,9 +906,9 @@ class JMessageController extends BaseController {
                 $pusher->setPlatform('all');
                 $pusher->addTag(Common::JPUSH_TAG_CHAT);
                 $extraArray['type'] = Common::JPUSH_TYPE_CHAT_ROOM_DELETE;
-                $extraArray['info']['creater'] = $handlerWrapper['userName'];
-                $extraArray['info']['public'] = $handlerWrapper['public'];
-                $extraArray['info']['roomId'] = $handlerWrapper['roomId'];
+                $info['user_name'] = $userInfo['user_name'];
+                $info['room_id'] = $userInfo['room_id'];
+                $extraArray['data'] = $info;
                 $pusher->setMessage(json_encode($extraArray),'delete','json',null);
                 try {
                     $pusher->send();
