@@ -422,6 +422,9 @@ class SqlManager {
         $sqlStr = sprintf("SELECT b.* FROM xq_user_friend a,xq_user_info b WHERE 
               a.userName='%s' AND a.targetName = b.user_name",$sqlData['userName']);
         $sqlResult = M()->query($sqlStr);
+        for($i = 0 ; $i < count($sqlResult) ; $i ++) {
+            $sqlResult[$i]['head_image'] = 'http://'.$_SERVER['SERVER_NAME'].$sqlResult[$i]['head_image'];
+        }
         return $sqlResult;
     }
 
